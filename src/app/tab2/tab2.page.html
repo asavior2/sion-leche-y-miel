@@ -1,9 +1,46 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>
-      Tab Two
+      <div align="center">
+        <font COLOR="black" SIZE="4" face="Segoe UI">
+            <ion-title >Concordancia</ion-title>
+        </font>
+      </div>
     </ion-title>
   </ion-toolbar>
+  <!--
+  <ion-searchbar (ionInput)="getItems($event)"
+    placeholder ="Buscar"
+    debounce=3000>
+  </ion-searchbar>-->
+ 
 </ion-header>
-
-<ion-content></ion-content>
+<form [formGroup]="concordanciaForm" (keyup.enter)="getItems()">
+    <ion-item>
+      <ion-input formControlName="palablaBuscar" placeholder="Palabra a buscar" type="text" ></ion-input>
+      <ion-chip (click)="getItems()"  color="primary" >
+          <ion-icon  name="ios-search" ></ion-icon>
+          <ion-label>Total: {{this.versiculos.length}}</ion-label>
+      </ion-chip> 
+    </ion-item>
+  
+    
+</form>
+<ion-content >
+  <div *ngIf="showText" >
+    <ion-label  text-wrap padding-horizontal padding-bottom position="floating" *ngFor="let versiculo of versiculos">
+      <ion-item text-justify>
+      <FONT SIZE=3 face="roboto">
+        <strong>{{versiculo.nombreLibro}} {{versiculo.capitulo}}:{{versiculo.versiculo}}</strong>
+        {{versiculo.texto.substring(0,versiculo.posicionPalabra) }}
+        <FONT SIZE = 3 face = "roboto" color = "red">{{versiculo.palabra}}</FONT>
+        {{versiculo.texto.substring((versiculo.posicionPalabra) + this.palabra.length)}}
+      </FONT>
+    </ion-item>
+    </ion-label>
+    <ion-button color="medium"  expand="full" *ngIf="masResult" (click)="getItems()">
+      <ion-icon name="arrow-round-down"></ion-icon>
+      mas resultados... 
+    </ion-button>  
+  </div>
+</ion-content>

@@ -2,3 +2,10 @@
   max-height: 35vh;
   overflow: hidden;
 }
+ion-button {
+  --border-width:1px;
+}
+
+.alert-ios .alert-radio-label{ white-space: pre-line;}
+.alert-md .alert-radio-label{ white-space: pre-line;}
+.alert-wp .alert-radio-label{ white-space: pre-line;}
