@@ -32,3 +32,6 @@ $RECYCLE.BIN/
 .DS_Store
 Thumbs.db
 UserInterfaceState.xcuserstate
+src/assets/libros/
+src/assets/libros/SLM.json
+src/assets/libros/libros.json

@@ -26,6 +26,7 @@ export class Tab1Page implements OnInit {
   mostrarTexto = false;
   fontSize = 3;
 
+
   @ViewChild(IonContent) ionContent: IonContent;
   constructor(private bibliaService: BibliaService,
               public http: HttpClient,
@@ -34,7 +35,7 @@ export class Tab1Page implements OnInit {
   ngOnInit() {
     // this.LibrosPrueba = this.getLibros();
     this.storage.get('libro').then((val) => {
-      console.log(val);
+      // console.log(val);
       if (val !== null) {
         for (let entry of Libros) {
           if (val === entry.id){
@@ -50,7 +51,7 @@ export class Tab1Page implements OnInit {
         this.capitulo = val;
         // primer mostrar texto
         this.mostrarTextoMetodo (this.libro, this.capitulo);
-        console.log(val);
+        // console.log(val);
       } else {
         this.mostrarTextoMetodo (this.libro, this.capitulo);
       }
