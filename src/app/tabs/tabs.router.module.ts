@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { TabsPage } from './tabs.page';
+import {AuthGuard} from '../guards/auth.guard';
+import {NologinGuard} from '../guards/nologin.guard';
 
 const routes: Routes = [
   {
@@ -8,11 +10,32 @@ const routes: Routes = [
     component: TabsPage,
     children: [
       {
+        path: 'login',
+        children: [
+          {
+            path: '',
+            loadChildren: '../login/login.module#LoginPageModule',
+            canActivate: [NologinGuard]
+          }
+        ]
+      },
+      {
+        path: 'registro',
+        children: [
+          {
+            path: '',
+            loadChildren: '../registro/registro.module#RegistroPageModule',
+            canActivate: [NologinGuard]
+          }
+        ]
+      },
+      {
         path: 'tab1',
         children: [
           {
             path: '',
-            loadChildren: '../tab1/tab1.module#Tab1PageModule'
+            loadChildren: '../tab1/tab1.module#Tab1PageModule',
+            canActivate: [AuthGuard]
           }
         ]
       },
@@ -21,7 +44,8 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: '../tab2/tab2.module#Tab2PageModule'
+            loadChildren: '../tab2/tab2.module#Tab2PageModule',
+            canActivate: [AuthGuard]
           }
         ]
       },
@@ -30,7 +54,8 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: '../tab3/tab3.module#Tab3PageModule'
+            loadChildren: '../tab3/tab3.module#Tab3PageModule',
+            canActivate: [AuthGuard]
           }
         ]
       },
@@ -39,23 +64,36 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: '../sobre/sobre.module#SobrePageModule'
+            loadChildren: '../sobre/sobre.module#SobrePageModule',
+            canActivate: [AuthGuard]
           }
         ]
       },
       {
         path: '',
-        redirectTo: '/tabs/tab1',
+        redirectTo: '/tabs/tabs1',
         pathMatch: 'full'
       }
     ]
   },
   {
     path: '',
-    redirectTo: '/tabs/tab1',
-    pathMatch: 'full'
+    redirectTo: '/tabs/login',
+    pathMatch: 'full',
+    canActivate: [NologinGuard]
   }
 ];
+/*
+ path: 'tab1',
+        children: [
+          {
+            path: '',
+            loadChildren: '../tab1/tab1.module#Tab1PageModule',
+            canActivate: [AuthGuard]    ---> esto era para la secion 
+          }
+        ]
+      },
+*/
 
 @NgModule({
   imports: [

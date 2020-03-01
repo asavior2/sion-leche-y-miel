@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
+
 @Component({
   selector: 'app-sobre',
   templateUrl: './sobre.page.html',
@@ -8,6 +9,8 @@ import { Component, OnInit } from '@angular/core';
 export class SobrePage implements OnInit {
 
   constructor() { }
+
+  
 
   ngOnInit() {
   }

@@ -9,3 +9,22 @@ ion-button {
 .alert-ios .alert-radio-label{ white-space: pre-line;}
 .alert-md .alert-radio-label{ white-space: pre-line;}
 .alert-wp .alert-radio-label{ white-space: pre-line;}
+
+.ico-cita{
+  font-size: 11px;
+}
+.parrafo{
+  p {display: inline;}
+}
+
+.action-sheet-options, .action-sheet-group {
+  --backdrop-opacity:0;
+}
+
+.element.style {
+  opacity: 0.1;
+}
+
+.highlight {
+  background-color:rgba(0, 162, 255, 0.199);
+  }

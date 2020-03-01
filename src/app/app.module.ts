@@ -14,6 +14,17 @@ import { IonicStorageModule } from '@ionic/storage';
 // Services
 import { BibliaService} from './services/biblia.service';
 
+import {firebaseConfig} from "../environments/environment";
+
+import { AngularFireModule} from "@angular/fire";
+import {AngularFireAuthModule, AngularFireAuth} from "@angular/fire/auth";
+import { AngularFirestoreModule} from '@angular/fire/firestore';
+import { FirebaseAuthentication } from "@ionic-native/firebase-authentication/ngx";
+import { GooglePlus } from '@ionic-native/google-plus/ngx';
+
+import { Clipboard } from '@ionic-native/clipboard/ngx';
+
+
 
 @NgModule({
   declarations: [AppComponent],
@@ -22,13 +33,21 @@ import { BibliaService} from './services/biblia.service';
     HttpClientModule,
     IonicModule.forRoot(),
     IonicStorageModule.forRoot(),
-    AppRoutingModule],
+    AppRoutingModule,
+    AngularFireModule.initializeApp(firebaseConfig),
+    AngularFireAuthModule,
+    AngularFirestoreModule
+  ],
   providers: [
     StatusBar,
+    GooglePlus,
     BibliaService,
+    Clipboard,
     SplashScreen,
+    FirebaseAuthentication,
     { provide: RouteReuseStrategy,
-      useClass: IonicRouteStrategy }
+      useClass: IonicRouteStrategy },
+    AngularFireAuth
   ],
   bootstrap: [AppComponent]
 })

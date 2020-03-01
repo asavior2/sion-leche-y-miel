@@ -60,24 +60,60 @@
       </div> 
 
       <div *ngIf = "mostrarTexto" align="justify"> 
-        <ion-label text-wrap   *ngFor="let text of textoJson" >
+        <ion-label text-wrap   *ngFor="let text of textoJsonFinal" >
+
           <div  *ngFor="let titulo of titulos">
             <div *ngIf="text.versiculo == titulo.versiculo">
               <h4 align="center" padding-bottom><FONT face="Segoe UI" size="5"><strong>{{titulo.titulo}}</strong></FONT></h4> 
             </div>
           </div>
-          <div padding-horizontal padding-bottom>
-              <FONT SIZE=2 face="Segoe UI"><ion-text color="medium">{{text.versiculo}} </ion-text></FONT>
-              <font  size={{this.fontSize}}>
-                <ion-text> {{text.texto}} </ion-text>
-              </font>
-          </div>
+            
+            <div *ngIf="text.hasOwnProperty('comprimido')">
+              <div padding-horizontal padding-bottom>
+                <FONT SIZE=2 face="Segoe UI"><ion-text color="medium">{{text.versiculo}} </ion-text></FONT>
+                <font *ngFor="let construirVersiculo of text.comprimido" size={{this.fontSize}}>
+                  
+                  
+
+                    <ion-text class={{marcar(construirVersiculo.capitulo,construirVersiculo.versiculo)}}>
+                      <a (click)="seleccionarVersiculo('noText', construirVersiculo.id_libro, construirVersiculo.capitulo, construirVersiculo.versiculo)" class={{this.marcarV}}>
+                        {{construirVersiculo.parteText}} 
+                      </a>
+                      
+                   
+                    <a (click)="citaAlert(construirVersiculo.cita, construirVersiculo.ibroCita, construirVersiculo.capituloCita, construirVersiculo.versiculoCitaInicial,construirVersiculo.versiculoCitaInicial)" >
+                      <sup><ion-icon class='ico-cita' color='medium' ios='ios-quote' md='md-quote'></ion-icon></sup>
+                    </a>
+                    
+                      <a (click)="seleccionarVersiculo('noText', construirVersiculo.id_libro, construirVersiculo.capitulo, construirVersiculo.versiculo)" class={{this.marcarV}}>
+                        {{construirVersiculo.parteFinal}} 
+                      </a>
+                    </ion-text>
+                  
+                </font>
+              </div>     
+            </div>
         
-      </ion-label>
+          <div *ngIf ="!text.hasOwnProperty('comprimido')" padding-horizontal padding-bottom>
+            <FONT SIZE=2 face="Segoe UI"><ion-text color="medium">{{text.versiculo}} </ion-text></FONT>
+            <font  size={{this.fontSize}}>
+              <ion-text  class={{marcar(text.capitulo,text.versiculo)}}>
+                <span > 
+                  <a (click)="seleccionarVersiculo(text.texto,text.id_libro, text.capitulo, text.versiculo)" class={{this.marcarV}}>
+                    {{text.texto}} 
+                  </a>
+                </span>
+              </ion-text>
+            </font>
+          </div>
+          
+        
+        </ion-label>
         <div align="center">
             <FONT face="Segoe UI" size="3"><strong>*(SLM) Sion: Leche y Miel</strong></FONT>    
         </div>
       </div>
+
     </ion-row>
   </ion-grid>
 

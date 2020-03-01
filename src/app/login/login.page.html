@@ -1,0 +1,68 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title text-center>Iniciar sesión</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content pandding>
+  <br>
+  <img class="icon" src="assets/icon/icon.png" alt="">
+  <!--
+  <ion-item>
+    <ion-label position="floating"> Correo electronico</ion-label>
+    <ion-input type="text" [(ngModel)]="email" name="email"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label position="floating"> Contraseña</ion-label>
+    <ion-input type="password" [(ngModel)]="password" name="password"></ion-input>
+  </ion-item>
+  <br>
+  <ion-button (click)="onSubmitlogin()" expand="block">Entrar</ion-button>
+  -->
+  <div class="forrm-group">
+    <br>
+    <ion-text text-center color="primary">
+      <h6>Introduzca su numero de telefono <br></h6>
+    </ion-text>
+    
+      <ion-item align="center">
+        
+        <ion-input class="loginTelefono" type="tel" [(ngModel)]="telefono" name="telefono"  placeholder="+58 416 8180495" inputmode="numeric" value="+" style="text-align:center;" pattern="^\+([0-9]{5,14})$"></ion-input>
+      
+
+        <ion-icon name="ios-log-in" (click)="onSubmitLoginTelephone()"></ion-icon>
+      </ion-item>
+
+      <ion-item *ngIf="campoSMS">
+        <ion-input class="loginTelefono"  type="tel" [(ngModel)]="code" name="code" size="small" placeholder="_ _ _ _ _ _" style="text-align:center;" pattern="^([0-9]{5})$"></ion-input>
+        <ion-icon name="ios-log-in" (click)="onSingInWithCode()"></ion-icon>
+      </ion-item>
+
+      
+      <ion-button class="btn-facebook"  (click)="onSubmitLoginFacebook()" expand="block">
+        <span style="font-size:17px;" class="fa fa-facebook iconRedes"></span>
+        Facebook
+      </ion-button>
+      <!--
+      <ion-button class="btn-google ion-margin-button" (click)="login()" expand="block">
+        <span style="font-size: 17px;" class="fa fa-google iconRedes"></span>
+        Google22++++
+      </ion-button>
+      -->
+      
+      <br>
+      <ion-text text-center color="medium">
+        <h6> ¿Formato internacional del telefono? <br> 
+          <ion-text color="danger">+</ion-text> Codigo de pais <ion-text color="danger">58</ion-text>  Numero celular <ion-text color="danger">416 8180495</ion-text></h6>
+      </ion-text>
+
+      <ion-list *ngIf="loginDetails">
+        <ion-item>  
+          <img [src]="loginDetails.imageURL"/>
+        </ion-item>
+        <ion-item>
+          <ion-label> {{loginDetails.displayName}}</ion-label>
+        </ion-item> 
+      </ion-list>
+  </div>
+</ion-content>
