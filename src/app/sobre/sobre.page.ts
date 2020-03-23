@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'app-sobre',
@@ -8,7 +8,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SobrePage implements OnInit {
 
-  constructor() { }
+  fontSize;
+  constructor(private storage: Storage) {
+    this.storage.get('fontSize').then((val) => {
+      if (val == null) {
+        this.fontSize = 4;
+      } else {
+        this.fontSize = val;
+      }
+    });
+   }
 
   
 

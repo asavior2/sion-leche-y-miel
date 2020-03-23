@@ -1,5 +1,0 @@
-# Nmap 7.60 scan initiated Thu Feb 13 08:50:25 2020 as: nmap -p- --open -T5 -v -oG allPorts -n banco-cl-solicitud-producto-test-priv.fif.tech
-# Ports scanned: TCP(65535;1-65535) UDP(0;) SCTP(0;) PROTOCOLS(0;)
-Host: 10.145.112.197 ()	Status: Up
-Host: 10.145.112.197 ()	Status: Timeout
-# Nmap done at Thu Feb 13 09:05:25 2020 -- 1 IP address (1 host up) scanned in 900.18 seconds

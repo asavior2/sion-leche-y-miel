@@ -29,6 +29,8 @@ export class Tab2Page {
   contVersiculos = 0;
   buferVersiculos = 99;
   masResult = false;
+  fontSize;
+
   // Documentacion de formulario login https://www.youtube.com/watch?v=2vVxieW-yyE
 
   constructor(private  bibliaService: BibliaService,
@@ -44,7 +46,14 @@ export class Tab2Page {
         Validators.maxLength(30)
       ]))
     });
+    this.storage.get('fontSize').then((val) => {
+      if (val == null) {
 
+        this.fontSize = 4;
+      } else {
+        this.fontSize = val;
+      }
+    });
     // console.log(this.name);
     this.bibliaService.getLibros().subscribe(data => {
        this.libros = data;
@@ -56,7 +65,7 @@ export class Tab2Page {
       // console.log ('textoJson es de tipo: ', typeof(this.textoJson));
       // console.log('TextoJson', this.textoJson);
     });
-    this.storage.set('biblia2', this.textoJson);
+    //this.storage.set('biblia2', this.textoJson);
 
   }
 

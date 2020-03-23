@@ -9,7 +9,7 @@ const routes: Routes = [
     path: 'tabs',
     component: TabsPage,
     children: [
-      {
+      /*{
         path: 'login',
         children: [
           {
@@ -28,14 +28,14 @@ const routes: Routes = [
             canActivate: [NologinGuard]
           }
         ]
-      },
+      },*/
       {
         path: 'tab1',
         children: [
           {
             path: '',
             loadChildren: '../tab1/tab1.module#Tab1PageModule',
-            canActivate: [AuthGuard]
+            canActivate: [NologinGuard]
           }
         ]
       },
@@ -45,7 +45,17 @@ const routes: Routes = [
           {
             path: '',
             loadChildren: '../tab2/tab2.module#Tab2PageModule',
-            canActivate: [AuthGuard]
+            canActivate: [NologinGuard]
+          }
+        ]
+      },
+      {
+        path: 'contacto',
+        children: [
+          {
+            path: '',
+            loadChildren: '../tab3/tab3.module#Tab3PageModule',
+            canActivate: [NologinGuard]
           }
         ]
       },
@@ -55,7 +65,8 @@ const routes: Routes = [
           {
             path: '',
             loadChildren: '../tab3/tab3.module#Tab3PageModule',
-            canActivate: [AuthGuard]
+            /*loadChildren: '../plan-lectura/plan-lectura.module#PlanLecturaPageModule', este es paraplan de lectura*/
+            canActivate: [NologinGuard]
           }
         ]
       },
@@ -65,20 +76,20 @@ const routes: Routes = [
           {
             path: '',
             loadChildren: '../sobre/sobre.module#SobrePageModule',
-            canActivate: [AuthGuard]
+            canActivate: [NologinGuard]
           }
         ]
       },
       {
         path: '',
-        redirectTo: '/tabs/tabs1',
+        redirectTo: '/tabs/tab1',
         pathMatch: 'full'
       }
     ]
   },
   {
     path: '',
-    redirectTo: '/tabs/login',
+    redirectTo: '/tabs/tab1',
     pathMatch: 'full',
     canActivate: [NologinGuard]
   }

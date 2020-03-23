@@ -32,7 +32,7 @@ export class Tab1Page implements OnInit {
   mostrarCapitulos = false;
   mostrarGenesis = false;
   mostrarTexto = false;
-  fontSize = 3;
+  public fontSize;
   posicion;
 
   citaIcon;
@@ -86,8 +86,14 @@ export class Tab1Page implements OnInit {
             this.librot = entry.libro;
           }
         }
-        
         // console.log(this.libro);
+      }
+    });
+    this.storage.get('fontSize').then((val) => {
+      if (val == null) {
+        this.fontSize = 4;
+      } else {
+        this.fontSize = val;
       }
     });
     this.storage.get('capitulo').then((val) => {
@@ -100,6 +106,7 @@ export class Tab1Page implements OnInit {
         this.mostrarTextoMetodo (this.libro, this.capitulo);
       }
     });
+    
 
     this.storage.get(this.libro.toString()).then((val) => {
       if (val == null){
@@ -120,10 +127,11 @@ export class Tab1Page implements OnInit {
 
     this.getcapitulos (this.libro);
     // GetTitulo trae titulos de libro y capitulo en especifico
+    /*
     this.bibliaService.getTitulo(this.libro, this.capitulo).subscribe(data => {
       // console.log(data);
       return (data);
-    });
+    });*/
     // los Libros y cantidad de capitulos de cada libro estas console.log(Libros);
     for (const entry of Libros) {
       // let mostrar this.getCleanedString(entry.libro)
@@ -134,13 +142,14 @@ export class Tab1Page implements OnInit {
       }
     }
     
+    /*
     this.bibliaService.getUser().subscribe(datas => {
       datas.map( data =>{
         console.log(data.payload.doc.data())
       }) 
       //console.log(data);
       //return (data);
-    });
+    });*/
     
     // console.log(this.primerP);
     // console.log(this.segundoP);
@@ -220,7 +229,7 @@ export class Tab1Page implements OnInit {
       if (val == null){
         this.marcador = [];
       }else {
-        console.log("marcador "+val);
+        //console.log("marcador "+val);
         this.marcador = val;
       }
       
@@ -230,7 +239,7 @@ export class Tab1Page implements OnInit {
     this.capitulo = capitulo;
     this.actualizarLibroTitulo(this.libro);
     
-    this.bibliaService.getCitas(this.libro, this.capitulo).subscribe(data => {
+    /*this.bibliaService.getCitas(this.libro, this.capitulo).subscribe(data => {
       console.log(data);
       this.citas = data;
       if (this.citas != null){
@@ -238,15 +247,15 @@ export class Tab1Page implements OnInit {
         //console.log (this.citas);
       }
     });
-    this.capitulo = capitulo;
     this.bibliaService.getTitulo(this.libro, this.capitulo).subscribe(data => {
       console.log(data);
       this.titulos = data;
-    });
+    });*/
     this.bibliaService.getTexto(this.libro, this.capitulo).subscribe(data => {
-      console.log(data);
+      //console.log(data);
       this.textoJson = data;
-      this.organizarCitas(this.textoJson);
+      this.textoJsonFinal = this.textoJson;
+      //this.organizarCitas(this.textoJson);
     });
     this.mostrarTexto = true;
   }
@@ -273,7 +282,7 @@ export class Tab1Page implements OnInit {
   nextboton(){
     this.ionContent.scrollToTop(300);
     // this.scrollToTop();
-     console.log(this.cantCapitulo.length);
+     //console.log(this.cantCapitulo.length);
     // console.log (this.cantCapitulo.length);
     if (this.libro <= 66 && this.capitulo < this.cantCapitulo.length){
       this.capitulo++;
@@ -298,6 +307,7 @@ organizarCitas(textoJson){
     this.mapCita = [];
     if (this.citas != null) {
       for (let cita of this.citas) {
+        
         if (cita.versiculo === text.versiculo) {
           if (text.texto.toLowerCase().indexOf(cita.palabraAntes.toLowerCase(),0)=="-1") {
             this.posicion = text.texto.length;
@@ -371,65 +381,37 @@ organizarCitas(textoJson){
       this.textoJsonFinal.push(text);
     }
   }
-  console.log(this.textoJsonFinal);
+  //console.log(this.textoJsonFinal);
 
 
 }
 // ________________________________________________________________________________________________
-/*  
-pruebaversiculo(ver){
-    if(ver==false){
-      this.tempVersiculo = false;
-    }else{
-      this.tempVersiculo = true;
-    }
-    
-  }
 
-  mantenerVersiculo(versiculoTemp){
-    if(versiculoTemp == 999) {
-      this.imprimirVersiculo++;
-      return(this.imprimirVersiculo);
-    } else {
-      this.imprimirVersiculo = versiculoTemp;
-    }
-    
-  }*/
-  citaAlert(cita,idLibroCita, capituloC, verInicial, verFinal){
-    if (verInicial == verFinal || verFinal == "0"){
-      console.log ("versiculo inicial: " + verInicial + "versiculo final: " + verFinal );
-      console.log("estamos en el IF");
-      this.bibliaService.getTexto(idLibroCita, capituloC).subscribe(data => {
-        console.log(data);
-        this.arregloTextoCita = data;
-        console.log ("Texto cita" + this.arregloTextoCita);
-        for (let citaText of this.arregloTextoCita){
-          if(verInicial === citaText.versiculo){
+  citaAlert(cita,idLibroCita, capituloC, verInicial){
+    this.bibliaService.getTexto(idLibroCita, capituloC).subscribe(data => {
+      //console.log(data);
+      this.arregloTextoCita = data;
+      //console.log ("Texto cita" + this.arregloTextoCita);
+      //console.log(this.textoCita);
+      for (let citaText of this.arregloTextoCita){
+        if(verInicial === citaText.versiculo){
+          if (citaText.hasOwnProperty('comprimido')){
+            this.textoCita = '';
+            for (let texto of citaText.comprimido){
+              this.textoCita = this.textoCita + " " + texto.parteText;
+              if(texto.hasOwnProperty('parteFinal')){
+                this.textoCita = this.textoCita + " " + texto.parteFinal;
+              }
+            }
+          } else {
             this.textoCita = citaText.texto;
           }
         }
-        this.mostrarCitaAlert(cita,this.textoCita,idLibroCita,capituloC);
-      });
-    } else {
-      console.log("estamos en el else");
-      this.bibliaService.getTexto(idLibroCita, capituloC).subscribe(data => {
-        console.log(data);
-        this.arregloTextoCita = data;
-        console.log ("Texto cita" + this.arregloTextoCita);
-        let cuantosVerSon = verFinal - verInicial;
-        for (let citaText of this.arregloTextoCita){
-          let contador = 1;
-          if( contador  <= cuantosVerSon){
-            if(verInicial === citaText.versiculo){
-              this.textoCita += citaText.texto;
-            }
-          }
-          contador++;
-          }
-        this.mostrarCitaAlert(cita,this.textoCita,idLibroCita,capituloC);
-      });
-    }
-
+      }
+      this.mostrarCitaAlert(cita,this.textoCita,idLibroCita,capituloC);
+      //console.log(this.textoCita);
+      this.textoCita = '';
+    });
   }
   async mostrarCitaAlert(cita, textoVersiculo,idLibro, capituloC) {
     const alert = await this.alertController.create({
@@ -449,24 +431,6 @@ pruebaversiculo(ver){
     });
     await alert.present();
   }
-  posicionarcita(cita, text){
-    console.log(this.contadorCitas);
-    this.contadorCitas=0;
-    this.posicion = text.texto.indexOf(cita.palabraAntes,0);
-    console.log(text);
-    console.log(cita);
-    //this.versiculoCompleto =
-
-    if ( this.posicion >= 0){
-      this.posicion = this.posicion + cita.palabraAntes.length;
-      //this.primeraParteText = text.texto.substring(0,this.posicion);
-      //this.segundaParteText = text.texto.substring(this.posicion,text.texto.length);
-
-      console.log("Se encuentra en: " + this.posicion);
-    }else{
-      //Esta errada una cita, colocar al final.
-    } 
-  }
 
   buscarVersiculo (idLibro,capitulo, versiculo){
     this.bibliaService.getTexto(idLibro, capitulo).subscribe(data => {
@@ -475,8 +439,18 @@ pruebaversiculo(ver){
       //console.log ("Texto cita" + this.arregloTextoCita);
       for (let text of this.dataTemp){
         if(versiculo === text.versiculo){
-          console.log (text.texto);
-          this.textTemp = text.texto;
+          if (text.hasOwnProperty('comprimido')){
+            this.textTemp = '';
+            for (let texto of text.comprimido){
+              this.textTemp = this.textTemp + " " + texto.parteText;
+              if(texto.hasOwnProperty('parteFinal')){
+                this.textTemp = this.textTemp + " " + texto.parteFinal;
+              }
+            }
+            
+          } else {
+            this.textTemp = text.texto;
+          }
         }
       }
     });
@@ -491,20 +465,11 @@ pruebaversiculo(ver){
           role: 'destructive',
           icon: 'copy',
           handler: () => {
-            
-            //con ojito habia que consutar el el versiculo y sin ojito no, deje que siempre lo consultara.
-            /*
-            if (texto === "noText") {
-              this.textTemp = await this.buscarVersiculo(idLibro, capitulo, versiculo);
-            } else {
-              this.textTemp = texto;
-            }*/
-            //console.log ("\"" + this.textTemp + "\" " + this.librot + " " + capitulo + ":" + versiculo + ' Biblia SLM http://sionlecheymiel.org.ve/');
-            this.clipboard.copy("\"" + this.textTemp + "\" " + this.librot + " " + capitulo + ":" + versiculo + ' Biblia SLM http://sionlecheymiel.org.ve/');
+            this.clipboard.copy("\"" + this.textTemp + "\" " + this.librot + " " + capitulo + ":" + versiculo + ' Biblia SLM http://sionlecheymiel.org.ve/index.php?libro='+idLibro+'&capitulo='+capitulo);
           }
         },
         {
-          text: "Marcar versículo",
+          text: "Marcar versículo o Eliminar Marca",
           icon: 'heart',
           handler: () => {
             //llamar funcion 
@@ -512,31 +477,38 @@ pruebaversiculo(ver){
           }
         }
       ]
-
       });
       await actionSheet.present();
     }
-    
 
   aumentarSize() {
-    this.fontSize++;
+    if(this.fontSize < 6){
+      this.fontSize++;
+      this.storage.set("fontSize", this.fontSize);
+    }
   }
   disminuirSize() {
-    this.fontSize--
+    if (this.fontSize >2){
+      this.fontSize--
+      this.storage.set('fontSize', this.fontSize);
+    }
   }
 
   guardarMarcador(libro, capitulo, versiculo){
-    console.log("estamos en marcador");
-    console.log(this.marcador);
+    //console.log(this.marcador);
     const resultadoMarcador = this.marcador.find( marcador => marcador.capitulo === capitulo && marcador.versiculo === versiculo);
-    console.log(resultadoMarcador);
+    //console.log(resultadoMarcador);
+    let indiceMarcador = this.marcador.findIndex(marcador => marcador.capitulo === capitulo && marcador.versiculo === versiculo);
     if (resultadoMarcador === undefined){
       this.marcador.push({capitulo: capitulo,
                           versiculo: versiculo});
       this.storage.set(libro, this.marcador);
+    } else {
+      this.marcador.splice(indiceMarcador,1);
+      this.storage.set(libro, this.marcador);
     }
 
-    //console.log(this.marcadorLibro);
+    //Esto es para futuro sincronizar los marcadores
     if (this.marcadorLibro == null) {
       this.marcadorLibro.push({libro});
       this.storage.set('marcadorLibro', this.marcadorLibro);
@@ -548,7 +520,6 @@ pruebaversiculo(ver){
       }
     }
   }
-
   marcar(capitulo, versiculo){
     const resultadoMarcador = this.marcador.find( marcador => marcador.capitulo === capitulo && marcador.versiculo === versiculo);
     if(resultadoMarcador != undefined){
@@ -559,7 +530,4 @@ pruebaversiculo(ver){
     }
 
   }
-
-
-
 }

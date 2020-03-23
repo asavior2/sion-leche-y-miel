@@ -20,9 +20,12 @@ export class BibliaService {
     return this.http.get('assets/libros/' + libro + '/' + libro + '-' + capitulo + '.json');
   }
   // Trae los titulos de los respectivo capitulos 
+  
+  /*
   getTitulo(libro: number, capitulo: number) {
     return this.http.get('assets/libros/' + libro + '/' + libro + '-' + capitulo + 'titulo.json');
-  }
+  }*/
+
   // Trae los libro capitulos y numero de capitulos
   getLibros() {
     return this.http.get('assets/libros.json');
@@ -30,16 +33,18 @@ export class BibliaService {
 
   getTextoBiblia() {
     return this.http.get('assets/SLM.json');
-  }
+  } 
 
   // Trae las citas de los respectivo capitulos 
+  /*
   getCitas(libro: number, capitulo: number) {
     return this.http.get('assets/libros/' + libro + '/' + libro + '-' + capitulo + 'citas.json');
-  }
+  }*/
 
+  /* 
   getUser(){
     return this.db.collection('PsWHpchzxoFVWDQzfiJj').snapshotChanges()
-  }
+  }*/
 /* BOrrar
   buscarVersiculo (idLibro,capitulo, versiculo){
     return new Promise((resolve,reject) =>{

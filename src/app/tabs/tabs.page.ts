@@ -37,27 +37,28 @@ export class TabsPage implements OnInit {
       const actionSheet = await this.actionSheetController.create({
         header: 'Opciones',
         mode: "ios",
-        buttons: [{
+        buttons: [
+          /*{
             text: 'Desconectarse',
             role: 'destructive',
             icon: 'log-out',
             handler: () => {
               this.onLogout();
             }
-          }, {
+          },*/ {
             text: 'Sobre Sion:Leche y Miel (SLM)',
             icon: 'ios-information-circle-outline',
             handler: () => {
               this.router.navigate(['/tabs/tab4']);
             }
-          },
+          }/*,
           {
             text: 'Contacto',
             icon: 'ios-contact',
             handler: () => {
-              this.router.navigate(['/tabs/tab3']);
+              this.router.navigate(['/tabs/contacto']);
             }
-          }
+          }*/
         ]
         });
         await actionSheet.present();

@@ -30,10 +30,10 @@
   <div *ngIf="showText" >
     <ion-label  text-wrap padding-horizontal padding-bottom position="floating" *ngFor="let versiculo of versiculos">
       <ion-item text-justify>
-      <FONT SIZE=3 face="roboto">
+      <FONT size={{this.fontSize}} face="roboto">
         <strong>{{versiculo.nombreLibro}} {{versiculo.capitulo}}:{{versiculo.versiculo}}</strong>
         {{versiculo.texto.substring(0,versiculo.posicionPalabra) }}
-        <FONT SIZE = 3 face = "roboto" color = "red">{{versiculo.palabra}}</FONT>
+        <FONT size={{this.fontSize}} face = "roboto" color = "red">{{versiculo.palabra}}</FONT>
         {{versiculo.texto.substring((versiculo.posicionPalabra) + this.palabra.length)}}
       </FONT>
     </ion-item>
