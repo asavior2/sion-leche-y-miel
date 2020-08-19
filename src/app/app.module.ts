@@ -10,6 +10,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 import { HttpClientModule } from '@angular/common/http';
+import { HTTP } from '@ionic-native/http/ngx';
 import { IonicStorageModule } from '@ionic/storage';
 // Services
 import { BibliaService} from './services/biblia.service';
@@ -24,6 +25,10 @@ import { GooglePlus } from '@ionic-native/google-plus/ngx';
 
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 
+import {Zip} from '@ionic-native/zip/ngx';
+import {File} from '@ionic-native/file/ngx';
+import { Httpd, HttpdOptions } from '@ionic-native/httpd/ngx';
+import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer/ngx';
 
 
 @NgModule({
@@ -47,7 +52,13 @@ import { Clipboard } from '@ionic-native/clipboard/ngx';
     FirebaseAuthentication,
     { provide: RouteReuseStrategy,
       useClass: IonicRouteStrategy },
-    AngularFireAuth
+    AngularFireAuth,
+    Zip,
+    File,
+    Httpd,
+    HTTP,
+    FileTransfer,
+    FileTransferObject
   ],
   bootstrap: [AppComponent]
 })

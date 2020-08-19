@@ -4,13 +4,17 @@ import Libros from '../../assets/libros.json';
 import { IonContent, AlertController} from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { HttpClient } from '@angular/common/http';
+import { HTTP } from '@ionic-native/http/ngx';
 import { TabsPage } from "../tabs/tabs.page";
 import {DomSanitizer} from '@angular/platform-browser';
 import { ActionSheetController } from '@ionic/angular';
 import {AngularFirestore} from "@angular/fire/firestore"
 import { Platform } from '@ionic/angular';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
-
+import {Zip} from '@ionic-native/zip/ngx';
+import {File} from '@ionic-native/file/ngx';
+import { from, Observable } from 'rxjs';
+import { async } from '@angular/core/testing';
 
 @Component({
   selector: 'app-tab1',
@@ -44,7 +48,7 @@ export class Tab1Page implements OnInit {
   hayCitas = false;
   mapCita = [];
   mapText = [];
-  textoJsonFinal = [];
+  textoJsonFinal: any;
   imprimirVersiculo;
   arregloTextoCita;
   textoCita;
@@ -56,25 +60,32 @@ export class Tab1Page implements OnInit {
   marcador: any[] = new Array;
   marcadorLibro: any[] = new Array;
   marcarV;
+  zipPath;
+  progrss: any="";
+  stadoDir: boolean;
+  public update: boolean;
 
   @ViewChild(IonContent) ionContent: IonContent;
   constructor(private bibliaService: BibliaService,
               public actionSheetController: ActionSheetController,
-              public http: HttpClient,
+              private http: HTTP,
+              private httpClient: HttpClient,
               private storage: Storage,
               private sanitizer: DomSanitizer,
               public alertController: AlertController,
               private platform: Platform,
               private db: AngularFirestore,
               private clipboard: Clipboard,
+              private zip:Zip,
+              public file:File,
               public tabs: TabsPage) {
                 this.tabs.validaUri();
                 //this.guardarMarcador();
                 this.platform.backButton.observers.pop();
-                
               }
 
   async ngOnInit() {
+   
     
     // this.LibrosPrueba = this.getLibros();
     await this.storage.get('libro').then((val) => {
@@ -106,10 +117,10 @@ export class Tab1Page implements OnInit {
         this.mostrarTextoMetodo (this.libro, this.capitulo);
       }
     });
-    
+
 
     this.storage.get(this.libro.toString()).then((val) => {
-      if (val == null){
+      if (val == null) {
         this.marcador = [];
       } else {
         this.marcador = val;
@@ -141,7 +152,7 @@ export class Tab1Page implements OnInit {
           this.segundoP.push({id: entry.id, capitulos: entry.capitulos, libro: this.getCleanedString(entry.libro), estado: 'listo'});
       }
     }
-    
+
     /*
     this.bibliaService.getUser().subscribe(datas => {
       datas.map( data =>{
@@ -150,13 +161,14 @@ export class Tab1Page implements OnInit {
       //console.log(data);
       //return (data);
     });*/
-    
     // console.log(this.primerP);
     // console.log(this.segundoP);
   } // ngOnInit
 
+
+
   getLibros() {
-    return this.http.get('assets/libros.json');
+    return this.httpClient.get('assets/libros.json');
   }
   // -----------------------------------------------------------------------------------------------------------
   // Para eliminar acentos de los libro y poder crear metodos automatico
@@ -221,7 +233,7 @@ export class Tab1Page implements OnInit {
     this.getcapitulos(libro);
   }
 
-  mostrarTextoMetodo(libro, capitulo) {
+  async mostrarTextoMetodo(libro, capitulo) {
     this.citas = [];
     this.storage.set('libro', libro);
     this.storage.set('capitulo', capitulo);
@@ -232,33 +244,36 @@ export class Tab1Page implements OnInit {
         //console.log("marcador "+val);
         this.marcador = val;
       }
-      
     });
     this.mostrarCapitulos = false;
     this.libro = libro;
     this.capitulo = capitulo;
     this.actualizarLibroTitulo(this.libro);
+    // update es referente a si se actualizo los arquivos JSON que tienen el texto.
     
-    /*this.bibliaService.getCitas(this.libro, this.capitulo).subscribe(data => {
-      console.log(data);
-      this.citas = data;
-      if (this.citas != null){
-        this.hayCitas = true;
-        //console.log (this.citas);
+    await this.storage.get('update').then((val) => {
+      if (val == null) {
+        this.update = false;
+      } else {
+        this.update = true;
       }
     });
-    this.bibliaService.getTitulo(this.libro, this.capitulo).subscribe(data => {
-      console.log(data);
-      this.titulos = data;
-    });*/
-    this.bibliaService.getTexto(this.libro, this.capitulo).subscribe(data => {
-      //console.log(data);
-      this.textoJson = data;
-      this.textoJsonFinal = this.textoJson;
-      //this.organizarCitas(this.textoJson);
-    });
+
+    if (this.update) {
+      await this.bibliaService.getTextoFile(this.libro, this.capitulo).then((data) => {
+        // console.log(data);
+        this.textoJsonFinal = JSON.parse(data);
+      }).catch(err => {
+        this.storage.remove('update');
+        this.textoJsonFinal = this.bibliaService.getTextoImport(this.libro, this.capitulo);
+      });
+    } else {
+      this.textoJsonFinal = await this.bibliaService.getTextoImport(this.libro, this.capitulo);
+    }
+
     this.mostrarTexto = true;
   }
+
 
   previousboton() {
     this.ionContent.scrollToTop(300);
@@ -336,13 +351,14 @@ organizarCitas(textoJson){
 
       var posicionInicial = 0;
 
-      let cont =0;
+      let cont = 0;
       for (let citaVersiculo of this.mapCita) {
         this.versiculoTEMP = citaVersiculo.versiculo;
-        //este if es porque hay casos donde hay dos citas en el medio del versiculo y no se colocaba el resto del versiculo, por esto se crea este if para ver si es el ultimo registro. relacionado al parteText
-        if(cont === (this.mapCita.length - 1)) {
-          //console.log(this.mapCita.length);
-          //console.log("ultimo");
+        // este if es porque hay casos donde hay dos citas en el medio del versiculo y no se colocaba el resto del versiculo, 
+        // por esto se crea este if para ver si es el ultimo registro. relacionado al parteText
+        if (cont === (this.mapCita.length - 1)) {
+          // console.log(this.mapCita.length);
+          // console.log("ultimo");
           this.mapText.push({
             id_libro: text.id_libro,
             capitulo: text.capitulo,
@@ -385,22 +401,47 @@ organizarCitas(textoJson){
 
 
 }
+
 // ________________________________________________________________________________________________
 
-  citaAlert(cita,idLibroCita, capituloC, verInicial){
-    this.bibliaService.getTexto(idLibroCita, capituloC).subscribe(data => {
-      //console.log(data);
-      this.arregloTextoCita = data;
-      //console.log ("Texto cita" + this.arregloTextoCita);
-      //console.log(this.textoCita);
-      for (let citaText of this.arregloTextoCita){
-        if(verInicial === citaText.versiculo){
-          if (citaText.hasOwnProperty('comprimido')){
+  async citaAlert(cita, idLibroCita, capituloC, verInicial) {
+    if (this.update) {
+      await this.bibliaService.getTextoFile(idLibroCita, capituloC).then((data) => {
+        // console.log(data);
+        this.arregloTextoCita = JSON.parse(data);
+        // console.log ("Texto cita" + this.arregloTextoCita);
+        // console.log(this.textoCita);
+        for (let citaText of this.arregloTextoCita) {
+          if (verInicial === citaText.versiculo) {
+            if (citaText.hasOwnProperty('comprimido')) {
+              this.textoCita = '';
+              for (let texto of citaText.comprimido) {
+                this.textoCita = this.textoCita + ' ' + texto.parteText;
+                if (texto.hasOwnProperty('parteFinal')) {
+                  this.textoCita = this.textoCita + ' ' + texto.parteFinal;
+                }
+              }
+            } else {
+              this.textoCita = citaText.texto;
+            }
+          }
+        }
+        this.mostrarCitaAlert(cita, this.textoCita, idLibroCita, capituloC);
+        // console.log(this.textoCita);
+        this.textoCita = '';
+      });
+    } else {
+      this.arregloTextoCita = await this.bibliaService.getTextoImport(idLibroCita, capituloC);
+      // console.log ("Texto cita" + this.arregloTextoCita);
+      // console.log(this.textoCita);
+      for (let citaText of this.arregloTextoCita) {
+        if (verInicial === citaText.versiculo) {
+          if (citaText.hasOwnProperty('comprimido')) {
             this.textoCita = '';
-            for (let texto of citaText.comprimido){
-              this.textoCita = this.textoCita + " " + texto.parteText;
-              if(texto.hasOwnProperty('parteFinal')){
-                this.textoCita = this.textoCita + " " + texto.parteFinal;
+            for (let texto of citaText.comprimido) {
+              this.textoCita = this.textoCita + ' ' + texto.parteText;
+              if (texto.hasOwnProperty('parteFinal')) {
+                this.textoCita = this.textoCita + ' ' + texto.parteFinal;
               }
             }
           } else {
@@ -408,10 +449,11 @@ organizarCitas(textoJson){
           }
         }
       }
-      this.mostrarCitaAlert(cita,this.textoCita,idLibroCita,capituloC);
-      //console.log(this.textoCita);
+      this.mostrarCitaAlert(cita, this.textoCita, idLibroCita, capituloC);
+      // console.log(this.textoCita);
       this.textoCita = '';
-    });
+    }
+
   }
   async mostrarCitaAlert(cita, textoVersiculo,idLibro, capituloC) {
     const alert = await this.alertController.create({
@@ -427,39 +469,58 @@ organizarCitas(textoJson){
                   }
                 }
               ],
-      mode: "ios"
+      mode: 'ios'
     });
     await alert.present();
   }
 
-  buscarVersiculo (idLibro,capitulo, versiculo){
-    this.bibliaService.getTexto(idLibro, capitulo).subscribe(data => {
-      //console.log(data);
-      this.dataTemp = data;
-      //console.log ("Texto cita" + this.arregloTextoCita);
-      for (let text of this.dataTemp){
-        if(versiculo === text.versiculo){
-          if (text.hasOwnProperty('comprimido')){
+  async buscarVersiculo(idLibro, capitulo, versiculo) {
+    if (this.update) {
+      await this.bibliaService.getTextoFile(idLibro, capitulo).then((data) => {
+        // console.log(data);
+        this.dataTemp = JSON.parse(data);
+        // console.log ("Texto cita" + this.arregloTextoCita);
+        for (let text of this.dataTemp) {
+          if (versiculo === text.versiculo) {
+            if (text.hasOwnProperty('comprimido')) {
+              this.textTemp = '';
+              for (let texto of text.comprimido){
+                this.textTemp = this.textTemp + ' ' + texto.parteText;
+                if (texto.hasOwnProperty('parteFinal')) {
+                  this.textTemp = this.textTemp + ' ' + texto.parteFinal;
+                }
+              }
+            } else {
+              this.textTemp = text.texto;
+            }
+          }
+        }
+      });
+    } else {
+      this.dataTemp = this.textoJsonFinal = await this.bibliaService.getTextoImport(idLibro, capitulo);
+      // console.log ("Texto cita" + this.arregloTextoCita);
+      for (let text of this.dataTemp) {
+        if (versiculo === text.versiculo) {
+          if (text.hasOwnProperty('comprimido')) {
             this.textTemp = '';
             for (let texto of text.comprimido){
-              this.textTemp = this.textTemp + " " + texto.parteText;
-              if(texto.hasOwnProperty('parteFinal')){
-                this.textTemp = this.textTemp + " " + texto.parteFinal;
+              this.textTemp = this.textTemp + ' ' + texto.parteText;
+              if (texto.hasOwnProperty('parteFinal')) {
+                this.textTemp = this.textTemp + ' ' + texto.parteFinal;
               }
             }
-            
           } else {
             this.textTemp = text.texto;
           }
         }
       }
-    });
+    }
   }
 
-  async seleccionarVersiculo(texto, idLibro, capitulo,versiculo) {
+  async seleccionarVersiculo(texto, idLibro, capitulo, versiculo) {
     await this.buscarVersiculo(idLibro, capitulo, versiculo);
     const actionSheet = await this.actionSheetController.create({
-      mode: "ios",
+      mode: 'ios',
       buttons: [{
           text: 'Copiar',
           role: 'destructive',
@@ -472,7 +533,7 @@ organizarCitas(textoJson){
           text: "Marcar versículo o Eliminar Marca",
           icon: 'heart',
           handler: () => {
-            //llamar funcion 
+            // llamar funcion 
             this.guardarMarcador(idLibro, capitulo, versiculo);
           }
         }
