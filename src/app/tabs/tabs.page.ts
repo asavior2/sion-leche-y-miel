@@ -77,7 +77,7 @@ export class TabsPage implements OnInit {
   }
 
   validarUpdate() {
-    return this.httpClient.get('https://raw.githubusercontent.com/asavior2/sion-leche-y-miel/master/ionic.config.json');
+    return this.httpClient.get('https://raw.githubusercontent.com/asavior2/sion-leche-y-miel/master/resources/checkUpdate.json');
   }
 
   async updateSLM() {
