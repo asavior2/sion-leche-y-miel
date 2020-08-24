@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {BibliaService} from '../services/biblia.service';
 import Libros from '../../assets/libros.json';
+import LibrosHebreo from '../../assets/librosHebreo.json';
 import { IonContent, AlertController} from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { HttpClient } from '@angular/common/http';
@@ -8,7 +9,7 @@ import { HTTP } from '@ionic-native/http/ngx';
 import { TabsPage } from "../tabs/tabs.page";
 import {DomSanitizer} from '@angular/platform-browser';
 import { ActionSheetController } from '@ionic/angular';
-import {AngularFirestore} from "@angular/fire/firestore"
+import {AngularFirestore} from "@angular/fire/firestore";
 import { Platform } from '@ionic/angular';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import {Zip} from '@ionic-native/zip/ngx';
@@ -64,6 +65,13 @@ export class Tab1Page implements OnInit {
   progrss: any="";
   stadoDir: boolean;
   public update: boolean;
+  librosTodos;
+  librosTodosHebreo;
+  tipoOrdenT: boolean;
+  tipoOrdenM: boolean;
+  tipoOrdenH: boolean;
+  tipoOrdenName;
+
 
   @ViewChild(IonContent) ionContent: IonContent;
   constructor(private bibliaService: BibliaService,
@@ -85,8 +93,19 @@ export class Tab1Page implements OnInit {
               }
 
   async ngOnInit() {
-   
-    
+    this.librosTodos = Libros;
+    this.librosTodosHebreo = LibrosHebreo;
+
+    await this.storage.get('ordenLibro').then((val) => {
+      if (val != null) {
+        this.tipoOrdenName = val;
+        this.tipoOrdenLibro(val);
+      } else {
+        this.tipoOrdenT = true;
+        this.tipoOrdenName = 'tradicional';
+      }
+      console.log(this.tipoOrdenName);
+    });
     // this.LibrosPrueba = this.getLibros();
     await this.storage.get('libro').then((val) => {
       // console.log(val);
@@ -127,7 +146,7 @@ export class Tab1Page implements OnInit {
       }
     });
 
-    //this.storage.remove('marcadorLibro');
+    // this.storage.remove('marcadorLibro');
     this.storage.get('marcadorLibro').then((val) => {
       if (val == null){
         this.marcadorLibro = [];
@@ -152,6 +171,7 @@ export class Tab1Page implements OnInit {
           this.segundoP.push({id: entry.id, capitulos: entry.capitulos, libro: this.getCleanedString(entry.libro), estado: 'listo'});
       }
     }
+    
 
     /*
     this.bibliaService.getUser().subscribe(datas => {
@@ -166,10 +186,68 @@ export class Tab1Page implements OnInit {
   } // ngOnInit
 
 
+  async filterListLibro(evt) {
+    if (evt === 'limpiar') {
+      if (this.tipoOrdenH) {
+      this.librosTodosHebreo = LibrosHebreo;
+      this.librosTodosHebreo = this.librosTodosHebreo.filter(currentLibro => {
+        if (currentLibro.libro) {
+          return (currentLibro.libro.length > 2);
+        }
+      });
+      } else {
+        this.librosTodos = Libros ;
+        this.librosTodos = this.librosTodos.filter(currentLibro => {
+          if (currentLibro.libro) {
+            return (currentLibro.libro.length > 2);
+          }
+        });
+      }
+    }
+    const searchTerm = evt.srcElement.value;
+    if (!searchTerm) {
+      return;
+    }
+    
+    if (this.tipoOrdenH) {
+      console.log('Dentro de tipo OrdenH' + this.tipoOrdenH);
+      this.librosTodosHebreo = LibrosHebreo;
+      this.librosTodosHebreo = this.librosTodosHebreo.filter(currentLibro => {
+        if (currentLibro.libro && searchTerm) {
+          return (this.getCleanedString(currentLibro.libro).toLowerCase().indexOf(this.getCleanedString(searchTerm).toLowerCase()) > -1);
+        }
+      });
+    } else {
+      this.librosTodos = Libros ;
+      this.librosTodos = this.librosTodos.filter(currentLibro => {
+        if (currentLibro.libro && searchTerm) {
+          return (this.getCleanedString(currentLibro.libro).toLowerCase().indexOf(this.getCleanedString(searchTerm).toLowerCase()) > -1);
+        }
+      });
+    }
 
-  getLibros() {
-    return this.httpClient.get('assets/libros.json');
   }
+
+  tipoOrdenLibro(libro: string) {
+    // console.log(libro);
+    if (libro === 'tradicional') {
+      this.tipoOrdenT = true;
+      this.tipoOrdenM = false;
+      this.tipoOrdenH = false;
+      this.storage.set('ordenLibro', 'tradicional');
+    } else if (libro === 'moderno') {
+      this.tipoOrdenT = false;
+      this.tipoOrdenM = true;
+      this.tipoOrdenH = false;
+      this.storage.set('ordenLibro', 'moderno');
+    } else {
+      this.tipoOrdenT = false;
+      this.tipoOrdenM = false;
+      this.tipoOrdenH = true;
+      this.storage.set('ordenLibro', 'hebreo');
+    }
+  }
+
   // -----------------------------------------------------------------------------------------------------------
   // Para eliminar acentos de los libro y poder crear metodos automatico
   getCleanedString(cadena) {
@@ -188,7 +266,7 @@ export class Tab1Page implements OnInit {
  getcapitulos(libro) {
     this.cantCapitulo = [];
     for (const entry of Libros) {
-      if (entry.id == libro) {
+      if (entry.id === libro) {
         for (let _i = 0; _i < +entry.capitulos; _i++) {
           this.cantCapitulo.push(_i + 1);
         }
@@ -198,7 +276,7 @@ export class Tab1Page implements OnInit {
   }
 
   mostrarLibrosMetodo() {
-    if (this.mostrarLibros === this.mostrarTexto){
+    if (this.mostrarLibros === this.mostrarTexto) {
       this.mostrarCapitulos = false;
       this.mostrarTexto = true;
       this.mostrarLibros = false;
@@ -209,7 +287,7 @@ export class Tab1Page implements OnInit {
 
   mostrarCapitulosMetodo(libro, capitulo) {
     for (let entry of Libros) {
-      if (libro == entry.id) {
+      if (libro === entry.id) {
         this.librot = entry.libro;
       }
     }
@@ -217,16 +295,17 @@ export class Tab1Page implements OnInit {
     this.mostrarTexto = false;
     this.mostrarLibros = false;
     this.getcapitulos(libro);
-    if (this.mostrarCapitulos === true){
+    if (this.mostrarCapitulos === true) {
       this.mostrarTexto = !this.mostrarTexto ;
     }
     this.mostrarCapitulos = !this.mostrarCapitulos;
     // console.log (libro);
     // console.log (capitulo);
   }
-  actualizarLibroTitulo(libro){
+
+  actualizarLibroTitulo(libro) {
     for (let entry of Libros) {
-      if (libro == entry.id) {
+      if (libro === entry.id) {
         this.librot = entry.libro;
       }
     }
@@ -241,7 +320,7 @@ export class Tab1Page implements OnInit {
       if (val == null){
         this.marcador = [];
       }else {
-        //console.log("marcador "+val);
+        // console.log("marcador "+val);
         this.marcador = val;
       }
     });

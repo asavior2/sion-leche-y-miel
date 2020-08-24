@@ -25,33 +25,111 @@
 </ion-header>
 
 <ion-content>
+  
+  <div *ngIf="mostrarLibros" align="center">
+
+    <ion-toolbar>
+      <ion-segment [(ngModel)]="tipoOrdenName">
+        <ion-segment-button value="tradicional" (click)="tipoOrdenLibro('tradicional')">
+          Tradicional
+        </ion-segment-button>
+        <ion-segment-button value="moderno" (click)="tipoOrdenLibro('moderno')">
+          Moderno
+        </ion-segment-button>
+        <ion-segment-button value="hebreo" (click)="tipoOrdenLibro('hebreo')">
+          Hebreo
+        </ion-segment-button>
+      </ion-segment>
+    </ion-toolbar>
+    
+    <div *ngIf="tipoOrdenT">                                                                               <!--Vista Tradicional-->
+      <ion-item>
+        <ion-icon name="ios-search" ></ion-icon>
+        <ion-input   
+          show-cancel-button="always"
+          (ionBlur)="filterListLibro('limpiar')"
+          clear-on-edit=true
+          placeholder="Buscar libro"
+          type="text" 
+          (ionInput)="filterListLibro($event)"
+        ></ion-input >
+      </ion-item>
+      
+      <ion-list>
+        <ion-item button *ngFor="let primerpacto of librosTodos" 
+        (click)="mostrarCapitulosMetodo(primerpacto.id, primerpacto.capitulos)">
+            {{ primerpacto.libro }}
+            <ion-label></ion-label>
+            <ion-chip  color="primary" mode="ios" outline=true >
+              <ion-label>{{primerpacto.capitulos}}</ion-label>
+            </ion-chip> 
+        </ion-item>
+      </ion-list>          
+    </div>  
+
+    <div *ngIf="tipoOrdenM">    
+      <br>                                                                                               <!--Vista Moderna-->
+      <font COLOR="black" SIZE="3" face="Segoe UI" padding > PRIMER PACTO</font> <br>
+      <!--<ion-button expand="full"   fill="outline" 
+        *ngFor="let primerpacto of primerP" 
+        (click)=" mostrarCapitulosMetodo(primerpacto.id, primerpacto.capitulos)"
+        border-radius>
+            {{ primerpacto.libro }}
+      </ion-button> --> 
+      
+      <ion-button  ion-button  shape="round" size="small" color="dark"  fill="outline"
+        *ngFor="let primerpacto of primerP" 
+        (click)=" mostrarCapitulosMetodo(primerpacto.id, primerpacto.capitulos)"
+        border-radius>
+            {{ primerpacto.libro }}
+      </ion-button>
+      <br> <br>          
+      <font COLOR="black" SIZE="3" face="Segoe UI" > SEGUNDO PACTO</font> <br><br> 
+
+      <ion-button ion-button clear shape="round" size="small" color="dark" fill="outline"
+        *ngFor="let segundopacto of segundoP" 
+        (click)="mostrarCapitulosMetodo(segundopacto.id, segundopacto.capitulos)">   
+            {{ segundopacto.libro }} 
+      </ion-button>  
+    </div>
+
+    <div *ngIf="tipoOrdenH">                                                                               <!--Vista Tradicional-->
+      <ion-item>
+        <ion-icon name="ios-search" ></ion-icon>
+        <ion-input   
+          placeholder="Buscar libro"
+          type="text" 
+          clear-on-edit=true
+          (ionBlur)="filterListLibro('limpiar')"
+          (ionInput)="filterListLibro($event)"
+        ></ion-input >
+      </ion-item>
+      
+      <ion-list>
+        <div *ngFor="let primerpacto of librosTodosHebreo">
+          <div [innerHTML]="primerpacto.seccion"></div>
+          <ion-item button  
+          (click)="mostrarCapitulosMetodo(primerpacto.id, primerpacto.capitulos)">
+            {{ primerpacto.libro }}
+            <ion-label></ion-label>
+            <ion-chip  color="primary" mode="ios" outline=true >
+              <ion-label>{{primerpacto.capitulos}}</ion-label>
+            </ion-chip> 
+          </ion-item>
+        </div>
+
+      </ion-list>          
+    </div> 
+          
+
+  </div>
+
+
   <ion-grid >
     <ion-row >
       <ion-col col-0 col-sm-0 col-md-1 col-lg-3 col-xl-3 ></ion-col>
       <ion-col col-12 col-sm-12 col-md-10 col-lg-6 col-xl-6 ></ion-col>
-      <div *ngIf="mostrarLibros" align="center">
-        <font COLOR="black" SIZE="3" face="Segoe UI" padding > PRIMER PACTO</font> <br>
-          <!--<ion-button expand="full"   fill="outline" 
-            *ngFor="let primerpacto of primerP" 
-            (click)=" mostrarCapitulosMetodo(primerpacto.id, primerpacto.capitulos)"
-            border-radius>
-                {{ primerpacto.libro }}
-          </ion-button> --> 
-          <ion-button  ion-button  shape="round" size="small" color="dark"  fill="outline"
-          *ngFor="let primerpacto of primerP" 
-          (click)=" mostrarCapitulosMetodo(primerpacto.id, primerpacto.capitulos)"
-          border-radius>
-              {{ primerpacto.libro }}
-        </ion-button>
-          <br> <br>          
-          <font COLOR="black" SIZE="3" face="Segoe UI" > SEGUNDO PACTO</font> <br><br> 
-          <ion-button ion-button clear shape="round" size="small" color="dark" fill="outline"
-            *ngFor="let segundopacto of segundoP" 
-            (click)="mostrarCapitulosMetodo(segundopacto.id, segundopacto.capitulos)">   
-                {{ segundopacto.libro }} 
-          </ion-button>       
-      </div>
-
+      
       <!-- Mostrar los capitulos de cada libro  #elementGénesis-->
       <div *ngIf="mostrarCapitulos" align="center">
             <ion-button ion-button shape="round" size="default" color="dark" fill="outline" slot="start"

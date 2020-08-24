@@ -90,8 +90,6 @@ export class TabsPage implements OnInit {
           this.url = data[entry];
         } else if (entry === 'version') {
           this.version = data[entry];
-        } else {
-          this.hash = data[entry];
         }
       }
       console.log('version: ' + this.version + ' update' + this.update);
