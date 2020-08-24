@@ -4,7 +4,8 @@ import { Storage } from '@ionic/storage';
 import { HttpClient } from '@angular/common/http';
 import {FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { LoadingController } from '@ionic/angular';
-
+import Libros from '../../assets/libros.json';
+import SLM from '../../assets/SLM.json';
 
 @Component({
   selector: 'app-tab2',
@@ -54,36 +55,26 @@ export class Tab2Page {
         this.fontSize = val;
       }
     });
-    // console.log(this.name);
-    this.bibliaService.getLibros().subscribe(data => {
-       this.libros = data;
-       // console.log('libro' + this.libros);
-    });
 
-    this.getTextoBiblia().subscribe(data => {
-      this.textoJson = data;
-      // console.log ('textoJson es de tipo: ', typeof(this.textoJson));
-      // console.log('TextoJson', this.textoJson);
-    });
-    //this.storage.set('biblia2', this.textoJson);
 
-  }
+
+  } // Constructor
 
 
 
   // Evento del boton
   getItems() {
-    if (this.contVersiculos != 0){
-      this.buferVersiculos+=100;
+    if (this.contVersiculos !== 0) {
+      this.buferVersiculos += 100;
       this.contVersiculos = 0;
-      if (this.palabra != this.concordanciaForm.value.palablaBuscar ){
+      if (this.palabra !== this.concordanciaForm.value.palablaBuscar ) {
         this.buferVersiculos = 99;
       }
     }
-    this.palabra = this.concordanciaForm.value.palablaBuscar;
+    this.palabra = this.getCleanedString(this.concordanciaForm.value.palablaBuscar);
     if (this.palabra.length > 3) {
       this.versiculos = [];
-      for (let entry of this.textoJson) {
+      for (let entry of JSON.parse(JSON.stringify(SLM))) {
         var re = new RegExp(this.palabra, 'i');
         // this.getCleanedString(entry.texto);
         this.posicionPalabra = this.getCleanedString(entry.texto).search(re);
@@ -110,11 +101,7 @@ export class Tab2Page {
   }
 
 
-
-  getTextoBiblia() {
-    return this.http.get('assets/SLM.json');
-  }
-  getCleanedString(cadena){
+  getCleanedString(cadena) {
     cadena = cadena.replace(/á/gi,"a");
     cadena = cadena.replace(/Éxodo/gi,"Exodo");
     cadena = cadena.replace(/é/gi,"e");
@@ -124,8 +111,8 @@ export class Tab2Page {
     return cadena;
   }
   getlibroId(id){
-    for (let entry of this.libros) {
-      if (id == entry.id){
+    for (let entry of Libros) {
+      if (id === entry.id) {
         return(entry.libro);
       }
     }

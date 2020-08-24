@@ -8,8 +8,7 @@ import { from, Observable } from 'rxjs';
 import { defer } from 'rxjs';
 import { of } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import * as Libros from '../../assets/libros.json';
-import * as genesis from '../../assets/libros/1/1-1.json';
+
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +24,6 @@ export class BibliaService {
               private httpClient: HttpClient,
               private db: AngularFirestore,
               public file: File) {
-                console.log(Libros);
                 //this.genesis = require('../../assets/libros/1/1-2.json');
                 //  console.log(this.genesis);
               }
