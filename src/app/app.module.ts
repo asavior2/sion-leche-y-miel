@@ -31,6 +31,8 @@ import { Httpd, HttpdOptions } from '@ionic-native/httpd/ngx';
 import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer/ngx';
 
 
+
+
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],

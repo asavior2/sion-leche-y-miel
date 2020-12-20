@@ -39,12 +39,10 @@ mkdir ~/.npm-global
 Configure npm para usar la nueva ruta del directorio:
 
 npm config set prefix '~/.npm-global'
-Abra o cree un archivo ~ / .profile y agregue esta línea:
-~/.bash_profile
-
+Abra o cree un archivo ~ / .profile  o ~/.bash_profile o ~/.zshrc y  agregue esta línea:
 export PATH=~/.npm-global/bin:$PATH
-De vuelta en la línea de comandos, actualice las variables de su sistema:
 
+De vuelta en la línea de comandos, actualice las variables de su sistema:
 source ~/.profile
 source ~/.bash_profile
 

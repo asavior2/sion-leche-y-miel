@@ -201,6 +201,13 @@ export class TabsPage implements OnInit {
             handler: () => {
               this.router.navigate(['/tabs/tab4']);
             }
+          },
+          {
+            text: 'Contacto',
+            icon: 'ios-contact',
+            handler: () => {
+              this.router.navigate(['/tabs/tab3']);
+            }
           }/*,
           {
             text: 'Contacto',

@@ -1,0 +1,4 @@
+[
+    {"dia":"1","statusDia":false,"detalles":[{"libro":"5","capitulo":"9","versiculo":"10","status":false},{"libro":"19","capitulo":"51","versiculo":"10","status":false},{"libro":"19","capitulo":"119","versiculo":"11","status":false},{"libro":"40","capitulo":"5","versiculo":"20","status":false},{"libro":"55","capitulo":"1","versiculo":"6","status":false}]},
+    {"dia":"2","statusDia":false,"detalles":[{"libro":"40","capitulo":"23","versiculo":"15","status":false},{"libro":"55","capitulo":"4","versiculo":"14","status":false},{"libro":"64","capitulo":"1","versiculo":"9","versiculoFinal":"12","status":false},{"libro":"47","capitulo":"3","versiculo":"2","versiculoFinal":"3","status":false}]}
+]

@@ -60,12 +60,21 @@ const routes: Routes = [
         ]
       },
       {
+        path: 'plan-lectura',
+        children: [
+          {
+            path: '',
+            /*loadChildren: '../tab3/tab3.module#Tab3PageModule',*/
+            loadChildren: '../plan-lectura/plan-lectura.module#PlanLecturaPageModule', // este es paraplan de lectura
+            canActivate: [NologinGuard]
+          }
+        ]
+      },{
         path: 'tab3',
         children: [
           {
             path: '',
-            loadChildren: '../tab3/tab3.module#Tab3PageModule',
-            /*loadChildren: '../plan-lectura/plan-lectura.module#PlanLecturaPageModule', este es paraplan de lectura*/
+            loadChildren: '../tab3/tab3.module#Tab3PageModule', // Este es para el contacto
             canActivate: [NologinGuard]
           }
         ]

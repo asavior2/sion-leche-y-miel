@@ -1,0 +1,6 @@
+[
+    {"dia":"1","statusDia":false,"detalles":[{"libro":"2","capitulo":"29","versiculo":"4","status":false},{"libro":"2","capitulo":"29","versiculo":"7","status":false},{"libro":"2","capitulo":"29","versiculo":"11","status":false},{"libro":"3","capitulo":"15","versiculo":"10","versiculoFinal":"21","status":false},{"libro":"5","capitulo":"23","versiculo":"11","status":false}]},
+    {"dia":"2","statusDia":false,"detalles":[{"libro":"14","capitulo":"4","versiculo":"6","status":false},{"libro":"16","capitulo":"12","versiculo":"30","status":false},{"libro":"40","capitulo":"3","versiculo":"11","status":false},{"libro":"42","capitulo":"12","versiculo":"49","versiculoFinal":"50","status":false},{"libro":"44","capitulo":"1","versiculo":"5","status":false}]},
+    {"dia":"3","statusDia":false,"detalles":[{"libro":"44","capitulo":"10","status":false}]},
+    {"dia":"4","statusDia":false,"detalles":[{"libro":"44","capitulo":"19","status":false}]}
+]

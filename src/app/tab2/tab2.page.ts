@@ -57,7 +57,6 @@ export class Tab2Page {
     });
 
 
-
   } // Constructor
 
 

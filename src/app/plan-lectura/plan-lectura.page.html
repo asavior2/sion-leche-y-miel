@@ -1,9 +1,80 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Plan de Lectura</ion-title>
+    <div align="center">
+      <font COLOR="black" SIZE="4" face="Segoe UI">
+          <ion-title >Planes de Lectura</ion-title>
+      </font>
+    </div>  
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content padding-top>
+  <ion-toolbar>
+    <ion-segment [(ngModel)]="tipoOrdenName">
+      <ion-segment-button value="miPlanes" (click)="tipoOrdenLibro('miPlanes')">
+        Mis planes
+      </ion-segment-button>
+      <ion-segment-button value="bucarPlanes" (click)="tipoOrdenLibro('bucarPlanes')">
+        Buscar planes
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+  
+  <div *ngIf="tipoOrdenBuscarPlan">                                                                               <!--Vista Tradicional-->
+    <ion-item>
+      <ion-icon name="ios-search" ></ion-icon>
+      <ion-input   
+        show-cancel-button="always"
+        (ionBlur)="filterListPlan('limpiar')"
+        clear-on-edit=true
+        placeholder="Buscar libro"
+        type="text" 
+        (ionInput)="filterListPlan($event)"
+      ></ion-input >
+    </ion-item>
+  
+    <ion-list>
+      <ion-item *ngFor="let plan of planes" (click)="pushPlanDetalleNav(plan.nombre)" ion-no-padding> 
+        <ion-thumbnail slot="start">
+          <img src="{{plan.imagen}}">
+        </ion-thumbnail>
+        <ion-label>
+          <h2>{{plan.titulo}}</h2>
+          <p>{{plan.descripcion}}</p>
+        </ion-label>
+      </ion-item >
+    </ion-list>          
+  </div>  
+
+  <div *ngIf="tipoOrdenMiPlan">                                                                               <!--Vista Tradicional-->
+    <!--
+    <ion-item>
+      <ion-icon name="ios-search" ></ion-icon>
+       <ion-input   
+        show-cancel-button="always"
+        (ionBlur)="filterListPlan('limpiar')"
+        clear-on-edit=true
+        placeholder="Buscar libro"
+        type="text" 
+        (ionInput)="filterListPlan($event)"
+      ></ion-input >
+    </ion-item>
+    -->
+    <ion-list>
+      <ion-item *ngFor="let plan of planesActivos" (click)="pushPlanDetalleNav(plan.nombre)" ion-no-padding> 
+        <ion-thumbnail slot="start">
+          <img src="{{plan.imagen}}">
+        </ion-thumbnail>
+        <ion-label>
+          <h2>{{plan.titulo}}</h2>
+          <p>{{plan.descripcion}}
+            <ion-progress-bar value="{{plan.progreso}}"></ion-progress-bar>
+          </p>
+        </ion-label>
+      </ion-item >
+    </ion-list>          
+  </div>  
+
+
 
 </ion-content>
