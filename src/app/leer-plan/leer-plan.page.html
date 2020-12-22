@@ -1,27 +1,25 @@
 <ion-header>
   <!-- Allow everything but only from the same origin and foo.com -->
   <ion-toolbar>
-    <ion-buttons slot="start">
+    <ion-buttons small slot="start">
       <ion-back-button defauldHref="/"></ion-back-button>
     </ion-buttons>
     <div align="center">      
       
-        <!-- Boton de los libros-->
-        <ion-button clear small size ="small" fill="clear" color="light" >
-            <font COLOR="black" size="3" face="Segoe UI">   (SLM)&nbsp; </font>
-            <font COLOR="black" SIZE="4" face="Segoe UI"> {{librot}} </font>
-        </ion-button>  
-        <ion-button color="light" clear small  fill="clear">
-          <font COLOR="black" SIZE="4" face="Segoe UI"> {{capitulo}}</font>  
-        </ion-button>   
-          
+      <ion-button clear small (click) = "mostrarLibrosMetodo()" 
+      size ="small" fill="clear" color="dark" >
+      <strong> <h6> {{librot}}</h6> </strong>
+      </ion-button>  
+      <ion-button color="dark" clear small  fill="clear" (click)="mostrarCapitulosMetodo(libro)">
+        <strong> <h6>{{capitulo}} </h6> </strong>
+      </ion-button> 
+      <ion-button color="dark" clear small  fill="clear" (click)="aumentarSize()" size="small">
+        <strong> <h6>A+</h6></strong>  
+      </ion-button>
+      <ion-button color="dark" clear small  fill="clear" (click)="disminuirSize()" size="small">
+        <strong><h6>a-</h6></strong>  
+      </ion-button>   
       
-       <ion-button color="light" clear small  fill="clear" (click)="aumentarSize()" size="small">
-          <strong> <font COLOR="black" SIZE="3" face="Segoe UI">A+</font></strong>  
-        </ion-button>
-        <ion-button color="light" clear small  fill="clear" (click)="disminuirSize()" size="small">
-          <strong><font COLOR="black" SIZE="3" face="Segoe UI">a-</font></strong>  
-        </ion-button>   
     </div>
   </ion-toolbar>
 </ion-header>

@@ -25,6 +25,8 @@ export class TabsPage implements OnInit {
   version;
   url;
   hash;
+  darkMode: boolean = true;
+  estadoDark;
 
   constructor(private router: Router,
               public authservice: AuthService,
@@ -35,6 +37,8 @@ export class TabsPage implements OnInit {
               private httpClient: HttpClient,
               public alertController: AlertController,
               public actionSheetController: ActionSheetController) {
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+                this.darkMode = prefersDark.matches;
       
     }
     
@@ -59,7 +63,11 @@ export class TabsPage implements OnInit {
         }
       });
 
-      
+      if (this.darkMode){
+        this.estadoDark = 'Desactivar ';
+      } else {
+        this.estadoDark = 'Activar ';
+      }
 
 
     }
@@ -174,6 +182,16 @@ export class TabsPage implements OnInit {
     await alert.present();
 }
 
+  changeDark() {
+    this.darkMode = !this.darkMode;
+    document.body.classList.toggle('dark');
+    if (this.darkMode){
+      this.estadoDark = 'Desactivar ';
+    } else {
+      this.estadoDark = 'Activar ';
+    }
+  }
+
   async presentActionSheet() {
     if (this.router.url != '/tabs/login') {
       const actionSheet = await this.actionSheetController.create({
@@ -207,6 +225,13 @@ export class TabsPage implements OnInit {
             icon: 'ios-contact',
             handler: () => {
               this.router.navigate(['/tabs/tab3']);
+            }
+          },
+          {
+            text: this.estadoDark + ' modo nocturno',
+            icon: 'moon',
+            handler: () => {
+              this.changeDark();
             }
           }/*,
           {

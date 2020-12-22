@@ -1,30 +1,38 @@
-<ion-header>
+<ion-header >
   <!-- Allow everything but only from the same origin and foo.com -->
   <ion-toolbar>
-    <div align="center">      
-      
+    <div align="center"> 
         <!-- Boton de los libros-->
         <ion-button clear small (click) = "mostrarLibrosMetodo()" 
-           size ="small" fill="clear" color="light" >
-            <font COLOR="black" size="3" face="Segoe UI">   (SLM)&nbsp; </font>
-            <font COLOR="black" SIZE="4" face="Segoe UI"> {{librot}} </font>
+           size ="small" fill="clear" color="dark" >
+           <strong> <h6> (SLM)&nbsp;{{librot}}</h6> </strong>
         </ion-button>  
-        <ion-button color="light" clear small  fill="clear" (click)="mostrarCapitulosMetodo(libro)">
-          <font COLOR="black" SIZE="4" face="Segoe UI"> {{capitulo}}</font>  
-        </ion-button>   
-          
-      
-       <ion-button color="light" clear small  fill="clear" (click)="aumentarSize()" size="small">
-          <strong> <font COLOR="black" SIZE="3" face="Segoe UI">A+</font></strong>  
+        <ion-button color="dark" clear small  fill="clear" (click)="mostrarCapitulosMetodo(libro)">
+          <strong> <h6>{{capitulo}} </h6> </strong>
+        </ion-button> 
+        <ion-button color="dark" clear small  fill="clear" (click)="aumentarSize()" size="small">
+          <strong> <h6>A+</h6></strong>  
         </ion-button>
-        <ion-button color="light" clear small  fill="clear" (click)="disminuirSize()" size="small">
-          <strong><font COLOR="black" SIZE="3" face="Segoe UI">a-</font></strong>  
-        </ion-button>   
+        <ion-button color="dark" clear small  fill="clear" (click)="disminuirSize()" size="small">
+          <strong><h6>a-</h6></strong>  
+        </ion-button> 
     </div>
+
+    <!-- 
+    <ion-list>
+      <ion-item>
+        <ion-icon slot="start" name="moon"></ion-icon>
+        <ion-label>Toogle Dark Mode</ion-label>
+        <ion-toggle slot="end" [ngModel]="darkMode" (ionChange)="change()"></ion-toggle>
+      </ion-item>
+    </ion-list> 
+    -->
+
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content [fullscreen]="true" class="body">
+  
   
   <div *ngIf="mostrarLibros" align="center">
 

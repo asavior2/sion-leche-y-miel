@@ -73,6 +73,7 @@ export class Tab1Page implements OnInit {
   tipoOrdenName;
 
 
+
   @ViewChild(IonContent) ionContent: IonContent;
   constructor(private bibliaService: BibliaService,
               public actionSheetController: ActionSheetController,
@@ -90,6 +91,9 @@ export class Tab1Page implements OnInit {
                 this.tabs.validaUri();
                 //this.guardarMarcador();
                 this.platform.backButton.observers.pop();
+
+                
+
               }
 
   async ngOnInit() {
@@ -185,6 +189,9 @@ export class Tab1Page implements OnInit {
     // console.log(this.segundoP);
   } // ngOnInit
 
+
+   // funcion para cambiar el modo desde el toggle modo dark
+   
 
   async filterListLibro(evt) {
     if (evt === 'limpiar') {
