@@ -1,8 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { TabsPage } from './tabs.page';
-import {AuthGuard} from '../guards/auth.guard';
-import {NologinGuard} from '../guards/nologin.guard';
+
 
 const routes: Routes = [
   {
@@ -35,7 +34,7 @@ const routes: Routes = [
           {
             path: '',
             loadChildren: '../tab1/tab1.module#Tab1PageModule',
-            canActivate: [NologinGuard]
+            canActivate: []
           }
         ]
       },
@@ -45,7 +44,7 @@ const routes: Routes = [
           {
             path: '',
             loadChildren: '../tab2/tab2.module#Tab2PageModule',
-            canActivate: [NologinGuard]
+            canActivate: []
           }
         ]
       },
@@ -55,7 +54,7 @@ const routes: Routes = [
           {
             path: '',
             loadChildren: '../tab3/tab3.module#Tab3PageModule',
-            canActivate: [NologinGuard]
+            canActivate: []
           }
         ]
       },
@@ -66,7 +65,7 @@ const routes: Routes = [
             path: '',
             /*loadChildren: '../tab3/tab3.module#Tab3PageModule',*/
             loadChildren: '../plan-lectura/plan-lectura.module#PlanLecturaPageModule', // este es paraplan de lectura
-            canActivate: [NologinGuard]
+            canActivate: []
           }
         ]
       },{
@@ -75,7 +74,7 @@ const routes: Routes = [
           {
             path: '',
             loadChildren: '../tab3/tab3.module#Tab3PageModule', // Este es para el contacto
-            canActivate: [NologinGuard]
+            canActivate: []
           }
         ]
       },
@@ -85,7 +84,7 @@ const routes: Routes = [
           {
             path: '',
             loadChildren: '../sobre/sobre.module#SobrePageModule',
-            canActivate: [NologinGuard]
+            canActivate: []
           }
         ]
       },
@@ -100,7 +99,7 @@ const routes: Routes = [
     path: '',
     redirectTo: '/tabs/tab1',
     pathMatch: 'full',
-    canActivate: [NologinGuard]
+    canActivate: []
   }
 ];
 /*

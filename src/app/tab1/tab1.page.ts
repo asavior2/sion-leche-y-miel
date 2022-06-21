@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, ElementRef } from '@angular/core';
 import {BibliaService} from '../services/biblia.service';
 import Libros from '../../assets/libros.json';
 import LibrosHebreo from '../../assets/librosHebreo.json';
@@ -9,13 +9,17 @@ import { HTTP } from '@ionic-native/http/ngx';
 import { TabsPage } from "../tabs/tabs.page";
 import {DomSanitizer} from '@angular/platform-browser';
 import { ActionSheetController } from '@ionic/angular';
-import {AngularFirestore} from "@angular/fire/firestore";
 import { Platform } from '@ionic/angular';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import {Zip} from '@ionic-native/zip/ngx';
 import {File} from '@ionic-native/file/ngx';
 import { from, Observable } from 'rxjs';
 import { async } from '@angular/core/testing';
+import { Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
+
 
 @Component({
   selector: 'app-tab1',
@@ -71,7 +75,12 @@ export class Tab1Page implements OnInit {
   tipoOrdenM: boolean;
   tipoOrdenH: boolean;
   tipoOrdenName;
-
+  private fragment: string;
+  private sub: Subscription;
+  audio:string;
+  private win: any = window;
+  tiempoAudio;
+  colorVar = "blue"
 
 
   @ViewChild(IonContent) ionContent: IonContent;
@@ -83,20 +92,29 @@ export class Tab1Page implements OnInit {
               private sanitizer: DomSanitizer,
               public alertController: AlertController,
               private platform: Platform,
-              private db: AngularFirestore,
               private clipboard: Clipboard,
               private zip:Zip,
               public file:File,
-              public tabs: TabsPage) {
+              public router:Router,
+              private activeRoute: ActivatedRoute,
+              public tabs: TabsPage,
+              private elementRef:ElementRef) {
+
                 this.tabs.validaUri();
                 //this.guardarMarcador();
                 this.platform.backButton.observers.pop();
-
+                
+                //this.sub = activeRoute.fragment.pipe(filter(f => !!f)).subscribe(f => document.getElementById(f).scrollIntoView());
                 
 
               }
 
+       
   async ngOnInit() {
+   
+    //this.activeRoute.fragment.subscribe(fragment => { this.fragment = fragment; });
+  
+
     this.librosTodos = Libros;
     this.librosTodosHebreo = LibrosHebreo;
 
@@ -189,7 +207,66 @@ export class Tab1Page implements OnInit {
     // console.log(this.segundoP);
   } // ngOnInit
 
+  botonclick(link){
+    //this.router.navigate(["/tabs/tab1",'#parte1']);
+    let n = "10"
+    this.router.navigate( ['/tabs/tab1'], {fragment: n});
+  }
 
+  async playAudio(){
+    //Validar si el audio existe con readAsText
+    const el = document.getElementById('.l1');
+    //el.style.setProperty('--background', '#ff001e');
+    //el.style.color= 'blue';
+
+    this.tiempoAudio = this.bibliaService.getTextoAudio(this.libro, this.capitulo);
+    console.log(this.tiempoAudio)
+    let tiempo
+    let n = ""
+    this.audio = "assets/audios/2/1.mp3"
+    let audio = new Audio();
+    audio.src = this.audio;
+    audio.load();
+    audio.play();
+
+    console.log(this.tiempoAudio)
+      if (this.tiempoAudio != null){
+        for (const entry  of this.tiempoAudio){
+          //const el = document.querySelector('.l1');
+          //el.style.setProperty('--background', '#36454f');
+          //document.body.style.setProperty('--my-var', this.colorVar);
+          //this.elementRef.nativeElement.style.setProperty('--my-var', 'red'); 
+          this.setStyle('red');
+          tiempo = entry.seg*1000
+          this.router.navigate( ['/tabs/tab1'], {fragment: entry.versiculo});
+          await this.delay(tiempo);
+          
+        }
+      }
+  }
+
+
+  ngAfterViewInit(): void {
+
+    let interval = setInterval(()=> {
+      console.log("Hola")
+      this.sub = this.activeRoute.fragment.pipe(filter(f => !!f)).subscribe(f => document.getElementById(f).scrollIntoView());
+
+        let elem = document.getElementById(this.fragment);
+        if(elem) {
+            elem.scrollIntoView();
+            clearInterval(interval);
+        }
+      
+    }, 1000);  
+  }
+
+  setStyle(value: string): void {
+    this.elementRef.nativeElement.style.setProperty('--my-var', value); 
+  }
+  delay(ms: number) {
+    return new Promise( resolve => setTimeout(resolve, ms) );
+  }
    // funcion para cambiar el modo desde el toggle modo dark
    
 
@@ -292,7 +369,7 @@ export class Tab1Page implements OnInit {
     this.mostrarTexto = !this.mostrarTexto;
   }
 
-  mostrarCapitulosMetodo(libro, capitulo) {
+  mostrarCapitulosMetodo(libro) {
     for (let entry of Libros) {
       if (libro === entry.id) {
         this.librot = entry.libro;
@@ -483,7 +560,7 @@ organizarCitas(textoJson){
       this.textoJsonFinal.push(text);
     }
   }
-  //console.log(this.textoJsonFinal);
+  console.log(this.textoJsonFinal);
 
 
 }

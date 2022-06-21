@@ -11,106 +11,116 @@
 </ion-header>
 
 <ion-content fullscreen>
-  <ion-img src="{{this.imagen}}"></ion-img>
-  
-    <ion-slides pager="false" [options]="slideOpts" >
-      
-        <ion-slide *ngFor="let dia of planOfStora"  
-                    (click)="obtenerLibroCapitulos(dia.dia, dia.libro, dia.detalles)"
-                    [ngClass]="{'bordeSlide' : statusSlide(dia.dia),
-                                'slide' : false}"  class="ion-text-center">
-          
-              <ion-item lines="none" *ngIf="!statusBadge(dia.dia)" class="ion-text-center">
-                <ion-label >
-                  {{ dia.dia }}
-                  <sup>  
-                    <ion-icon class="ion-text-end" *ngIf="dia.statusDia" ios="ios-checkmark" md="md-checkmark" ></ion-icon>
-                  </sup>
-                </ion-label>
-              </ion-item>
-              <div  *ngIf="statusBadge(dia.dia)">
-              <ion-label  class="ion-text-center">
-                {{ dia.dia }}
-                <sup>  
-                  <ion-icon class="ion-text-end" *ngIf="dia.statusDia" ios="ios-checkmark" md="md-checkmark" ></ion-icon>
-                </sup> <br>
-                <ion-badge color="primary" mode="ios" >
-                  {{this.dd}}{{this.mmS}}
-                </ion-badge> 
-              </ion-label>
-              </div>
-                
+
+  <ion-grid  class="ion-no-padding">
+    <ion-row  class="ion-no-padding">
+      <ion-col size-md="2"  size-lg="3" >     </ion-col>
+      <ion-col  size-xs="12"  size-md="8"  size-lg="6">
+
             
-        </ion-slide>
-    </ion-slides>
-
-    <ion-item color="light" lines="none" class="ion-text-right" *ngIf="!this.verDiaAtraso" class="itemPersonalizado">
+      <ion-img src="{{this.imagen}}"></ion-img>
       
-      <ion-label class="ion-text-right" *ngIf="!this.btnIniciarPlan">
-        <FONT size="2" class="ion-text-right">Felicidades estas al dia.  </FONT>
-        
-      </ion-label>
-    </ion-item >
-    <ion-item color="light" lines="none" *ngIf="this.verDiaAtraso" class="itemPersonalizado">
-      <ion-label  >
-        <FONT size="2" slot="end">
-          DIA {{this.diaLecturaV}} de {{this.diaFinPlan}}
-        </FONT>
-      </ion-label>
-
-        <ion-badge slot="end"  color="undefined">
+        <ion-slides pager="false" [options]="slideOpts" >
           
-          <FONT size="2" class="ion-text-right">
-            Tienes          
-          </FONT>
+            <ion-slide *ngFor="let dia of planOfStora"  
+                        (click)="obtenerLibroCapitulos(dia.dia, dia.libro, dia.detalles)"
+                        [ngClass]="{'bordeSlide' : statusSlide(dia.dia),
+                                    'slide' : false}"  class="ion-text-center">
+              
+                  <ion-item lines="none" *ngIf="!statusBadge(dia.dia)" class="ion-text-center">
+                    <ion-label >
+                      {{ dia.dia }}
+                      <sup>  
+                        <ion-icon class="ion-text-end" *ngIf="dia.statusDia" ios="ios-checkmark" md="md-checkmark" ></ion-icon>
+                      </sup>
+                    </ion-label>
+                  </ion-item>
+                  <div  *ngIf="statusBadge(dia.dia)">
+                  <ion-label  class="ion-text-center">
+                    {{ dia.dia }}
+                    <sup>  
+                      <ion-icon class="ion-text-end" *ngIf="dia.statusDia" ios="ios-checkmark" md="md-checkmark" ></ion-icon>
+                    </sup> <br>
+                    <ion-badge color="primary" mode="ios" >
+                      {{this.dd}}{{this.mmS}}
+                    </ion-badge> 
+                  </ion-label>
+                  </div>
+                    
+                
+            </ion-slide>
+        </ion-slides>
 
-          <FONT size="2"  style="color:rgb(255, 166, 0)">
-            <strong>
-              {{this.diaAtraso}} 
-            </strong>
-          </FONT>
-        
-          <FONT size="2" >
-            días de atraso 
-          </FONT>
-        
-</ion-badge>
+        <ion-item color="light" lines="none" class="ion-text-right" *ngIf="!this.verDiaAtraso" class="itemPersonalizado">
+          
+          <ion-label class="ion-text-right" *ngIf="!this.btnIniciarPlan">
+            <FONT size="2" class="ion-text-right">Felicidades estas al dia.  </FONT>
+            
+          </ion-label>
+        </ion-item >
+        <ion-item color="light" lines="none" *ngIf="this.verDiaAtraso" class="itemPersonalizado">
+          <ion-label  >
+            <FONT size="2" slot="end">
+              DIA {{this.diaLecturaV}} de {{this.diaFinPlan}}
+            </FONT>
+          </ion-label>
+
+            <ion-badge slot="end"  color="undefined">
+              
+              <FONT size="2" class="ion-text-right">
+                Tienes          
+              </FONT>
+
+              <FONT size="2"  style="color:rgb(255, 166, 0)">
+                <strong>
+                  {{this.diaAtraso}} 
+                </strong>
+              </FONT>
+            
+              <FONT size="2" >
+                días de atraso 
+              </FONT>
+            
+    </ion-badge>
 
 
-      
-    </ion-item>
-
-  
-    <ion-item >
-    <ion-label text-wrap padding-horizontal padding-bottom>
-      {{this.descripcion}}
-    </ion-label>
-    </ion-item>
-
-
-    <ion-list *ngIf="verCapitulos">
-      <ion-item *ngFor="let item of detallesDia" >
-        <ion-item size="small" lines="none">
-          <ion-checkbox (click)="statusCheckbox(this.dia, item.libro, item.capitulo)" 
-                        size="small" slot="end" color="primary" mode="ios"  [(ngModel)]="item.status">
-
-          </ion-checkbox>
+          
         </ion-item>
-        <ion-label (click)="pushLeerPlan(item.libro, item.capitulo, item.versiculo,item.versiculoFinal)"> 
-          {{obtenerNombreLibro(item.libro)}}  {{item.capitulo}}<span *ngIf=item.versiculo>{{":" + item.versiculo}}</span><span *ngIf=item.versiculoFinal>{{"-" + item.versiculoFinal}}</span>
-          
-        </ion-label>
-        
-      </ion-item>
-      
-     
-    </ion-list>
-    
 
-    <ion-button *ngIf="this.btnIniciarPlan" expand="full" color="primary" (click)="iniciarPlan()">
-      Iniciar el plan
-    </ion-button>
-    
+      
+        <ion-item >
+        <ion-label text-wrap padding-horizontal padding-bottom>
+          {{this.descripcion}}
+        </ion-label>
+        </ion-item>
+
+
+        <ion-list *ngIf="verCapitulos">
+          <ion-item *ngFor="let item of detallesDia" >
+            <ion-item size="small" lines="none">
+              <ion-checkbox (click)="statusCheckbox(this.dia, item.libro, item.capitulo)" 
+                            size="small" slot="end" color="primary" mode="ios"  [(ngModel)]="item.status">
+
+              </ion-checkbox>
+            </ion-item>
+            <ion-label (click)="pushLeerPlan(item.libro, item.capitulo, item.versiculo,item.versiculoFinal)"> 
+              {{obtenerNombreLibro(item.libro)}}  {{item.capitulo}}<span *ngIf=item.versiculo>{{":" + item.versiculo}}</span><span *ngIf=item.versiculoFinal>{{"-" + item.versiculoFinal}}</span>
+              
+            </ion-label>
+            
+          </ion-item>
+          
+        
+        </ion-list>
+        
+
+        <ion-button *ngIf="this.btnIniciarPlan" expand="full" color="primary" (click)="iniciarPlan()">
+          Iniciar el plan
+        </ion-button>
+      </ion-col>
+      <ion-col size-md="2" size-lg="3" >           </ion-col>
+    </ion-row>
+  </ion-grid>   
 
 
 

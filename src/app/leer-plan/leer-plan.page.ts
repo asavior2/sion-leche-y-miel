@@ -10,7 +10,6 @@ import { HTTP } from '@ionic-native/http/ngx';
 import { TabsPage } from "../tabs/tabs.page";
 import {DomSanitizer} from '@angular/platform-browser';
 import { ActionSheetController } from '@ionic/angular';
-import {AngularFirestore} from "@angular/fire/firestore";
 import { Platform } from '@ionic/angular';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import {Zip} from '@ionic-native/zip/ngx';
@@ -98,7 +97,6 @@ export class LeerPlanPage implements OnInit {
               private sanitizer: DomSanitizer,
               public alertController: AlertController,
               private platform: Platform,
-              private db: AngularFirestore,
               private clipboard: Clipboard,
               private zip:Zip,
               public file:File,

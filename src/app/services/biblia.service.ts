@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { HTTP } from '@ionic-native/http/ngx';
-import { AngularFirestore } from "@angular/fire/firestore";
 import {File} from '@ionic-native/file/ngx';
 import { from, Observable } from 'rxjs';
 //import { Observable } from "rxjs/Observable";
@@ -18,11 +17,11 @@ export class BibliaService {
   dataTemp;
   stadoDir: boolean;
   temporalT;
+  temporalA;
 
 
   constructor(public http: HTTP,
               private httpClient: HttpClient,
-              private db: AngularFirestore,
               public file: File) {
                 //this.genesis = require('../../assets/libros/1/1-2.json');
                 //  console.log(this.genesis);
@@ -37,12 +36,23 @@ export class BibliaService {
   async getTextoFile(libro: number, capitulo: number) { // Cuando esta actualizado
     return await(this.file.readAsText(this.file.externalDataDirectory + 'libros/' + libro + '/',  libro + '-' + capitulo + '.json'));
   }
+  
+  /*
+  async getAudio() { // Cuando esta actualizado
+    return await(this.file.readAsText(this.file.externalDataDirectory + 'audios/2/1/' ,'4-Exodo-1-1--versiculo.mp3'));
+    //return await(this.file.readAsText(this.file.externalDataDirectory + 'libros/' + libro + '/',  libro + '-' + capitulo + '.json'));
+  }*/
 
+  
   getTextoImport(libro: number, capitulo: number) {
     this.temporalT = require('../../assets/libros/' + libro + '/' + libro + '-' + capitulo + '.json');
     return (JSON.parse(JSON.stringify(this.temporalT)));
   }
 
+  getTextoAudio(libro: number, capitulo: number) {
+    this.temporalA = require('../../assets/audios/' + libro + '/' + capitulo + '.json');
+    return (JSON.parse(JSON.stringify(this.temporalA)));
+  }
 
   // Trae los titulos de los respectivo capitulos 
   

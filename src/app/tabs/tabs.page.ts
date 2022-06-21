@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ActionSheetController } from '@ionic/angular';
-import {AuthService} from '../services/auth.service';
 import {Zip} from '@ionic-native/zip/ngx';
 import {File} from '@ionic-native/file/ngx';
 import { Storage } from '@ionic/storage';
@@ -29,7 +28,6 @@ export class TabsPage implements OnInit {
   estadoDark;
 
   constructor(private router: Router,
-              public authservice: AuthService,
               private zip: Zip,
               public file: File,
               private storage: Storage,
@@ -79,9 +77,6 @@ export class TabsPage implements OnInit {
     } else {
       this.esLogin = false;
     }
-  }
-  onLogout() {
-      this.authservice.logout();
   }
 
   validarUpdate() {

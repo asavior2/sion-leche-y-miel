@@ -6,11 +6,11 @@
     </ion-buttons>
     <div align="center">      
       
-      <ion-button clear small (click) = "mostrarLibrosMetodo()" 
+      <ion-button clear small  
       size ="small" fill="clear" color="dark" >
       <strong> <h6> {{librot}}</h6> </strong>
       </ion-button>  
-      <ion-button color="dark" clear small  fill="clear" (click)="mostrarCapitulosMetodo(libro)">
+      <ion-button color="dark" clear small  fill="clear" >
         <strong> <h6>{{capitulo}} </h6> </strong>
       </ion-button> 
       <ion-button color="dark" clear small  fill="clear" (click)="aumentarSize()" size="small">
@@ -28,8 +28,9 @@
 
   <ion-grid >
     <ion-row >
-      <ion-col col-0 col-sm-0 col-md-1 col-lg-3 col-xl-3 ></ion-col>
-      <ion-col col-12 col-sm-12 col-md-10 col-lg-6 col-xl-6 ></ion-col>
+      <ion-col size-md="2"  size-lg="3" >
+      </ion-col>
+      <ion-col  size-xs="12"  size-md="8"  size-lg="6">
 
       <div *ngIf = "mostrarTexto" align="justify"> 
         <ion-label text-wrap   *ngFor="let text of textoJsonFinal" >
@@ -81,6 +82,10 @@
             <FONT face="Segoe UI" size="3"><strong>*(SLM) Sion: Leche y Miel</strong></FONT>    
         </div>
       </div>
+
+    </ion-col>
+    <ion-col size-md="2" size-lg="3" >
+    </ion-col>
 
     </ion-row>
   </ion-grid>
