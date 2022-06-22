@@ -87,7 +87,7 @@ export class LeerPlanPage implements OnInit {
   contParteDia;
   detalleTemp;
 
-  @ViewChild(IonContent) ionContent: IonContent;
+  @ViewChild(IonContent, { static: true }) ionContent: IonContent;
   constructor(private activatedRoute: ActivatedRoute,
               private bibliaService: BibliaService,
               public actionSheetController: ActionSheetController,

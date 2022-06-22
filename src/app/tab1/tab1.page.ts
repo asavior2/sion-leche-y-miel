@@ -83,7 +83,7 @@ export class Tab1Page implements OnInit {
   colorVar = "blue"
 
 
-  @ViewChild(IonContent) ionContent: IonContent;
+  @ViewChild(IonContent, { static: true }) ionContent: IonContent;
   constructor(private bibliaService: BibliaService,
               public actionSheetController: ActionSheetController,
               private http: HTTP,

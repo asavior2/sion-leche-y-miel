@@ -33,7 +33,7 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: '../tab1/tab1.module#Tab1PageModule',
+            loadChildren: () => import('../tab1/tab1.module').then(m => m.Tab1PageModule),
             canActivate: []
           }
         ]
@@ -43,7 +43,7 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: '../tab2/tab2.module#Tab2PageModule',
+            loadChildren: () => import('../tab2/tab2.module').then(m => m.Tab2PageModule),
             canActivate: []
           }
         ]
@@ -53,7 +53,7 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: '../tab3/tab3.module#Tab3PageModule',
+            loadChildren: () => import('../tab3/tab3.module').then(m => m.Tab3PageModule),
             canActivate: []
           }
         ]
@@ -64,7 +64,7 @@ const routes: Routes = [
           {
             path: '',
             /*loadChildren: '../tab3/tab3.module#Tab3PageModule',*/
-            loadChildren: '../plan-lectura/plan-lectura.module#PlanLecturaPageModule', // este es paraplan de lectura
+            loadChildren: () => import('../plan-lectura/plan-lectura.module').then(m => m.PlanLecturaPageModule), // este es paraplan de lectura
             canActivate: []
           }
         ]
@@ -73,7 +73,7 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: '../tab3/tab3.module#Tab3PageModule', // Este es para el contacto
+            loadChildren: () => import('../tab3/tab3.module').then(m => m.Tab3PageModule), // Este es para el contacto
             canActivate: []
           }
         ]
@@ -83,7 +83,7 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: '../sobre/sobre.module#SobrePageModule',
+            loadChildren: () => import('../sobre/sobre.module').then(m => m.SobrePageModule),
             canActivate: []
           }
         ]
