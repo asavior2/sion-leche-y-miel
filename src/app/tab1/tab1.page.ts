@@ -83,7 +83,7 @@ export class Tab1Page implements OnInit {
   colorVar = "blue"
 
 
-  @ViewChild(IonContent, { static: true }) ionContent: IonContent;
+  @ViewChild(IonContent) ionContent: IonContent;
   constructor(private bibliaService: BibliaService,
               public actionSheetController: ActionSheetController,
               private http: HTTP,
@@ -236,6 +236,7 @@ export class Tab1Page implements OnInit {
           //el.style.setProperty('--background', '#36454f');
           //document.body.style.setProperty('--my-var', this.colorVar);
           //this.elementRef.nativeElement.style.setProperty('--my-var', 'red'); 
+          //document.documentElement.style.setProperty('--dynamic-colour', "green");
           this.setStyle('red');
           tiempo = entry.seg*1000
           this.router.navigate( ['/tabs/tab1'], {fragment: entry.versiculo});
