@@ -1,7 +1,6 @@
 <ion-header >
   <!-- Allow everything but only from the same origin and foo.com -->
-  <ion-toolbar>
-    <div align="center"> 
+  <ion-toolbar align="center" color="light">
         <!-- Boton de los libros-->
         <ion-button clear small (click) = "mostrarLibrosMetodo()" 
            size ="small" fill="clear" color="dark" >
@@ -16,7 +15,7 @@
         <ion-button color="dark" clear small  fill="clear" (click)="disminuirSize()" size="small">
           <strong><h6>a-</h6></strong>  
         </ion-button> 
-    </div>
+  
 
    
     <!-- 
@@ -31,7 +30,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" class="body">
+<ion-content  class="body" >
   
   <ion-grid part="placeholder" >
     <ion-row >
@@ -158,9 +157,6 @@
       </div> 
 
       <div class="scroll-container" *ngIf = "mostrarTexto" align="justify"> 
-
-        <button (click)="playAudio()">Audio</button>
-
         <ion-label  text-wrap part="placeholder"  *ngFor="let text of textoJsonFinal"  >
           
             <div *ngIf="text.hasOwnProperty('idTitulo')">
@@ -168,7 +164,7 @@
             </div>
           
             <div *ngIf="text.hasOwnProperty('comprimido')">
-              <div  padding-horizontal padding-bottom id={{text.versiculo}} class="l{{text.versiculo}}">
+              <div  id=l{{text.versiculo}} padding-horizontal padding-bottom id=l{{text.versiculo}}  class="l{{text.versiculo}}">
                 <FONT  size={{this.fontSize-2}} face="Segoe UI"><ion-text  color="medium">{{text.versiculo}} </ion-text></FONT>
                 <font *ngFor="let construirVersiculo of text.comprimido" size={{this.fontSize}}>
                     <ion-text class={{marcar(construirVersiculo.capitulo,construirVersiculo.versiculo)}}>
@@ -192,7 +188,7 @@
             </div>
           
             <div *ngIf ="!text.hasOwnProperty('comprimido')" padding-horizontal padding-bottom>
-              <div  id={{text.versiculo}}  outline="true"  class="custom" >
+              <div  id=l{{text.versiculo}}  outline="true" class=l{{text.versiculo}} #myButton >
                 <FONT size={{this.fontSize-2}} face="Segoe UI"><ion-text *ngIf="!text.hasOwnProperty('idTitulo')" color="medium">{{text.versiculo}} </ion-text></FONT>
                 <font  size={{this.fontSize}}>
                   <ion-text  class={{marcar(text.capitulo,text.versiculo)}}>
@@ -211,6 +207,7 @@
  
         <div align="center">
             <FONT face="Segoe UI" size="3"><strong>*(SLM) Sion: Leche y Miel</strong></FONT>    
+            <br><br>
         </div>
       </div>
 
@@ -227,14 +224,20 @@
   <!--Botones flotantes para la version de escritorio middle y middle right-->
   <ion-fab vertical="bottom" horizontal="start" slot="fixed" >
     <ion-fab-button (click)="previousboton()" size="small" >
-        <ion-icon name="ios-arrow-back"></ion-icon> 
+      <ion-icon name="chevron-back-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed">
+    <ion-fab-button (click)="playAudio()" size="small" color="light">
+      <ion-icon name="{{playPausa}}" color="primary"></ion-icon>
     </ion-fab-button>
   </ion-fab>
 
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" size="small">
       <ion-fab-button (click)="nextboton()" size="small">
-          <ion-icon name="ios-arrow-forward"></ion-icon> 
+        <ion-icon name="chevron-forward-outline" ></ion-icon>
       </ion-fab-button>
     </ion-fab>
       

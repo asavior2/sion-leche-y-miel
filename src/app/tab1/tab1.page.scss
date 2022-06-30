@@ -1,3 +1,4 @@
+
 .welcome-card img {
   max-height: 35vh;
   overflow: hidden;
@@ -28,19 +29,13 @@ ion-button {
 .highlight {
   background-color:rgba(0, 162, 255, 0.199);
   }
-div {
-    scroll-margin-top: 6rem; /* whatever is a nice number that gets you past the header */
-  }
-
-
+  
 
 on-label::part(tab active) {
   color: green;
  }
 
-ion-label::part(placeholder){
-  background-color: gold;
-}
+
 ion-content::ion-grid::ion-row::div::part(placeholder) {
   background-color: gold;
 }
@@ -48,15 +43,891 @@ ion-content::part(placeholder) {
   background-color: gold;
 }
 
-ion-label::part(native):hover {
-  color: green;
+ion-fab-button{
+  --border-color:black;
 }
 
 ion-item::part(native):hover {
   color: green;
 }
 
-
-.custom {
-  --color:var(--my-var);
+.l1 {
+  background-color :var(--background1,#cccccc00);
+  border-left:var(--bordeIzquierdo1);
+  padding-left: 2px;
+  } 
+  .l2 {
+  background-color :var(--background2,#cccccc00);
+  border-left:var(--bordeIzquierdo2);
+  padding-left: 2px;
+  } 
+  .l3 {
+  background-color :var(--background3,#cccccc00);
+  border-left:var(--bordeIzquierdo3);
+  padding-left: 2px;
+  } 
+  .l4 {
+  background-color :var(--background4,#cccccc00);
+  border-left:var(--bordeIzquierdo4);
+  padding-left: 2px;
+  } 
+  .l5 {
+  background-color :var(--background5,#cccccc00);
+  border-left:var(--bordeIzquierdo5);
+  padding-left: 2px;
+  } 
+  .l6 {
+  background-color :var(--background6,#cccccc00);
+  border-left:var(--bordeIzquierdo6);
+  padding-left: 2px;
+  } 
+  .l7 {
+  background-color :var(--background7,#cccccc00);
+  border-left:var(--bordeIzquierdo7);
+  padding-left: 2px;
+  } 
+  .l8 {
+  background-color :var(--background8,#cccccc00);
+  border-left:var(--bordeIzquierdo8);
+  padding-left: 2px;
+  } 
+  .l9 {
+  background-color :var(--background9,#cccccc00);
+  border-left:var(--bordeIzquierdo9);
+  padding-left: 2px;
+  } 
+  .l10 {
+  background-color :var(--background10,#cccccc00);
+  border-left:var(--bordeIzquierdo10);
+  padding-left: 2px;
+  } 
+  .l11 {
+  background-color :var(--background11,#cccccc00);
+  border-left:var(--bordeIzquierdo11);
+  padding-left: 2px;
+  } 
+  .l12 {
+  background-color :var(--background12,#cccccc00);
+  border-left:var(--bordeIzquierdo12);
+  padding-left: 2px;
+  } 
+  .l13 {
+  background-color :var(--background13,#cccccc00);
+  border-left:var(--bordeIzquierdo13);
+  padding-left: 2px;
+  } 
+  .l14 {
+  background-color :var(--background14,#cccccc00);
+  border-left:var(--bordeIzquierdo14);
+  padding-left: 2px;
+  } 
+  .l15 {
+  background-color :var(--background15,#cccccc00);
+  border-left:var(--bordeIzquierdo15);
+  padding-left: 2px;
+  } 
+  .l16 {
+  background-color :var(--background16,#cccccc00);
+  border-left:var(--bordeIzquierdo16);
+  padding-left: 2px;
+  } 
+  .l17 {
+  background-color :var(--background17,#cccccc00);
+  border-left:var(--bordeIzquierdo17);
+  padding-left: 2px;
+  } 
+  .l18 {
+  background-color :var(--background18,#cccccc00);
+  border-left:var(--bordeIzquierdo18);
+  padding-left: 2px;
+  } 
+  .l19 {
+  background-color :var(--background19,#cccccc00);
+  border-left:var(--bordeIzquierdo19);
+  padding-left: 2px;
+  } 
+  .l20 {
+  background-color :var(--background20,#cccccc00);
+  border-left:var(--bordeIzquierdo20);
+  padding-left: 2px;
+  } 
+  .l21 {
+  background-color :var(--background21,#cccccc00);
+  border-left:var(--bordeIzquierdo21);
+  padding-left: 2px;
+  } 
+  .l22 {
+  background-color :var(--background22,#cccccc00);
+  border-left:var(--bordeIzquierdo22);
+  padding-left: 2px;
+  } 
+  .l23 {
+  background-color :var(--background23,#cccccc00);
+  border-left:var(--bordeIzquierdo23);
+  padding-left: 2px;
+  } 
+  .l24 {
+  background-color :var(--background24,#cccccc00);
+  border-left:var(--bordeIzquierdo24);
+  padding-left: 2px;
+  } 
+  .l25 {
+  background-color :var(--background25,#cccccc00);
+  border-left:var(--bordeIzquierdo25);
+  padding-left: 2px;
+  } 
+  .l26 {
+  background-color :var(--background26,#cccccc00);
+  border-left:var(--bordeIzquierdo26);
+  padding-left: 2px;
+  } 
+  .l27 {
+  background-color :var(--background27,#cccccc00);
+  border-left:var(--bordeIzquierdo27);
+  padding-left: 2px;
+  } 
+  .l28 {
+  background-color :var(--background28,#cccccc00);
+  border-left:var(--bordeIzquierdo28);
+  padding-left: 2px;
+  } 
+  .l29 {
+  background-color :var(--background29,#cccccc00);
+  border-left:var(--bordeIzquierdo29);
+  padding-left: 2px;
+  } 
+  .l30 {
+  background-color :var(--background30,#cccccc00);
+  border-left:var(--bordeIzquierdo30);
+  padding-left: 2px;
+  } 
+  .l31 {
+  background-color :var(--background31,#cccccc00);
+  border-left:var(--bordeIzquierdo31);
+  padding-left: 2px;
+  } 
+  .l32 {
+  background-color :var(--background32,#cccccc00);
+  border-left:var(--bordeIzquierdo32);
+  padding-left: 2px;
+  } 
+  .l33 {
+  background-color :var(--background33,#cccccc00);
+  border-left:var(--bordeIzquierdo33);
+  padding-left: 2px;
+  } 
+  .l34 {
+  background-color :var(--background34,#cccccc00);
+  border-left:var(--bordeIzquierdo34);
+  padding-left: 2px;
+  } 
+  .l35 {
+  background-color :var(--background35,#cccccc00);
+  border-left:var(--bordeIzquierdo35);
+  padding-left: 2px;
+  } 
+  .l36 {
+  background-color :var(--background36,#cccccc00);
+  border-left:var(--bordeIzquierdo36);
+  padding-left: 2px;
+  } 
+  .l37 {
+  background-color :var(--background37,#cccccc00);
+  border-left:var(--bordeIzquierdo37);
+  padding-left: 2px;
+  } 
+  .l38 {
+  background-color :var(--background38,#cccccc00);
+  border-left:var(--bordeIzquierdo38);
+  padding-left: 2px;
+  } 
+  .l39 {
+  background-color :var(--background39,#cccccc00);
+  border-left:var(--bordeIzquierdo39);
+  padding-left: 2px;
+  } 
+  .l40 {
+  background-color :var(--background40,#cccccc00);
+  border-left:var(--bordeIzquierdo40);
+  padding-left: 2px;
+  } 
+  .l41 {
+  background-color :var(--background41,#cccccc00);
+  border-left:var(--bordeIzquierdo41);
+  padding-left: 2px;
+  } 
+  .l42 {
+  background-color :var(--background42,#cccccc00);
+  border-left:var(--bordeIzquierdo42);
+  padding-left: 2px;
+  } 
+  .l43 {
+  background-color :var(--background43,#cccccc00);
+  border-left:var(--bordeIzquierdo43);
+  padding-left: 2px;
+  } 
+  .l44 {
+  background-color :var(--background44,#cccccc00);
+  border-left:var(--bordeIzquierdo44);
+  padding-left: 2px;
+  } 
+  .l45 {
+  background-color :var(--background45,#cccccc00);
+  border-left:var(--bordeIzquierdo45);
+  padding-left: 2px;
+  } 
+  .l46 {
+  background-color :var(--background46,#cccccc00);
+  border-left:var(--bordeIzquierdo46);
+  padding-left: 2px;
+  } 
+  .l47 {
+  background-color :var(--background47,#cccccc00);
+  border-left:var(--bordeIzquierdo47);
+  padding-left: 2px;
+  } 
+  .l48 {
+  background-color :var(--background48,#cccccc00);
+  border-left:var(--bordeIzquierdo48);
+  padding-left: 2px;
+  } 
+  .l49 {
+  background-color :var(--background49,#cccccc00);
+  border-left:var(--bordeIzquierdo49);
+  padding-left: 2px;
+  } 
+  .l50 {
+  background-color :var(--background50,#cccccc00);
+  border-left:var(--bordeIzquierdo50);
+  padding-left: 2px;
+  } 
+  .l51 {
+  background-color :var(--background51,#cccccc00);
+  border-left:var(--bordeIzquierdo51);
+  padding-left: 2px;
+  } 
+  .l52 {
+  background-color :var(--background52,#cccccc00);
+  border-left:var(--bordeIzquierdo52);
+  padding-left: 2px;
+  } 
+  .l53 {
+  background-color :var(--background53,#cccccc00);
+  border-left:var(--bordeIzquierdo53);
+  padding-left: 2px;
+  } 
+  .l54 {
+  background-color :var(--background54,#cccccc00);
+  border-left:var(--bordeIzquierdo54);
+  padding-left: 2px;
+  } 
+  .l55 {
+  background-color :var(--background55,#cccccc00);
+  border-left:var(--bordeIzquierdo55);
+  padding-left: 2px;
+  } 
+  .l56 {
+  background-color :var(--background56,#cccccc00);
+  border-left:var(--bordeIzquierdo56);
+  padding-left: 2px;
+  } 
+  .l57 {
+  background-color :var(--background57,#cccccc00);
+  border-left:var(--bordeIzquierdo57);
+  padding-left: 2px;
+  } 
+  .l58 {
+  background-color :var(--background58,#cccccc00);
+  border-left:var(--bordeIzquierdo58);
+  padding-left: 2px;
+  } 
+  .l59 {
+  background-color :var(--background59,#cccccc00);
+  border-left:var(--bordeIzquierdo59);
+  padding-left: 2px;
+  } 
+  .l60 {
+  background-color :var(--background60,#cccccc00);
+  border-left:var(--bordeIzquierdo60);
+  padding-left: 2px;
+  } 
+  .l61 {
+  background-color :var(--background61,#cccccc00);
+  border-left:var(--bordeIzquierdo61);
+  padding-left: 2px;
+  } 
+  .l62 {
+  background-color :var(--background62,#cccccc00);
+  border-left:var(--bordeIzquierdo62);
+  padding-left: 2px;
+  } 
+  .l63 {
+  background-color :var(--background63,#cccccc00);
+  border-left:var(--bordeIzquierdo63);
+  padding-left: 2px;
+  } 
+  .l64 {
+  background-color :var(--background64,#cccccc00);
+  border-left:var(--bordeIzquierdo64);
+  padding-left: 2px;
+  } 
+  .l65 {
+  background-color :var(--background65,#cccccc00);
+  border-left:var(--bordeIzquierdo65);
+  padding-left: 2px;
+  } 
+  .l66 {
+  background-color :var(--background66,#cccccc00);
+  border-left:var(--bordeIzquierdo66);
+  padding-left: 2px;
+  }
+  .l67 {
+  background-color :var(--background67,#cccccc00);
+  border-left:var(--bordeIzquierdo67);
+  padding-left: 2px;
+  } 
+  .l68 {
+  background-color :var(--background68,#cccccc00);
+  border-left:var(--bordeIzquierdo68);
+  padding-left: 2px;
+  } 
+  .l69 {
+  background-color :var(--background69,#cccccc00);
+  border-left:var(--bordeIzquierdo69);
+  padding-left: 2px;
+  } 
+  .l70 {
+  background-color :var(--background70,#cccccc00);
+  border-left:var(--bordeIzquierdo70);
+  padding-left: 2px;
+  } 
+  .l71 {
+  background-color :var(--background71,#cccccc00);
+  border-left:var(--bordeIzquierdo71);
+  padding-left: 2px;
+  } 
+  .l72 {
+  background-color :var(--background72,#cccccc00);
+  border-left:var(--bordeIzquierdo72);
+  padding-left: 2px;
+  } 
+  .l73 {
+  background-color :var(--background73,#cccccc00);
+  border-left:var(--bordeIzquierdo73);
+  padding-left: 2px;
+  } 
+  .l74 {
+  background-color :var(--background74,#cccccc00);
+  border-left:var(--bordeIzquierdo74);
+  padding-left: 2px;
+  } 
+  .l75 {
+  background-color :var(--background75,#cccccc00);
+  border-left:var(--bordeIzquierdo75);
+  padding-left: 2px;
+  } 
+  .l76 {
+  background-color :var(--background76,#cccccc00);
+  border-left:var(--bordeIzquierdo76);
+  padding-left: 2px;
+  } 
+  .l77 {
+  background-color :var(--background77,#cccccc00);
+  border-left:var(--bordeIzquierdo77);
+  padding-left: 2px;
+  } 
+  .l78 {
+  background-color :var(--background78,#cccccc00);
+  border-left:var(--bordeIzquierdo78);
+  padding-left: 2px;
+  } 
+  .l79 {
+  background-color :var(--background79,#cccccc00);
+  border-left:var(--bordeIzquierdo79);
+  padding-left: 2px;
+  } 
+  .l80 {
+  background-color :var(--background80,#cccccc00);
+  border-left:var(--bordeIzquierdo80);
+  padding-left: 2px;
+  } 
+  .l81 {
+  background-color :var(--background81,#cccccc00);
+  border-left:var(--bordeIzquierdo81);
+  padding-left: 2px;
+  } 
+  .l82 {
+  background-color :var(--background82,#cccccc00);
+  border-left:var(--bordeIzquierdo82);
+  padding-left: 2px;
+  } 
+  .l83 {
+  background-color :var(--background83,#cccccc00);
+  border-left:var(--bordeIzquierdo83);
+  padding-left: 2px;
+  } 
+  .l84 {
+  background-color :var(--background84,#cccccc00);
+  border-left:var(--bordeIzquierdo84);
+  padding-left: 2px;
+  } 
+  .l85 {
+  background-color :var(--background85,#cccccc00);
+  border-left:var(--bordeIzquierdo85);
+  padding-left: 2px;
+  } 
+  .l86 {
+  background-color :var(--background86,#cccccc00);
+  border-left:var(--bordeIzquierdo86);
+  padding-left: 2px;
+  } 
+  .l87 {
+  background-color :var(--background87,#cccccc00);
+  border-left:var(--bordeIzquierdo87);
+  padding-left: 2px;
+  } 
+  .l88 {
+  background-color :var(--background88,#cccccc00);
+  border-left:var(--bordeIzquierdo88);
+  padding-left: 2px;
+  } 
+  .l89 {
+  background-color :var(--background89,#cccccc00);
+  border-left:var(--bordeIzquierdo89);
+  padding-left: 2px;
+  } 
+  .l90 {
+  background-color :var(--background90,#cccccc00);
+  border-left:var(--bordeIzquierdo90);
+  padding-left: 2px;
+  } 
+  .l91 {
+  background-color :var(--background91,#cccccc00);
+  border-left:var(--bordeIzquierdo91);
+  padding-left: 2px;
+  } 
+  .l92 {
+  background-color :var(--background92,#cccccc00);
+  border-left:var(--bordeIzquierdo92);
+  padding-left: 2px;
+  } 
+  .l93 {
+  background-color :var(--background93,#cccccc00);
+  border-left:var(--bordeIzquierdo93);
+  padding-left: 2px;
+  } 
+  .l94 {
+  background-color :var(--background94,#cccccc00);
+  border-left:var(--bordeIzquierdo94);
+  padding-left: 2px;
+  } 
+  .l95 {
+  background-color :var(--background95,#cccccc00);
+  border-left:var(--bordeIzquierdo95);
+  padding-left: 2px;
+  } 
+  .l96 {
+  background-color :var(--background96,#cccccc00);
+  border-left:var(--bordeIzquierdo96);
+  padding-left: 2px;
+  } 
+  .l97 {
+  background-color :var(--background97,#cccccc00);
+  border-left:var(--bordeIzquierdo97);
+  padding-left: 2px;
+  } 
+  .l98 {
+  background-color :var(--background98,#cccccc00);
+  border-left:var(--bordeIzquierdo98);
+  padding-left: 2px;
+  } 
+  .l99 {
+  background-color :var(--background99,#cccccc00);
+  border-left:var(--bordeIzquierdo99);
+  padding-left: 2px;
+  } 
+  .l100 {
+  background-color :var(--background100,#cccccc00);
+  border-left:var(--bordeIzquierdo100);
+  padding-left: 2px;
+  } 
+  .l101 {
+  background-color :var(--background101,#cccccc00);
+  border-left:var(--bordeIzquierdo101);
+  padding-left: 2px;
+  } 
+  .l102 {
+  background-color :var(--background102,#cccccc00);
+  border-left:var(--bordeIzquierdo102);
+  padding-left: 2px;
+  } 
+  .l103 {
+  background-color :var(--background103,#cccccc00);
+  border-left:var(--bordeIzquierdo103);
+  padding-left: 2px;
+  } 
+  .l104 {
+  background-color :var(--background104,#cccccc00);
+  border-left:var(--bordeIzquierdo104);
+  padding-left: 2px;
+  } 
+  .l105 {
+  background-color :var(--background105,#cccccc00);
+  border-left:var(--bordeIzquierdo105);
+  padding-left: 2px;
+  } 
+  .l106 {
+  background-color :var(--background106,#cccccc00);
+  border-left:var(--bordeIzquierdo106);
+  padding-left: 2px;
+  } 
+  .l107 {
+  background-color :var(--background107,#cccccc00);
+  border-left:var(--bordeIzquierdo107);
+  padding-left: 2px;
+  } 
+  .l108 {
+  background-color :var(--background108,#cccccc00);
+  border-left:var(--bordeIzquierdo108);
+  padding-left: 2px;
+  } 
+  .l109 {
+  background-color :var(--background109,#cccccc00);
+  border-left:var(--bordeIzquierdo109);
+  padding-left: 2px;
+  } 
+  .l110 {
+  background-color :var(--background110,#cccccc00);
+  border-left:var(--bordeIzquierdo110);
+  padding-left: 2px;
+  } 
+  .l111 {
+  background-color :var(--background111,#cccccc00);
+  border-left:var(--bordeIzquierdo111);
+  padding-left: 2px;
+  } 
+  .l112 {
+  background-color :var(--background112,#cccccc00);
+  border-left:var(--bordeIzquierdo112);
+  padding-left: 2px;
+  } 
+  .l113 {
+  background-color :var(--background113,#cccccc00);
+  border-left:var(--bordeIzquierdo113);
+  padding-left: 2px;
+  } 
+  .l114 {
+  background-color :var(--background114,#cccccc00);
+  border-left:var(--bordeIzquierdo114);
+  padding-left: 2px;
+  } 
+  .l115 {
+  background-color :var(--background115,#cccccc00);
+  border-left:var(--bordeIzquierdo115);
+  padding-left: 2px;
+  } 
+  .l116 {
+  background-color :var(--background116,#cccccc00);
+  border-left:var(--bordeIzquierdo116);
+  padding-left: 2px;
+  } 
+  .l117 {
+  background-color :var(--background117,#cccccc00);
+  border-left:var(--bordeIzquierdo117);
+  padding-left: 2px;
+  } 
+  .l118 {
+  background-color :var(--background118,#cccccc00);
+  border-left:var(--bordeIzquierdo118);
+  padding-left: 2px;
+  } 
+  .l119 {
+  background-color :var(--background119,#cccccc00);
+  border-left:var(--bordeIzquierdo119);
+  padding-left: 2px;
+  } 
+  .l120 {
+  background-color :var(--background120,#cccccc00);
+  border-left:var(--bordeIzquierdo120);
+  padding-left: 2px;
+  } 
+  .l121 {
+  background-color :var(--background121,#cccccc00);
+  border-left:var(--bordeIzquierdo121);
+  padding-left: 2px;
+  } 
+  .l122 {
+  background-color :var(--background122,#cccccc00);
+  border-left:var(--bordeIzquierdo122);
+  padding-left: 2px;
+  } 
+  .l123 {
+  background-color :var(--background123,#cccccc00);
+  border-left:var(--bordeIzquierdo123);
+  padding-left: 2px;
+  } 
+  .l124 {
+  background-color :var(--background124,#cccccc00);
+  border-left:var(--bordeIzquierdo124);
+  padding-left: 2px;
+  } 
+  .l125 {
+  background-color :var(--background125,#cccccc00);
+  border-left:var(--bordeIzquierdo125);
+  padding-left: 2px;
+  } 
+  .l126 {
+  background-color :var(--background126,#cccccc00);
+  border-left:var(--bordeIzquierdo126);
+  padding-left: 2px;
+  } 
+  .l127 {
+  background-color :var(--background127,#cccccc00);
+  border-left:var(--bordeIzquierdo127);
+  padding-left: 2px;
+  } 
+  .l128 {
+  background-color :var(--background128,#cccccc00);
+  border-left:var(--bordeIzquierdo128);
+  padding-left: 2px;
+  } 
+  .l129 {
+  background-color :var(--background129,#cccccc00);
+  border-left:var(--bordeIzquierdo129);
+  padding-left: 2px;
+  } 
+  .l130 {
+  background-color :var(--background130,#cccccc00);
+  border-left:var(--bordeIzquierdo130);
+  padding-left: 2px;
+  } 
+  .l131 {
+  background-color :var(--background131,#cccccc00);
+  border-left:var(--bordeIzquierdo131);
+  padding-left: 2px;
+  } 
+  .l132 {
+  background-color :var(--background132,#cccccc00);
+  border-left:var(--bordeIzquierdo132);
+  padding-left: 2px;
+  } 
+  .l133 {
+  background-color :var(--background133,#cccccc00);
+  border-left:var(--bordeIzquierdo133);
+  padding-left: 2px;
+  } 
+  .l134 {
+  background-color :var(--background134,#cccccc00);
+  border-left:var(--bordeIzquierdo134);
+  padding-left: 2px;
+  } 
+  .l135 {
+  background-color :var(--background135,#cccccc00);
+  border-left:var(--bordeIzquierdo135);
+  padding-left: 2px;
+  } 
+  .l136 {
+  background-color :var(--background136,#cccccc00);
+  border-left:var(--bordeIzquierdo136);
+  padding-left: 2px;
+  } 
+  .l137 {
+  background-color :var(--background137,#cccccc00);
+  border-left:var(--bordeIzquierdo137);
+  padding-left: 2px;
+  } 
+  .l138 {
+  background-color :var(--background138,#cccccc00);
+  border-left:var(--bordeIzquierdo138);
+  padding-left: 2px;
+  } 
+  .l139 {
+  background-color :var(--background139,#cccccc00);
+  border-left:var(--bordeIzquierdo139);
+  padding-left: 2px;
+  } 
+  .l140 {
+  background-color :var(--background140,#cccccc00);
+  border-left:var(--bordeIzquierdo140);
+  padding-left: 2px;
+  } 
+  .l141 {
+  background-color :var(--background141,#cccccc00);
+  border-left:var(--bordeIzquierdo141);
+  padding-left: 2px;
+  } 
+  .l142 {
+  background-color :var(--background142,#cccccc00);
+  border-left:var(--bordeIzquierdo142);
+  padding-left: 2px;
+  } 
+  .l143 {
+  background-color :var(--background143,#cccccc00);
+  border-left:var(--bordeIzquierdo143);
+  padding-left: 2px;
+  } 
+  .l144 {
+  background-color :var(--background144,#cccccc00);
+  border-left:var(--bordeIzquierdo144);
+  padding-left: 2px;
+  } 
+  .l145 {
+  background-color :var(--background145,#cccccc00);
+  border-left:var(--bordeIzquierdo145);
+  padding-left: 2px;
+  } 
+  .l146 {
+  background-color :var(--background146,#cccccc00);
+  border-left:var(--bordeIzquierdo146);
+  padding-left: 2px;
+  } 
+  .l147 {
+  background-color :var(--background147,#cccccc00);
+  border-left:var(--bordeIzquierdo147);
+  padding-left: 2px;
+  } 
+  .l148 {
+  background-color :var(--background148,#cccccc00);
+  border-left:var(--bordeIzquierdo148);
+  padding-left: 2px;
+  } 
+  .l149 {
+  background-color :var(--background149,#cccccc00);
+  border-left:var(--bordeIzquierdo149);
+  padding-left: 2px;
+  } 
+  .l150 {
+  background-color :var(--background150,#cccccc00);
+  border-left:var(--bordeIzquierdo150);
+  padding-left: 2px;
+  } 
+  .l151 {
+  background-color :var(--background151,#cccccc00);
+  border-left:var(--bordeIzquierdo151);
+  padding-left: 2px;
+  } 
+  .l152 {
+  background-color :var(--background152,#cccccc00);
+  border-left:var(--bordeIzquierdo152);
+  padding-left: 2px;
+  } 
+  .l153 {
+  background-color :var(--background153,#cccccc00);
+  border-left:var(--bordeIzquierdo153);
+  padding-left: 2px;
+  } 
+  .l154 {
+  background-color :var(--background154,#cccccc00);
+  border-left:var(--bordeIzquierdo154);
+  padding-left: 2px;
+  } 
+  .l155 {
+  background-color :var(--background155,#cccccc00);
+  border-left:var(--bordeIzquierdo155);
+  padding-left: 2px;
+  } 
+  .l156 {
+  background-color :var(--background156,#cccccc00);
+  border-left:var(--bordeIzquierdo156);
+  padding-left: 2px;
+  } 
+  .l157 {
+  background-color :var(--background157,#cccccc00);
+  border-left:var(--bordeIzquierdo157);
+  padding-left: 2px;
+  } 
+  .l158 {
+  background-color :var(--background158,#cccccc00);
+  border-left:var(--bordeIzquierdo158);
+  padding-left: 2px;
+  } 
+  .l159 {
+  background-color :var(--background159,#cccccc00);
+  border-left:var(--bordeIzquierdo159);
+  padding-left: 2px;
+  } 
+  .l160 {
+  background-color :var(--background160,#cccccc00);
+  border-left:var(--bordeIzquierdo160);
+  padding-left: 2px;
+  } 
+  .l161 {
+  background-color :var(--background161,#cccccc00);
+  border-left:var(--bordeIzquierdo161);
+  padding-left: 2px;
+  } 
+  .l162 {
+  background-color :var(--background162,#cccccc00);
+  border-left:var(--bordeIzquierdo162);
+  padding-left: 2px;
+  } 
+  .l163 {
+  background-color :var(--background163,#cccccc00);
+  border-left:var(--bordeIzquierdo163);
+  padding-left: 2px;
+  } 
+  .l164 {
+  background-color :var(--background164,#cccccc00);
+  border-left:var(--bordeIzquierdo164);
+  padding-left: 2px;
+  } 
+  .l165 {
+  background-color :var(--background165,#cccccc00);
+  border-left:var(--bordeIzquierdo165);
+  padding-left: 2px;
+  } 
+  .l166 {
+  background-color :var(--background166,#cccccc00);
+  border-left:var(--bordeIzquierdo166);
+  padding-left: 2px;
+  } 
+  .l167 {
+  background-color :var(--background167,#cccccc00);
+  border-left:var(--bordeIzquierdo167);
+  padding-left: 2px;
+  } 
+  .l168 {
+  background-color :var(--background168,#cccccc00);
+  border-left:var(--bordeIzquierdo168);
+  padding-left: 2px;
+  } 
+  .l169 {
+  background-color :var(--background169,#cccccc00);
+  border-left:var(--bordeIzquierdo169);
+  padding-left: 2px;
+  } 
+  .l170 {
+  background-color :var(--background170,#cccccc00);
+  border-left:var(--bordeIzquierdo170);
+  padding-left: 2px;
+  } 
+  .l171 {
+  background-color :var(--background171,#cccccc00);
+  border-left:var(--bordeIzquierdo171);
+  padding-left: 2px;
+  } 
+  .l172 {
+  background-color :var(--background172,#cccccc00);
+  border-left:var(--bordeIzquierdo172);
+  padding-left: 2px;
+  } 
+  .l173 {
+  background-color :var(--background173,#cccccc00);
+  border-left:var(--bordeIzquierdo173);
+  padding-left: 2px;
+  } 
+  .l174 {
+  background-color :var(--background174,#cccccc00);
+  border-left:var(--bordeIzquierdo174);
+  padding-left: 2px;
+  } 
+  .l175 {
+  background-color :var(--background175,#cccccc00);
+  border-left:var(--bordeIzquierdo175);
+  padding-left: 2px;
+  } 
+  .l176 {
+  background-color :var(--background176,#cccccc00);
+  border-left:var(--bordeIzquierdo176);
+  padding-left: 2px;
 }

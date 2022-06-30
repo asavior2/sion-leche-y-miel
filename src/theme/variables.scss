@@ -3,6 +3,7 @@
 
 /** Ionic CSS Variables **/
 :root {
+  
   /** primary **/
   --ion-color-primary: #3880ff;
   --ion-color-primary-rgb: 56, 128, 255;
@@ -10,6 +11,7 @@
   --ion-color-primary-contrast-rgb: 255, 255, 255;
   --ion-color-primary-shade: #3171e0;
   --ion-color-primary-tint: #4c8dff;
+  --ion-color-border: rgba(0, 0, 0, 0.89);
 
   /** secondary **/
   --ion-color-secondary: #0cd1e8;
@@ -77,10 +79,29 @@
 }
 
 
+
+body.readVersiculol1{
+  --background1 : #cccccc17;
+  --bordeIzquierdo1 : 4px solid #000000a8;
+}
+body.readVersiculol2{
+  --background2 : #cccccc17;
+  --bordeIzquierdo2 :4px solid #000000a8;
+}
+body.readVersiculol3{
+  --background3 : #cccccc17;
+  --bordeIzquierdo3 :4px solid #000000a8;
+}
+body.readVersiculol4{
+  --background4 : #cccccc17;
+  --bordeIzquierdo4 :4px solid #000000a8;
+}
+
 /*
  * Dark Colors
  * -------------------------------------------
  */
+
 
 body.dark {
   --ion-color-primary: #428cff;
@@ -228,4 +249,713 @@ body.dark {
   --ion-tab-bar-background: #1f1f1f;
 
   --ion-card-background: #1e1e1e;
+}
+
+/*
+Sombreado del lector de audio automatico y borde izquierdo 
+*/
+
+body.readVersiculol1{
+  --background1 : #cccccc17;
+  --bordeIzquierdo1 : 4px solid #000000a8;
+}
+body.readVersiculol2{
+  --background2 : #cccccc17;
+  --bordeIzquierdo2 : 4px solid #000000a8;
+}
+body.readVersiculol3{
+  --background3 : #cccccc17;
+  --bordeIzquierdo3 : 4px solid #000000a8;
+}
+body.readVersiculol4{
+  --background4 : #cccccc17;
+  --bordeIzquierdo4 : 4px solid #000000a8;
+}
+body.readVersiculol5{
+  --background5 : #cccccc17;
+  --bordeIzquierdo5 : 4px solid #000000a8;
+}
+body.readVersiculol6{
+  --background6 : #cccccc17;
+  --bordeIzquierdo6 : 4px solid #000000a8;
+}
+body.readVersiculol7{
+  --background7 : #cccccc17;
+  --bordeIzquierdo7 : 4px solid #000000a8;
+}
+body.readVersiculol8{
+  --background8 : #cccccc17;
+  --bordeIzquierdo8 : 4px solid #000000a8;
+}
+body.readVersiculol9{
+  --background9 : #cccccc17;
+  --bordeIzquierdo9 : 4px solid #000000a8;
+}
+body.readVersiculol10{
+  --background10 : #cccccc17;
+  --bordeIzquierdo10 : 4px solid #000000a8;
+}
+body.readVersiculol11{
+  --background11 : #cccccc17;
+  --bordeIzquierdo11 : 4px solid #000000a8;
+}
+body.readVersiculol12{
+  --background12 : #cccccc17;
+  --bordeIzquierdo12 : 4px solid #000000a8;
+}
+body.readVersiculol13{
+  --background13 : #cccccc17;
+  --bordeIzquierdo13 : 4px solid #000000a8;
+}
+body.readVersiculol14{
+  --background14 : #cccccc17;
+  --bordeIzquierdo14 : 4px solid #000000a8;
+}
+body.readVersiculol15{
+  --background15 : #cccccc17;
+  --bordeIzquierdo15 : 4px solid #000000a8;
+}
+body.readVersiculol16{
+  --background16 : #cccccc17;
+  --bordeIzquierdo16 : 4px solid #000000a8;
+}
+body.readVersiculol17{
+  --background17 : #cccccc17;
+  --bordeIzquierdo17 : 4px solid #000000a8;
+}
+body.readVersiculol18{
+  --background18 : #cccccc17;
+  --bordeIzquierdo18 : 4px solid #000000a8;
+}
+body.readVersiculol19{
+  --background19 : #cccccc17;
+  --bordeIzquierdo19 : 4px solid #000000a8;
+}
+body.readVersiculol20{
+  --background20 : #cccccc17;
+  --bordeIzquierdo20 : 4px solid #000000a8;
+}
+body.readVersiculol21{
+  --background21 : #cccccc17;
+  --bordeIzquierdo21 : 4px solid #000000a8;
+}
+body.readVersiculol22{
+  --background22 : #cccccc17;
+  --bordeIzquierdo22 : 4px solid #000000a8;
+}
+body.readVersiculol23{
+  --background23 : #cccccc17;
+  --bordeIzquierdo23 : 4px solid #000000a8;
+}
+body.readVersiculol24{
+  --background24 : #cccccc17;
+  --bordeIzquierdo24 : 4px solid #000000a8;
+}
+body.readVersiculol25{
+  --background25 : #cccccc17;
+  --bordeIzquierdo25 : 4px solid #000000a8;
+}
+body.readVersiculol26{
+  --background26 : #cccccc17;
+  --bordeIzquierdo26 : 4px solid #000000a8;
+}
+body.readVersiculol27{
+  --background27 : #cccccc17;
+  --bordeIzquierdo27 : 4px solid #000000a8;
+}
+body.readVersiculol28{
+  --background28 : #cccccc17;
+  --bordeIzquierdo28 : 4px solid #000000a8;
+}
+body.readVersiculol29{
+  --background29 : #cccccc17;
+  --bordeIzquierdo29 : 4px solid #000000a8;
+}
+body.readVersiculol30{
+  --background30 : #cccccc17;
+  --bordeIzquierdo30 : 4px solid #000000a8;
+}
+body.readVersiculol31{
+  --background31 : #cccccc17;
+  --bordeIzquierdo31 : 4px solid #000000a8;
+}
+body.readVersiculol32{
+  --background32 : #cccccc17;
+  --bordeIzquierdo32 : 4px solid #000000a8;
+}
+body.readVersiculol33{
+  --background33 : #cccccc17;
+  --bordeIzquierdo33 : 4px solid #000000a8;
+}
+body.readVersiculol34{
+  --background34 : #cccccc17;
+  --bordeIzquierdo34 : 4px solid #000000a8;
+}
+body.readVersiculol35{
+  --background35 : #cccccc17;
+  --bordeIzquierdo35 : 4px solid #000000a8;
+}
+body.readVersiculol36{
+  --background36 : #cccccc17;
+  --bordeIzquierdo36 : 4px solid #000000a8;
+}
+body.readVersiculol37{
+  --background37 : #cccccc17;
+  --bordeIzquierdo37 : 4px solid #000000a8;
+}
+body.readVersiculol38{
+  --background38 : #cccccc17;
+  --bordeIzquierdo38 : 4px solid #000000a8;
+}
+body.readVersiculol39{
+  --background39 : #cccccc17;
+  --bordeIzquierdo39 : 4px solid #000000a8;
+}
+body.readVersiculol40{
+  --background40 : #cccccc17;
+  --bordeIzquierdo40 : 4px solid #000000a8;
+}
+body.readVersiculol41{
+  --background41 : #cccccc17;
+  --bordeIzquierdo41 : 4px solid #000000a8;
+}
+body.readVersiculol42{
+  --background42 : #cccccc17;
+  --bordeIzquierdo42 : 4px solid #000000a8;
+}
+body.readVersiculol43{
+  --background43 : #cccccc17;
+  --bordeIzquierdo43 : 4px solid #000000a8;
+}
+body.readVersiculol44{
+  --background44 : #cccccc17;
+  --bordeIzquierdo44 : 4px solid #000000a8;
+}
+body.readVersiculol45{
+  --background45 : #cccccc17;
+  --bordeIzquierdo45 : 4px solid #000000a8;
+}
+body.readVersiculol46{
+  --background46 : #cccccc17;
+  --bordeIzquierdo46 : 4px solid #000000a8;
+}
+body.readVersiculol47{
+  --background47 : #cccccc17;
+  --bordeIzquierdo47 : 4px solid #000000a8;
+}
+body.readVersiculol48{
+  --background48 : #cccccc17;
+  --bordeIzquierdo48 : 4px solid #000000a8;
+}
+body.readVersiculol49{
+  --background49 : #cccccc17;
+  --bordeIzquierdo49 : 4px solid #000000a8;
+}
+body.readVersiculol50{
+  --background50 : #cccccc17;
+  --bordeIzquierdo50 : 4px solid #000000a8;
+}
+body.readVersiculol51{
+  --background51 : #cccccc17;
+  --bordeIzquierdo51 : 4px solid #000000a8;
+}
+body.readVersiculol52{
+  --background52 : #cccccc17;
+  --bordeIzquierdo52 : 4px solid #000000a8;
+}
+body.readVersiculol53{
+  --background53 : #cccccc17;
+  --bordeIzquierdo53 : 4px solid #000000a8;
+}
+body.readVersiculol54{
+  --background54 : #cccccc17;
+  --bordeIzquierdo54 : 4px solid #000000a8;
+}
+body.readVersiculol55{
+  --background55 : #cccccc17;
+  --bordeIzquierdo55 : 4px solid #000000a8;
+}
+body.readVersiculol56{
+  --background56 : #cccccc17;
+  --bordeIzquierdo56 : 4px solid #000000a8;
+}
+body.readVersiculol57{
+  --background57 : #cccccc17;
+  --bordeIzquierdo57 : 4px solid #000000a8;
+}
+body.readVersiculol58{
+  --background58 : #cccccc17;
+  --bordeIzquierdo58 : 4px solid #000000a8;
+}
+body.readVersiculol59{
+  --background59 : #cccccc17;
+  --bordeIzquierdo59 : 4px solid #000000a8;
+}
+body.readVersiculol60{
+  --background60 : #cccccc17;
+  --bordeIzquierdo60 : 4px solid #000000a8;
+}
+body.readVersiculol61{
+  --background61 : #cccccc17;
+  --bordeIzquierdo61 : 4px solid #000000a8;
+}
+body.readVersiculol62{
+  --background62 : #cccccc17;
+  --bordeIzquierdo62 : 4px solid #000000a8;
+}
+body.readVersiculol63{
+  --background63 : #cccccc17;
+  --bordeIzquierdo63 : 4px solid #000000a8;
+}
+body.readVersiculol64{
+  --background64 : #cccccc17;
+  --bordeIzquierdo64 : 4px solid #000000a8;
+}
+body.readVersiculol65{
+  --background65 : #cccccc17;
+  --bordeIzquierdo65 : 4px solid #000000a8;
+}
+body.readVersiculol66{
+  --background66 : #cccccc17;
+  --bordeIzquierdo66 : 4px solid #000000a8;
+}
+body.readVersiculol67{
+  --background67 : #cccccc17;
+  --bordeIzquierdo67 : 4px solid #000000a8;
+}
+body.readVersiculol68{
+  --background68 : #cccccc17;
+  --bordeIzquierdo68 : 4px solid #000000a8;
+}
+body.readVersiculol69{
+  --background69 : #cccccc17;
+  --bordeIzquierdo69 : 4px solid #000000a8;
+}
+body.readVersiculol70{
+  --background70 : #cccccc17;
+  --bordeIzquierdo70 : 4px solid #000000a8;
+}
+body.readVersiculol71{
+  --background71 : #cccccc17;
+  --bordeIzquierdo71 : 4px solid #000000a8;
+}
+body.readVersiculol72{
+  --background72 : #cccccc17;
+  --bordeIzquierdo72 : 4px solid #000000a8;
+}
+body.readVersiculol73{
+  --background73 : #cccccc17;
+  --bordeIzquierdo73 : 4px solid #000000a8;
+}
+body.readVersiculol74{
+  --background74 : #cccccc17;
+  --bordeIzquierdo74 : 4px solid #000000a8;
+}
+body.readVersiculol75{
+  --background75 : #cccccc17;
+  --bordeIzquierdo75 : 4px solid #000000a8;
+}
+body.readVersiculol76{
+  --background76 : #cccccc17;
+  --bordeIzquierdo76 : 4px solid #000000a8;
+}
+body.readVersiculol77{
+  --background77 : #cccccc17;
+  --bordeIzquierdo77 : 4px solid #000000a8;
+}
+body.readVersiculol78{
+  --background78 : #cccccc17;
+  --bordeIzquierdo78 : 4px solid #000000a8;
+}
+body.readVersiculol79{
+  --background79 : #cccccc17;
+  --bordeIzquierdo79 : 4px solid #000000a8;
+}
+body.readVersiculol80{
+  --background80 : #cccccc17;
+  --bordeIzquierdo80 : 4px solid #000000a8;
+}
+body.readVersiculol81{
+  --background81 : #cccccc17;
+  --bordeIzquierdo81 : 4px solid #000000a8;
+}
+body.readVersiculol82{
+  --background82 : #cccccc17;
+  --bordeIzquierdo82 : 4px solid #000000a8;
+}
+body.readVersiculol83{
+  --background83 : #cccccc17;
+  --bordeIzquierdo83 : 4px solid #000000a8;
+}
+body.readVersiculol84{
+  --background84 : #cccccc17;
+  --bordeIzquierdo84 : 4px solid #000000a8;
+}
+body.readVersiculol85{
+  --background85 : #cccccc17;
+  --bordeIzquierdo85 : 4px solid #000000a8;
+}
+body.readVersiculol86{
+  --background86 : #cccccc17;
+  --bordeIzquierdo86 : 4px solid #000000a8;
+}
+body.readVersiculol87{
+  --background87 : #cccccc17;
+  --bordeIzquierdo87 : 4px solid #000000a8;
+}
+body.readVersiculol88{
+  --background88 : #cccccc17;
+  --bordeIzquierdo88 : 4px solid #000000a8;
+}
+body.readVersiculol89{
+  --background89 : #cccccc17;
+  --bordeIzquierdo89 : 4px solid #000000a8;
+}
+body.readVersiculol90{
+  --background90 : #cccccc17;
+  --bordeIzquierdo90 : 4px solid #000000a8;
+}
+body.readVersiculol91{
+  --background91 : #cccccc17;
+  --bordeIzquierdo91 : 4px solid #000000a8;
+}
+body.readVersiculol92{
+  --background92 : #cccccc17;
+  --bordeIzquierdo92 : 4px solid #000000a8;
+}
+body.readVersiculol93{
+  --background93 : #cccccc17;
+  --bordeIzquierdo93 : 4px solid #000000a8;
+}
+body.readVersiculol94{
+  --background94 : #cccccc17;
+  --bordeIzquierdo94 : 4px solid #000000a8;
+}
+body.readVersiculol95{
+  --background95 : #cccccc17;
+  --bordeIzquierdo95 : 4px solid #000000a8;
+}
+body.readVersiculol96{
+  --background96 : #cccccc17;
+  --bordeIzquierdo96 : 4px solid #000000a8;
+}
+body.readVersiculol97{
+  --background97 : #cccccc17;
+  --bordeIzquierdo97 : 4px solid #000000a8;
+}
+body.readVersiculol98{
+  --background98 : #cccccc17;
+  --bordeIzquierdo98 : 4px solid #000000a8;
+}
+body.readVersiculol99{
+  --background99 : #cccccc17;
+  --bordeIzquierdo99 : 4px solid #000000a8;
+}
+body.readVersiculol100{
+  --background100 : #cccccc17;
+  --bordeIzquierdo100 : 4px solid #000000a8;
+}
+body.readVersiculol101{
+  --background101 : #cccccc17;
+  --bordeIzquierdo101 : 4px solid #000000a8;
+}
+body.readVersiculol102{
+  --background102 : #cccccc17;
+  --bordeIzquierdo102 : 4px solid #000000a8;
+}
+body.readVersiculol103{
+  --background103 : #cccccc17;
+  --bordeIzquierdo103 : 4px solid #000000a8;
+}
+body.readVersiculol104{
+  --background104 : #cccccc17;
+  --bordeIzquierdo104 : 4px solid #000000a8;
+}
+body.readVersiculol105{
+  --background105 : #cccccc17;
+  --bordeIzquierdo105 : 4px solid #000000a8;
+}
+body.readVersiculol106{
+  --background106 : #cccccc17;
+  --bordeIzquierdo106 : 4px solid #000000a8;
+}
+body.readVersiculol107{
+  --background107 : #cccccc17;
+  --bordeIzquierdo107 : 4px solid #000000a8;
+}
+body.readVersiculol108{
+  --background108 : #cccccc17;
+  --bordeIzquierdo108 : 4px solid #000000a8;
+}
+body.readVersiculol109{
+  --background109 : #cccccc17;
+  --bordeIzquierdo109 : 4px solid #000000a8;
+}
+body.readVersiculol110{
+  --background110 : #cccccc17;
+  --bordeIzquierdo110 : 4px solid #000000a8;
+}
+body.readVersiculol111{
+  --background111 : #cccccc17;
+  --bordeIzquierdo111 : 4px solid #000000a8;
+}
+body.readVersiculol112{
+  --background112 : #cccccc17;
+  --bordeIzquierdo112 : 4px solid #000000a8;
+}
+body.readVersiculol113{
+  --background113 : #cccccc17;
+  --bordeIzquierdo113 : 4px solid #000000a8;
+}
+body.readVersiculol114{
+  --background114 : #cccccc17;
+  --bordeIzquierdo114 : 4px solid #000000a8;
+}
+body.readVersiculol115{
+  --background115 : #cccccc17;
+  --bordeIzquierdo115 : 4px solid #000000a8;
+}
+body.readVersiculol116{
+  --background116 : #cccccc17;
+  --bordeIzquierdo116 : 4px solid #000000a8;
+}
+body.readVersiculol117{
+  --background117 : #cccccc17;
+  --bordeIzquierdo117 : 4px solid #000000a8;
+}
+body.readVersiculol118{
+  --background118 : #cccccc17;
+  --bordeIzquierdo118 : 4px solid #000000a8;
+}
+body.readVersiculol119{
+  --background119 : #cccccc17;
+  --bordeIzquierdo119 : 4px solid #000000a8;
+}
+body.readVersiculol120{
+  --background120 : #cccccc17;
+  --bordeIzquierdo120 : 4px solid #000000a8;
+}
+body.readVersiculol121{
+  --background121 : #cccccc17;
+  --bordeIzquierdo121 : 4px solid #000000a8;
+}
+body.readVersiculol122{
+  --background122 : #cccccc17;
+  --bordeIzquierdo122 : 4px solid #000000a8;
+}
+body.readVersiculol123{
+  --background123 : #cccccc17;
+  --bordeIzquierdo123 : 4px solid #000000a8;
+}
+body.readVersiculol124{
+  --background124 : #cccccc17;
+  --bordeIzquierdo124 : 4px solid #000000a8;
+}
+body.readVersiculol125{
+  --background125 : #cccccc17;
+  --bordeIzquierdo125 : 4px solid #000000a8;
+}
+body.readVersiculol126{
+  --background126 : #cccccc17;
+  --bordeIzquierdo126 : 4px solid #000000a8;
+}
+body.readVersiculol127{
+  --background127 : #cccccc17;
+  --bordeIzquierdo127 : 4px solid #000000a8;
+}
+body.readVersiculol128{
+  --background128 : #cccccc17;
+  --bordeIzquierdo128 : 4px solid #000000a8;
+}
+body.readVersiculol129{
+  --background129 : #cccccc17;
+  --bordeIzquierdo129 : 4px solid #000000a8;
+}
+body.readVersiculol130{
+  --background130 : #cccccc17;
+  --bordeIzquierdo130 : 4px solid #000000a8;
+}
+body.readVersiculol131{
+  --background131 : #cccccc17;
+  --bordeIzquierdo131 : 4px solid #000000a8;
+}
+body.readVersiculol132{
+  --background132 : #cccccc17;
+  --bordeIzquierdo132 : 4px solid #000000a8;
+}
+body.readVersiculol133{
+  --background133 : #cccccc17;
+  --bordeIzquierdo133 : 4px solid #000000a8;
+}
+body.readVersiculol134{
+  --background134 : #cccccc17;
+  --bordeIzquierdo134 : 4px solid #000000a8;
+}
+body.readVersiculol135{
+  --background135 : #cccccc17;
+  --bordeIzquierdo135 : 4px solid #000000a8;
+}
+body.readVersiculol136{
+  --background136 : #cccccc17;
+  --bordeIzquierdo136 : 4px solid #000000a8;
+}
+body.readVersiculol137{
+  --background137 : #cccccc17;
+  --bordeIzquierdo137 : 4px solid #000000a8;
+}
+body.readVersiculol138{
+  --background138 : #cccccc17;
+  --bordeIzquierdo138 : 4px solid #000000a8;
+}
+body.readVersiculol139{
+  --background139 : #cccccc17;
+  --bordeIzquierdo139 : 4px solid #000000a8;
+}
+body.readVersiculol140{
+  --background140 : #cccccc17;
+  --bordeIzquierdo140 : 4px solid #000000a8;
+}
+body.readVersiculol141{
+  --background141 : #cccccc17;
+  --bordeIzquierdo141 : 4px solid #000000a8;
+}
+body.readVersiculol142{
+  --background142 : #cccccc17;
+  --bordeIzquierdo142 : 4px solid #000000a8;
+}
+body.readVersiculol143{
+  --background143 : #cccccc17;
+  --bordeIzquierdo143 : 4px solid #000000a8;
+}
+body.readVersiculol144{
+  --background144 : #cccccc17;
+  --bordeIzquierdo144 : 4px solid #000000a8;
+}
+body.readVersiculol145{
+  --background145 : #cccccc17;
+  --bordeIzquierdo145 : 4px solid #000000a8;
+}
+body.readVersiculol146{
+  --background146 : #cccccc17;
+  --bordeIzquierdo146 : 4px solid #000000a8;
+}
+body.readVersiculol147{
+  --background147 : #cccccc17;
+  --bordeIzquierdo147 : 4px solid #000000a8;
+}
+body.readVersiculol148{
+  --background148 : #cccccc17;
+  --bordeIzquierdo148 : 4px solid #000000a8;
+}
+body.readVersiculol149{
+  --background149 : #cccccc17;
+  --bordeIzquierdo149 : 4px solid #000000a8;
+}
+body.readVersiculol150{
+  --background150 : #cccccc17;
+  --bordeIzquierdo150 : 4px solid #000000a8;
+}
+body.readVersiculol151{
+  --background151 : #cccccc17;
+  --bordeIzquierdo151 : 4px solid #000000a8;
+}
+body.readVersiculol152{
+  --background152 : #cccccc17;
+  --bordeIzquierdo152 : 4px solid #000000a8;
+}
+body.readVersiculol153{
+  --background153 : #cccccc17;
+  --bordeIzquierdo153 : 4px solid #000000a8;
+}
+body.readVersiculol154{
+  --background154 : #cccccc17;
+  --bordeIzquierdo154 : 4px solid #000000a8;
+}
+body.readVersiculol155{
+  --background155 : #cccccc17;
+  --bordeIzquierdo155 : 4px solid #000000a8;
+}
+body.readVersiculol156{
+  --background156 : #cccccc17;
+  --bordeIzquierdo156 : 4px solid #000000a8;
+}
+body.readVersiculol157{
+  --background157 : #cccccc17;
+  --bordeIzquierdo157 : 4px solid #000000a8;
+}
+body.readVersiculol158{
+  --background158 : #cccccc17;
+  --bordeIzquierdo158 : 4px solid #000000a8;
+}
+body.readVersiculol159{
+  --background159 : #cccccc17;
+  --bordeIzquierdo159 : 4px solid #000000a8;
+}
+body.readVersiculol160{
+  --background160 : #cccccc17;
+  --bordeIzquierdo160 : 4px solid #000000a8;
+}
+body.readVersiculol161{
+  --background161 : #cccccc17;
+  --bordeIzquierdo161 : 4px solid #000000a8;
+}
+body.readVersiculol162{
+  --background162 : #cccccc17;
+  --bordeIzquierdo162 : 4px solid #000000a8;
+}
+body.readVersiculol163{
+  --background163 : #cccccc17;
+  --bordeIzquierdo163 : 4px solid #000000a8;
+}
+body.readVersiculol164{
+  --background164 : #cccccc17;
+  --bordeIzquierdo164 : 4px solid #000000a8;
+}
+body.readVersiculol165{
+  --background165 : #cccccc17;
+  --bordeIzquierdo165 : 4px solid #000000a8;
+}
+body.readVersiculol166{
+  --background166 : #cccccc17;
+  --bordeIzquierdo166 : 4px solid #000000a8;
+}
+body.readVersiculol167{
+  --background167 : #cccccc17;
+  --bordeIzquierdo167 : 4px solid #000000a8;
+}
+body.readVersiculol168{
+  --background168 : #cccccc17;
+  --bordeIzquierdo168 : 4px solid #000000a8;
+}
+body.readVersiculol169{
+  --background169 : #cccccc17;
+  --bordeIzquierdo169 : 4px solid #000000a8;
+}
+body.readVersiculol170{
+  --background170 : #cccccc17;
+  --bordeIzquierdo170 : 4px solid #000000a8;
+}
+body.readVersiculol171{
+  --background171 : #cccccc17;
+  --bordeIzquierdo171 : 4px solid #000000a8;
+}
+body.readVersiculol172{
+  --background172 : #cccccc17;
+  --bordeIzquierdo172 : 4px solid #000000a8;
+}
+body.readVersiculol173{
+  --background173 : #cccccc17;
+  --bordeIzquierdo173 : 4px solid #000000a8;
+}
+body.readVersiculol174{
+  --background174 : #cccccc17;
+  --bordeIzquierdo174 : 4px solid #000000a8;
+}
+body.readVersiculol175{
+  --background175 : #cccccc17;
+  --bordeIzquierdo175 : 4px solid #000000a8;
+}
+body.readVersiculol176{
+    --background176 : #cccccc17;
+    --bordeIzquierdo176 : 4px solid #000000a8;
 }

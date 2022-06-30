@@ -188,7 +188,7 @@ export class TabsPage implements OnInit {
   }
 
   async presentActionSheet() {
-    if (this.router.url != '/tabs/login') {
+    if (this.router.url != '/tabs/  ') {
       const actionSheet = await this.actionSheetController.create({
         header: 'Opciones',
         mode: 'ios',
@@ -203,21 +203,21 @@ export class TabsPage implements OnInit {
           },*/ {
             text: 'Buscar Actualizacion SLM',
             role: 'destructive',
-            icon: 'md-sync',
+            icon: 'sync',
             handler: () => {
               this.updateSLM();
             }
           },
           {
             text: 'Sobre Sion:Leche y Miel (SLM)',
-            icon: 'ios-information-circle-outline',
+            icon: 'information-circle-outline',
             handler: () => {
               this.router.navigate(['/tabs/tab4']);
             }
           },
           {
             text: 'Contacto',
-            icon: 'ios-contact',
+            icon: 'person-circle-outline',
             handler: () => {
               this.router.navigate(['/tabs/tab3']);
             }

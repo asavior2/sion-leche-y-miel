@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, OnDestroy, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, ElementRef, Renderer2 } from '@angular/core';
 import {BibliaService} from '../services/biblia.service';
 import Libros from '../../assets/libros.json';
 import LibrosHebreo from '../../assets/librosHebreo.json';
@@ -27,6 +27,7 @@ import { filter } from 'rxjs/operators';
   styleUrls: ['tab1.page.scss']
 })
 export class Tab1Page implements OnInit {
+  @ViewChild("myButton") myButton: ElementRef;
   libro = 43;
   LibrosPrueba;
   capitulo = 3;
@@ -77,10 +78,17 @@ export class Tab1Page implements OnInit {
   tipoOrdenName;
   private fragment: string;
   private sub: Subscription;
-  audio:string;
+  audioMP3:string;
   private win: any = window;
   tiempoAudio;
   colorVar = "blue"
+  readVersiculo: boolean = true;
+  isPlaying: boolean = false;
+  audio;
+  idPlay = 0;
+  tiempoRecorrido = 0;
+  ultimoTiempo = 0;
+  playPausa:string ="play";
 
 
   @ViewChild(IonContent) ionContent: IonContent;
@@ -98,15 +106,17 @@ export class Tab1Page implements OnInit {
               public router:Router,
               private activeRoute: ActivatedRoute,
               public tabs: TabsPage,
-              private elementRef:ElementRef) {
+              private elementRef:ElementRef,
+              private renderer: Renderer2) {
 
                 this.tabs.validaUri();
                 //this.guardarMarcador();
                 this.platform.backButton.observers.pop();
                 
-                //this.sub = activeRoute.fragment.pipe(filter(f => !!f)).subscribe(f => document.getElementById(f).scrollIntoView());
                 
-
+                
+                
+                
               }
 
        
@@ -141,14 +151,14 @@ export class Tab1Page implements OnInit {
         // console.log(this.libro);
       }
     });
-    this.storage.get('fontSize').then((val) => {
+    await this.storage.get('fontSize').then((val) => {
       if (val == null) {
         this.fontSize = 4;
       } else {
         this.fontSize = val;
       }
     });
-    this.storage.get('capitulo').then((val) => {
+    await this.storage.get('capitulo').then((val) => {
       if (val !== null) {
         this.capitulo = val;
         // primer mostrar texto
@@ -159,6 +169,17 @@ export class Tab1Page implements OnInit {
       }
     });
 
+    this.storage.set('playAuto', false);
+
+    await this.audioReproductor();
+
+    await this.storage.get('playAuto').then((val) => {
+      if (val != null && val == true) {
+        this.isPlaying = false
+        this.playAudio()
+      } 
+      console.log(this.tipoOrdenName);
+    });
 
     this.storage.get(this.libro.toString()).then((val) => {
       if (val == null) {
@@ -194,6 +215,26 @@ export class Tab1Page implements OnInit {
       }
     }
     
+    
+
+    /* 
+    console.log(this.libro + " ***** " + this.capitulo)
+    this.audioMP3 = "assets/audios/"+ this.libro +"/"+ this.capitulo +".mp3"
+    this.tiempoAudio = this.bibliaService.getTextoAudio(this.libro, this.capitulo);
+    console.log(this.tiempoAudio)
+    this.audio = new Audio(this.audioMP3);
+    this.audio.load();
+
+    this.audio.addEventListener("play", () => {
+      console.log("Inicio el audio reproducción");
+    });
+
+    this.audio.addEventListener("ended", () => {
+      console.log("finalizo el audio reproducción");
+
+      this.nextboton()
+    });*/
+
 
     /*
     this.bibliaService.getUser().subscribe(datas => {
@@ -214,62 +255,106 @@ export class Tab1Page implements OnInit {
   }
 
   async playAudio(){
-    //Validar si el audio existe con readAsText
-    const el = document.getElementById('.l1');
-    //el.style.setProperty('--background', '#ff001e');
-    //el.style.color= 'blue';
-
-    this.tiempoAudio = this.bibliaService.getTextoAudio(this.libro, this.capitulo);
-    console.log(this.tiempoAudio)
+    //this.ionContent.scrollToTop(300); //subir scroll al inicio
+    
     let tiempo
-    let n = ""
-    this.audio = "assets/audios/2/1.mp3"
-    let audio = new Audio();
-    audio.src = this.audio;
-    audio.load();
-    audio.play();
-
-    console.log(this.tiempoAudio)
+  
+    console.log(this.isPlaying)
+    if (this.isPlaying){
+      this.isPlaying = !this.isPlaying;
+      this.audio.pause();
+      this.playPausa = "play"
+      console.log("pause")
+    }else {
+      this.isPlaying = !this.isPlaying;
+      this.audio.currentTime = this.tiempoRecorrido - this.ultimoTiempo;
+      //this.audio.currentTime = 244
+      this.audio.play();
+      console.log("play")
+      this.playPausa = "pause"
+      console.log(this.tiempoAudio)
       if (this.tiempoAudio != null){
+        this.tiempoRecorrido = 0; 
         for (const entry  of this.tiempoAudio){
-          //const el = document.querySelector('.l1');
-          //el.style.setProperty('--background', '#36454f');
-          //document.body.style.setProperty('--my-var', this.colorVar);
-          //this.elementRef.nativeElement.style.setProperty('--my-var', 'red'); 
-          //document.documentElement.style.setProperty('--dynamic-colour', "green");
-          this.setStyle('red');
-          tiempo = entry.seg*1000
-          this.router.navigate( ['/tabs/tab1'], {fragment: entry.versiculo});
-          await this.delay(tiempo);
+          let versiculoAnterior = entry.versiculo - 1
+          if (!this.isPlaying){
+            this.idPlay = parseInt(entry.id) - 1 ;
+            console.log("idPlay")
+            console.log(this.idPlay)
+            break;
+          }
+          if (parseInt(entry.id) >= this.idPlay){
+            if (parseInt(entry.versiculo) > 1){
+              this.marcarVersiculoAudioRemove("readVersiculol" + versiculoAnterior)
+              this.marcarVersiculoAudioAdd("readVersiculol" + entry.versiculo)
+            }else {
+              this.marcarVersiculoAudioAdd("readVersiculol" + entry.versiculo)
+            }
+            ///tiempo = entry.seg*1000
+            tiempo = parseInt(entry.seg)
+            let tiempoRestante = (entry.seg - tiempo)*1000
+            if (entry.versiculo != ""){
+              this.router.navigate( ['/tabs/tab1'], {fragment: "l"+entry.versiculo});
+            }
+            //Siguiente linea es para hacer efecto el route frament [recordar debe existir el id en el html]
+            this.sub = this.activeRoute.fragment.pipe(filter(f => !!f)).subscribe(f => document.getElementById(f).scrollIntoView());
+            await this.delay(tiempo,tiempoRestante);
+          }
+          this.tiempoRecorrido = this.tiempoRecorrido + entry.seg;
+          this.ultimoTiempo = entry.seg;
           
         }
       }
+    }
+
+    
+    
+  }
+
+  marcarVersiculoAudioAdd(clase) {
+    console.log(clase)
+    //this.readVersiculo = !this.readVersiculo;
+    document.body.classList.add(clase);   //toggle
+  }
+  marcarVersiculoAudioRemove(clase) {
+    console.log(clase)
+    //this.readVersiculo = !this.readVersiculo;
+    document.body.classList.remove(clase);
+    if (clase == "all"){
+      for (let i = 1; i < 177; i ++){
+        document.body.classList.remove("readVersiculol" + i);
+      }
+    }
   }
 
 
   ngAfterViewInit(): void {
+    this.router.navigate( ['/tabs/tab1'], {fragment: ""});    //Esto es para linpiar el fragment la url #
 
-    let interval = setInterval(()=> {
-      console.log("Hola")
-      this.sub = this.activeRoute.fragment.pipe(filter(f => !!f)).subscribe(f => document.getElementById(f).scrollIntoView());
-
-        let elem = document.getElementById(this.fragment);
-        if(elem) {
-            elem.scrollIntoView();
-            clearInterval(interval);
-        }
-      
-    }, 1000);  
   }
 
-  setStyle(value: string): void {
-    this.elementRef.nativeElement.style.setProperty('--my-var', value); 
+
+  async delay(ms: number,tiempo2) {
+    if (ms > 1){
+        for (let _i = 0; _i < ms*2; _i++) { //ms*2  y time 500 es para solucionar pause play rapido
+          if (!this.isPlaying){
+            return
+          }
+          await this.delay2(500);
+      }
+      await this.delay2(tiempo2);
+    }else {
+      await this.delay2(tiempo2);
+    }
+    return
+    //return new Promise( resolve => setTimeout(resolve, ms) );
   }
-  delay(ms: number) {
+  delay2(ms: number) {
     return new Promise( resolve => setTimeout(resolve, ms) );
   }
+
    // funcion para cambiar el modo desde el toggle modo dark
-   
+  
 
   async filterListLibro(evt) {
     if (evt === 'limpiar') {
@@ -434,12 +519,33 @@ export class Tab1Page implements OnInit {
     } else {
       this.textoJsonFinal = await this.bibliaService.getTextoImport(this.libro, this.capitulo);
     }
+    //this.audioReproductor();
 
     this.mostrarTexto = true;
   }
 
+  audioReproductor(){
+    //Para el audio 
+    console.log(this.libro + " ***** " + this.capitulo)
+    this.audioMP3 = "assets/audios/"+ this.libro +"/"+ this.capitulo +".mp3"
+    this.tiempoAudio = this.bibliaService.getTextoAudio(this.libro, this.capitulo);
+    console.log(this.tiempoAudio)
+    this.audio = new Audio(this.audioMP3);
+    this.audio.load();
 
-  previousboton() {
+    this.audio.addEventListener("play", () => {
+      console.log("Inicio el audio reproducción");
+    });
+    this.audio.addEventListener("ended", () => {
+      console.log("finalizo el audio reproducción");
+      this.storage.set('playAuto', true);
+      
+      this.nextboton()
+    });
+  }
+
+
+  async previousboton() {
     this.ionContent.scrollToTop(300);
     // this.scrollToTop();
     if (this.libro >= 1 && this.capitulo > 1) {
@@ -456,9 +562,24 @@ export class Tab1Page implements OnInit {
         }
         this.mostrarTextoMetodo(this.libro, this.capitulo);
     }
+    this.router.navigate( ['/tabs/tab1'], {fragment: ""});
+    this.marcarVersiculoAudioRemove("all")
+    
+    if (this.isPlaying){
+      this.playAudio()
+      await this.delay2(900);
+      this.idPlay = 0
+      this.tiempoRecorrido = 0
+      this.audioReproductor()
+    }else{
+      this.idPlay = 0
+      this.tiempoRecorrido = 0
+      this.audioReproductor()
+    }
+   
   }
 
-  nextboton(){
+  async nextboton(){
     this.ionContent.scrollToTop(300);
     // this.scrollToTop();
      //console.log(this.cantCapitulo.length);
@@ -476,6 +597,23 @@ export class Tab1Page implements OnInit {
       }
       this.mostrarTextoMetodo(this.libro, this.capitulo);
   }
+  this.router.navigate( ['/tabs/tab1'], {fragment: ""});
+  this.marcarVersiculoAudioRemove("all")
+  
+  if (this.isPlaying){
+    this.playAudio()
+    await this.delay2(900);
+    this.idPlay = 0
+    this.tiempoRecorrido = 0
+    this.audioReproductor()
+   
+    this.playAudio()
+  }else{
+    this.idPlay = 0
+    this.tiempoRecorrido = 0
+    this.audioReproductor()
+  }
+  
   }
   
 // ______________________________________________________________________________________________
