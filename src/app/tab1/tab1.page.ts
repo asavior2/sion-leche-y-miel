@@ -436,10 +436,14 @@ export class Tab1Page implements OnInit {
  getcapitulos(libro) {
     this.cantCapitulo = [];
     for (const entry of Libros) {
-      if (entry.id === libro) {
+      if (entry.id == libro) {
         for (let _i = 0; _i < +entry.capitulos; _i++) {
           this.cantCapitulo.push(_i + 1);
         }
+        
+        console.log(this.cantCapitulo)
+      }else{
+        console.log("else " + this.cantCapitulo)
       }
     }
     // console.log('Cantidad de capitulos ' + this.cantCapitulo);
@@ -464,7 +468,7 @@ export class Tab1Page implements OnInit {
     this.libro = libro;
     this.mostrarTexto = false;
     this.mostrarLibros = false;
-    this.getcapitulos(libro);
+    this.getcapitulos(this.libro);
     if (this.mostrarCapitulos === true) {
       this.mostrarTexto = !this.mostrarTexto ;
     }
@@ -479,7 +483,7 @@ export class Tab1Page implements OnInit {
         this.librot = entry.libro;
       }
     }
-    this.getcapitulos(libro);
+    this.getcapitulos(this.libro);
   }
 
   async mostrarTextoMetodo(libro, capitulo) {
@@ -546,6 +550,7 @@ export class Tab1Page implements OnInit {
 
 
   async previousboton() {
+
     this.ionContent.scrollToTop(300);
     // this.scrollToTop();
     if (this.libro >= 1 && this.capitulo > 1) {
@@ -582,8 +587,9 @@ export class Tab1Page implements OnInit {
   async nextboton(){
     this.ionContent.scrollToTop(300);
     // this.scrollToTop();
-     //console.log(this.cantCapitulo.length);
-    // console.log (this.cantCapitulo.length);
+     console.log(this.libro);
+     console.log(this.cantCapitulo);
+     console.log (this.cantCapitulo.length);
     if (this.libro <= 66 && this.capitulo < this.cantCapitulo.length){
       this.capitulo++;
       this.mostrarTextoMetodo(this.libro, this.capitulo);
