@@ -160,13 +160,13 @@
         <ion-label  text-wrap part="placeholder"  *ngFor="let text of textoJsonFinal"  >
           
             <div *ngIf="text.hasOwnProperty('idTitulo')">
-              <h4 align="center" padding-bottom><FONT face="Segoe UI" size={{this.fontSize+1}}><strong>{{text.titulo}}</strong></FONT></h4> 
+              <h4 align="center" padding-bottom><FONT face="Segoe UI" [style.font-size.px]=this.fontSize+6 ><strong>{{text.titulo}}</strong></FONT></h4> 
             </div>
           
             <div *ngIf="text.hasOwnProperty('comprimido')">
               <div  id=l{{text.versiculo}} padding-horizontal padding-bottom id=l{{text.versiculo}}  class="l{{text.versiculo}}">
-                <FONT  size={{this.fontSize-2}} face="Segoe UI"><ion-text  color="medium">{{text.versiculo}} </ion-text></FONT>
-                <font *ngFor="let construirVersiculo of text.comprimido" size={{this.fontSize}}>
+                <FONT  [style.font-size.px]=this.fontSize-7  face="Segoe UI"><ion-text  color="medium">{{text.versiculo}} </ion-text></FONT>
+                <font *ngFor="let construirVersiculo of text.comprimido" [style.font-size.px]=this.fontSize>
                     <ion-text class={{marcar(construirVersiculo.capitulo,construirVersiculo.versiculo)}}>
                       <a (click)="seleccionarVersiculo('noText', construirVersiculo.id_libro, construirVersiculo.capitulo, construirVersiculo.versiculo)" class={{this.marcarV}}>
                         {{construirVersiculo.parteText}} 
@@ -189,12 +189,13 @@
           
             <div *ngIf ="!text.hasOwnProperty('comprimido')" padding-horizontal padding-bottom>
               <div  id=l{{text.versiculo}}  outline="true" class=l{{text.versiculo}} #myButton >
-                <FONT size={{this.fontSize-2}} face="Segoe UI"><ion-text *ngIf="!text.hasOwnProperty('idTitulo')" color="medium">{{text.versiculo}} </ion-text></FONT>
-                <font  size={{this.fontSize}}>
-                  <ion-text  class={{marcar(text.capitulo,text.versiculo)}}>
+                <FONT  [style.font-size.px]=this.fontSize-7  face="Segoe UI"><ion-text *ngIf="!text.hasOwnProperty('idTitulo')" color="medium">{{text.versiculo}} </ion-text>
+                </FONT>
+                <font class="tamañoTextoVersiculo" [style.font-size.px]=this.fontSize> <!-- size={{this.fontSize}}  style="font-size: 20px"   size={{this.fontSize-2}}-->
+                  <ion-text  class={{marcar(text.capitulo,text.versiculo)}} >
                     <span > 
                       <a (click)="seleccionarVersiculo(text.texto,text.id_libro, text.capitulo, text.versiculo)" class={{this.marcarV}}>
-                        {{text.texto}} 
+                        {{text.texto}}
                       </a>
                     </span>
                   </ion-text>

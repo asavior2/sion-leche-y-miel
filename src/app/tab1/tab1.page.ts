@@ -153,7 +153,7 @@ export class Tab1Page implements OnInit {
     });
     await this.storage.get('fontSize').then((val) => {
       if (val == null) {
-        this.fontSize = 4;
+        this.fontSize = 20;
       } else {
         this.fontSize = val;
       }
@@ -851,13 +851,13 @@ organizarCitas(textoJson){
     }
 
   aumentarSize() {
-    if(this.fontSize < 6){
-      this.fontSize++;
+    if(this.fontSize < 28){
+      this.fontSize = this.fontSize + 1;
       this.storage.set("fontSize", this.fontSize);
     }
   }
   disminuirSize() {
-    if (this.fontSize >2){
+    if (this.fontSize >16){
       this.fontSize--
       this.storage.set('fontSize', this.fontSize);
     }
