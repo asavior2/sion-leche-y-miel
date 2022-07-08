@@ -57,9 +57,9 @@
         <div *ngIf="tipoOrdenT">                                                                               <!--Vista Tradicional-->
           <ion-item>
             <ion-icon name="ios-search" ></ion-icon>
+            <!-- eliminado del ion input (ionBlur)="filterListLibro('limpiar')" -->
             <ion-input   
               show-cancel-button="always"
-              (ionBlur)="filterListLibro('limpiar')"
               clear-on-edit=true
               placeholder="Buscar libro"
               type="text" 
@@ -108,12 +108,13 @@
         <div *ngIf="tipoOrdenH">                                                                               <!--Vista Tradicional-->
           <ion-item>
             <ion-icon name="ios-search" ></ion-icon>
+            <!-- eliminado del ion-input  (ionBlur)="filterListLibro('limpiar')"  -->
             <ion-input   
-              placeholder="Buscar libro"
-              type="text" 
-              clear-on-edit=true
-              (ionBlur)="filterListLibro('limpiar')"
-              (ionInput)="filterListLibro($event)"
+            show-cancel-button="always"
+            clear-on-edit=true
+            placeholder="Buscar libro"
+            type="text" 
+            (ionInput)="filterListLibro($event)"
             ></ion-input >
           </ion-item>
           

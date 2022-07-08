@@ -7,10 +7,12 @@ ion-button {
   --border-width:1px;
 }
 
-.tamañoTextoVersiculo{
-  //font-size: 20px
+body {
+  user-select: text;
+  }
+a {
+  user-select: text;
 }
-
 .alert-ios .alert-radio-label{ white-space: pre-line;}
 .alert-md .alert-radio-label{ white-space: pre-line;}
 .alert-wp .alert-radio-label{ white-space: pre-line;}

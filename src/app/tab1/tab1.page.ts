@@ -357,7 +357,8 @@ export class Tab1Page implements OnInit {
   
 
   async filterListLibro(evt) {
-    if (evt === 'limpiar') {
+    /** limpiar parece no hacer nada eliminar en otra ocacion  
+    if (evt === 'limpiara') { 
       if (this.tipoOrdenH) {
       this.librosTodosHebreo = LibrosHebreo;
       this.librosTodosHebreo = this.librosTodosHebreo.filter(currentLibro => {
@@ -373,7 +374,8 @@ export class Tab1Page implements OnInit {
           }
         });
       }
-    }
+    }*/
+    console.log(evt)
     const searchTerm = evt.srcElement.value;
     if (!searchTerm) {
       return;
