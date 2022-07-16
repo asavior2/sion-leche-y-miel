@@ -28,10 +28,27 @@
     </ion-list> 
     -->
   </ion-toolbar>
+
+ 
+  
 </ion-header>
 
 <ion-content  class="body" >
   
+  <ion-fab *ngIf="share" horizontal="start" vertical="top" slot="fixed">
+    <ion-fab-button color="primary">
+      <ion-icon name="share-social"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list side="end">
+      <ion-fab-button color="light" (click)="copiarVersiculo()" >
+        <ion-icon color="primary" name="copy"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button color="light" (click)="marcarVersiculo()">
+        <ion-icon color="primary" name="bookmark"></ion-icon>
+      </ion-fab-button>
+    </ion-fab-list>
+  </ion-fab>
+
   <ion-grid part="placeholder" >
     <ion-row >
       <ion-col size-md="2"  size-lg="3" >

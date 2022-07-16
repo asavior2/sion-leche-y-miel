@@ -62,7 +62,7 @@ export class Tab1Page implements OnInit {
   tempVersiculo;
   versiculoTEMP;
   dataTemp;
-  textTemp;
+  textTemp = '';
   marcador: any[] = new Array;
   marcadorLibro: any[] = new Array;
   marcarV;
@@ -89,7 +89,8 @@ export class Tab1Page implements OnInit {
   tiempoRecorrido = 0;
   ultimoTiempo = 0;
   playPausa:string ="play";
-
+  share:boolean = false;
+  copiaCondensado = [];
 
   @ViewChild(IonContent) ionContent: IonContent;
   constructor(private bibliaService: BibliaService,
@@ -489,6 +490,7 @@ export class Tab1Page implements OnInit {
   }
 
   async mostrarTextoMetodo(libro, capitulo) {
+    this.marcarVersiculoAudioRemove("all")
     this.citas = [];
     this.storage.set('libro', libro);
     this.storage.set('capitulo', capitulo);
@@ -504,6 +506,19 @@ export class Tab1Page implements OnInit {
     this.libro = libro;
     this.capitulo = capitulo;
     this.actualizarLibroTitulo(this.libro);
+
+    if (this.isPlaying){
+      this.playAudio()
+      await this.delay2(900);
+      this.idPlay = 0
+      this.tiempoRecorrido = 0
+      this.audioReproductor()
+    }else{
+      this.idPlay = 0
+      this.tiempoRecorrido = 0
+      console.log("desde no *** audioReproductor")
+      this.audioReproductor()
+    }
     // update es referente a si se actualizo los arquivos JSON que tienen el texto.
     
     await this.storage.get('update').then((val) => {
@@ -536,6 +551,7 @@ export class Tab1Page implements OnInit {
     this.audioMP3 = "assets/audios/"+ this.libro +"/"+ this.capitulo +".mp3"
     this.tiempoAudio = this.bibliaService.getTextoAudio(this.libro, this.capitulo);
     console.log(this.tiempoAudio)
+    console.log("***** " + this.audioMP3)
     this.audio = new Audio(this.audioMP3);
     this.audio.load();
 
@@ -824,11 +840,35 @@ organizarCitas(textoJson){
           }
         }
       }
+            
+      
     }
   }
 
   async seleccionarVersiculo(texto, idLibro, capitulo, versiculo) {
+    document.body.classList.toggle("readVersiculol" + versiculo); 
     await this.buscarVersiculo(idLibro, capitulo, versiculo);
+    let arreglo = [idLibro, capitulo, versiculo, this.textTemp]
+    if (this.copiaCondensado[versiculo] == null){
+      this.copiaCondensado[versiculo] = arreglo
+      console.log(this.copiaCondensado.length)
+    }else{
+      this.copiaCondensado.splice(versiculo,1);
+      //delete this.copiaCondensado[versiculo]
+    }
+    let contador = 0 
+    for (let clave in this.copiaCondensado){
+      contador ++
+    }
+    //console.log("contador "+ contador);
+    if (contador > 0 ){
+      this.share = true
+    }else{
+      this.share = false
+    }
+    //this.marcarVersiculoAudioRemove("readVersiculol" + versiculoAnterior)
+    //this.marcarVersiculoAudioAdd("readVersiculol" + versiculo)
+    /* 
     const actionSheet = await this.actionSheetController.create({
       mode: 'ios',
       buttons: [{
@@ -850,6 +890,26 @@ organizarCitas(textoJson){
       ]
       });
       await actionSheet.present();
+      */
+    }
+    copiarVersiculo(){
+      let textTemp = "";
+      for (let clave in this.copiaCondensado){
+        textTemp = textTemp + " " + this.copiaCondensado[clave][2] +this.copiaCondensado[clave][3]  
+        //console.log(this.copiaCondensado[clave])
+      }
+      //console.log(textTemp + " " + this.librot + " " + this.capitulo + ":"  + ' Biblia SLM http://sionlecheymiel.com')
+      this.clipboard.copy(textTemp + " " + this.librot + " " + this.capitulo + ":"  + ' Biblia SLM https://sionlecheymiel.com');
+      this.marcarVersiculoAudioRemove("all")
+      this.share = false
+    }
+    marcarVersiculo(){
+      for (let clave in this.copiaCondensado){
+        //this.guardarMarcador(idLibro, capitulo, versiculo);
+        this.guardarMarcador(this.copiaCondensado[clave][0], this.copiaCondensado[clave][1], this.copiaCondensado[clave][2]);
+      }
+      this.marcarVersiculoAudioRemove("all")
+      this.share = false
     }
 
   aumentarSize() {
