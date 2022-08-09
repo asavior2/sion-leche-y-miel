@@ -243,7 +243,8 @@ export class Tab1Page implements OnInit {
     });*/
     // console.log(this.primerP);
     // console.log(this.segundoP);
-    this.dataTemp = this.textoJsonFinal = await this.bibliaService.getTextoImport(this.libro, this.capitulo);
+     this.textoJsonFinal = await this.bibliaService.getTextoImport(this.libro, this.capitulo);
+     //this.dataTemp = this.textoJsonFinal = await this.bibliaService.getTextoImport(this.libro, this.capitulo);
 
 
     
@@ -878,9 +879,10 @@ organizarCitas(textoJson){
   }
 
   async buscarVersiculo(idLibro, capitulo, versiculo) {
+    console.log(idLibro + " -- " + capitulo + " -- " + versiculo)
     if (this.update) {
       await this.bibliaService.getTextoFile(idLibro, capitulo).then((data) => {
-        // console.log(data);
+        //console.log(data);
         this.dataTemp = JSON.parse(data);
         // console.log ("Texto cita" + this.arregloTextoCita);
         for (let text of this.dataTemp) {
@@ -903,8 +905,9 @@ organizarCitas(textoJson){
       //Siguiente linea la movi para ngOnInit, aqui daba peo.
       //this.dataTemp = this.textoJsonFinal = await this.bibliaService.getTextoImport(idLibro, capitulo);
       // console.log ("Texto cita" + this.arregloTextoCita);
-      for (let text of this.dataTemp) {
-        if (versiculo === text.versiculo) {
+      console.log(this.textoJsonFinal)
+      for (let text of this.textoJsonFinal) {
+        if (versiculo == text.versiculo) {
           if (text.hasOwnProperty('comprimido')) {
             this.textTemp = '';
             for (let texto of text.comprimido){
