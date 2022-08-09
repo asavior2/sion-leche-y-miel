@@ -66,8 +66,7 @@ export class TabsPage implements OnInit {
       } else {
         this.estadoDark = 'Activar ';
       }
-
-
+      //this.unZip('audio-SLM-calidad-baja.zip','audio')
     }
 
    validaUri() {
@@ -79,13 +78,13 @@ export class TabsPage implements OnInit {
     }
   }
 
-  validarUpdate() {
-    return this.httpClient.get('https://raw.githubusercontent.com/asavior2/sion-leche-y-miel/master/resources/checkUpdate.json');
+  validarUpdate(url) {
+    return this.httpClient.get(url);
   }
 
   async updateSLM() {
     // tslint:disable-next-line: no-trailing-whitespace
-    await this.validarUpdate().subscribe(data => {
+    await this.validarUpdate('https://raw.githubusercontent.com/asavior2/sion-leche-y-miel/master/resources/checkUpdate.json').subscribe(data => {
       // console.log(data);
       // tslint:disable-next-line: forin
       for (const entry in data) {
@@ -99,7 +98,7 @@ export class TabsPage implements OnInit {
       if (this.version !== undefined && this.version !== this.update) {                 // Si es diferente descargar
         console.log('Descargar unZip');
         this.download(this.url, this.version); // Descargar
-        this.unZip(this.version + '.zip');
+        this.unZip(this.version + '.zip','update');
       } else {                                                                          // De lo contrario no hay actualizaciones.
         this.alertNoUpdate();
       }
@@ -111,37 +110,82 @@ export class TabsPage implements OnInit {
 
     });
   }
-  async unZip(version: string) {
+
+  async downloadAudio(calidad) {
+    this.alertDownloadAudio('Descarga en proceso','La descarga quedará en segundo plano, puede seguir utilizando la aplicación')
+
+    // tslint:disable-next-line: no-trailing-whitespace
+    let url = ''
+    let nombre = ''
+    if(calidad == 'alta'){
+      url = 'https://sionlecheymiel.com/file/audio-SLM-calidad-alta.zip'
+      nombre = "audio-SLM-calidad-alta.zip" 
+    }else if (calidad == 'media'){
+      url = 'https://sionlecheymiel.com/file/audio-SLM-calidad-media.zip'
+      nombre = "audio-SLM-calidad-media.zip" 
+    }else{
+      url = 'https://sionlecheymiel.com/file/audio-SLM-calidad-baja.zip'
+      nombre = "audio-SLM-calidad-baja.zip" 
+    }
+     
+    console.log('Descargar un Zip');
+    await this.download(url, nombre); // Descargar
+    await this.unZip(nombre,'audio');    
+  }
+
+
+  async unZip(version: string, deQuien: string) {
   /*externalRootDirectory file:///storage/emulated/0/
     dataDirectorio file:///data/user/0/io.slm.starter/files/
     externalDataDirectory file:///storage/emulated/0/Android/data/io.slm.starter/files/*/
-    this.zipPath = this.file.externalDataDirectory + version + '.zip';
+    this.zipPath = this.file.applicationStorageDirectory + "files/Documents/" + version;
     console.log(this.zipPath);
 
     this.file.checkFile(this.zipPath, '').then(_ => {
       this.zip.unzip (this.zipPath,
-                      this.file.externalDataDirectory,
+                      this.file.applicationStorageDirectory + "files/Documents/",
                       (progress) =>
                       console.log('Unzipping, ' + Math.round((progress.loaded / progress.total) * 100) + '%')).then((result) => {
                         if (result === 0) {
                           console.log('SUCCESS');
-                          this.storage.set('update', version);
-                          this.alertUpdate(version);
+                          if(deQuien == 'audio'){
+                            this.alertDownloadAudio('Descarga Completada','Biblia Sion Leche y Miel en audio')
+                          }else {
+                            this.alertUpdate(version);
+                          }
                       }
-                        if (result === -1) { console.log('FAILED'); }
+                        if (result === -1) { 
+                          console.log('FAILED'); 
+                          if(deQuien == 'audio'){
+                            this.alertErrorDownloadAudio('Ocuarrio un error', ' :( ')
+                          }else {
+                            this.alertUpdate(version); //aler error descarga
+                          }
+                        }
       });
-    }).catch(err => console.log('file doesn\'t exist'));
-
+    }).catch((err) => {
+      this.alertErrorDownloadAudio(err.status, err.statusText)
+    });
 
   }
 
-  download(url: string, version: string) {
+  async download(url: string, version: string) {
+    console.log(url + " " + version)
     const fileTransfer: FileTransferObject = this.transfer.create();
     // const url = 'https://raw.githubusercontent.com/asavior2/sion-leche-y-miel/master/ionic.config.json';
-    fileTransfer.download(url, this.file.externalDataDirectory + version).then((entry) => {
+    await fileTransfer.download(url, this.file.applicationStorageDirectory + "/files/Documents/" + version).then((entry) => { //externalDataDirectory
       console.log('download complete: ' + entry.toURL());
-    }, (error) => console.log(console.error));
+    }, (error) => {
+      console.log(console.error)
+      console.log("An error has occurred: Code = " + error.code);
+      if(error.code == 3){
+        this.alertErrorDownloadAudio("Problema con la conexión", "Intentelo nuevamente.")
+      }
+      console.log("upload error source " + error.source);
+      console.log("upload error target " + error.target);
+    });
   }
+
 
   async alertError(statusError: string, statusTextError: string,  ) {
     const alert = await this.alertController.create({
@@ -177,6 +221,30 @@ export class TabsPage implements OnInit {
     await alert.present();
 }
 
+async alertDownloadAudio(header: string, subHeader:string) {
+  const alert = await this.alertController.create({
+    cssClass: 'my-custom-class',
+    header: header,
+    subHeader: subHeader,
+    message: '',
+    buttons: ['OK'],
+    mode: 'ios'
+  });
+  await alert.present();
+}
+
+async alertErrorDownloadAudio(statusError: string, statusTextError: string,  ) {
+  const alert = await this.alertController.create({
+    cssClass: 'my-custom-class',
+    header: 'Error de descarga',
+    subHeader: statusError + ' ' + statusTextError,
+    message: '',
+    buttons: ['OK'],
+    mode: 'ios'
+  });
+  await alert.present();
+}
+
   changeDark() {
     this.darkMode = !this.darkMode;
     document.body.classList.toggle('dark');
@@ -190,7 +258,7 @@ export class TabsPage implements OnInit {
   async presentActionSheet() {
     if (this.router.url != '/tabs/  ') {
       const actionSheet = await this.actionSheetController.create({
-        header: 'Opciones',
+        header: 'Sion:Leche y Miel',
         mode: 'ios',
         buttons: [
           /*{
@@ -200,19 +268,46 @@ export class TabsPage implements OnInit {
             handler: () => {
               this.onLogout();
             }
-          },*/ {
+          }, {
             text: 'Buscar Actualizacion SLM',
             role: 'destructive',
             icon: 'sync',
             handler: () => {
               this.updateSLM();
             }
+          },*/
+          {
+            text: 'Descargar Biblia en audio, en:',
+            role: 'destructive',
+            icon: 'musical-notes',
           },
           {
-            text: 'Sobre Sion:Leche y Miel (SLM)',
-            icon: 'information-circle-outline',
+            text: 'Alta calidad 1.100MB',
+            role: '',
+            icon: 'cloud-download',
             handler: () => {
-              this.router.navigate(['/tabs/tab4']);
+              this.downloadAudio('alta');
+            }
+          },
+          {
+            text: 'Media calidad 824MB',
+            icon: 'cloud-download',
+            handler: () => {
+              this.downloadAudio('media');
+            }
+          },
+          {
+            text: 'Baja calidad 550MB',
+            icon: 'cloud-download',
+            handler: () => {
+              this.downloadAudio('baja');
+            }
+          },
+          {
+            text: this.estadoDark + ' modo nocturno',
+            icon: 'moon',
+            handler: () => {
+              this.changeDark();
             }
           },
           {
@@ -223,10 +318,11 @@ export class TabsPage implements OnInit {
             }
           },
           {
-            text: this.estadoDark + ' modo nocturno',
-            icon: 'moon',
+            text: 'Sobre Sion:Leche y Miel(SLM)',
+            role: '',
+            icon: 'information-circle-outline',
             handler: () => {
-              this.changeDark();
+              this.router.navigate(['/tabs/tab4']);
             }
           }/*,
           {

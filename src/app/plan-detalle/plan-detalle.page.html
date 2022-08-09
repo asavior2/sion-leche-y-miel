@@ -3,7 +3,7 @@
     <ion-buttons slot="start"  >
       <!-- <ion-back-button defauldHref="/"></ion-back-button>-->
       <ion-button (click)="atras()">
-        <ion-icon ios="ios-arrow-back" md="md-arrow-back"></ion-icon>
+        <ion-icon name="arrow-back"></ion-icon>
       </ion-button>
     </ion-buttons>
     <ion-title>{{this.titulo}}</ion-title>
@@ -25,29 +25,32 @@
             <ion-slide *ngFor="let dia of planOfStora"  
                         (click)="obtenerLibroCapitulos(dia.dia, dia.libro, dia.detalles)"
                         [ngClass]="{'bordeSlide' : statusSlide(dia.dia),
-                                    'slide' : false}"  class="ion-text-center">
+                                    'slide' : false}"  
+                        class="ion-text-center">
               
                   <ion-item lines="none" *ngIf="!statusBadge(dia.dia)" class="ion-text-center">
-                    <ion-label >
+                    <ion-label class="">
                       {{ dia.dia }}
                       <sup>  
-                        <ion-icon class="ion-text-end" *ngIf="dia.statusDia" ios="ios-checkmark" md="md-checkmark" ></ion-icon>
+                        <ion-icon color="primary" class="ion-text-end" *ngIf="dia.statusDia" name="checkmark" ></ion-icon>
+                        <ion-icon color="danger" class="ion-text-end" *ngIf="marcarDiasFaltantes(dia.dia)"  name="close" ></ion-icon>
+                        <ion-icon name=""></ion-icon>
                       </sup>
                     </ion-label>
                   </ion-item>
                   <div  *ngIf="statusBadge(dia.dia)">
-                  <ion-label  class="ion-text-center">
-                    {{ dia.dia }}
-                    <sup>  
-                      <ion-icon class="ion-text-end" *ngIf="dia.statusDia" ios="ios-checkmark" md="md-checkmark" ></ion-icon>
-                    </sup> <br>
-                    <ion-badge color="primary" mode="ios" >
-                      {{this.dd}}{{this.mmS}}
-                    </ion-badge> 
-                  </ion-label>
+                    <ion-label  class="ion-text-center">
+                      {{ dia.dia }}
+                      <sup>  
+                        <strong>
+                        <ion-icon color="primary" class="ion-text-end" *ngIf="dia.statusDia" name="checkmark" ></ion-icon>
+                      </strong>
+                      </sup> <br>
+                      <ion-badge color="primary" mode="ios" >
+                        {{this.dd}}{{this.mmS}}
+                      </ion-badge> 
+                    </ion-label>
                   </div>
-                    
-                
             </ion-slide>
         </ion-slides>
 
@@ -61,7 +64,7 @@
         <ion-item color="light" lines="none" *ngIf="this.verDiaAtraso" class="itemPersonalizado">
           <ion-label  >
             <FONT size="2" slot="end">
-              DIA {{this.diaLecturaV}} de {{this.diaFinPlan}}
+              &nbsp;&nbsp;DIA {{this.diaLecturaV}} de {{this.diaFinPlan}}
             </FONT>
           </ion-label>
 
@@ -71,7 +74,7 @@
                 Tienes          
               </FONT>
 
-              <FONT size="2"  style="color:rgb(255, 166, 0)">
+              <FONT size="2"  style="color:rgba(255, 26, 26, 0.696)">
                 <strong>
                   {{this.diaAtraso}} 
                 </strong>
@@ -89,9 +92,9 @@
 
       
         <ion-item >
-        <ion-label text-wrap padding-horizontal padding-bottom>
+        <ion-text class="ion-margin-bottom ion-margin-horizontal" >
           {{this.descripcion}}
-        </ion-label>
+        </ion-text>
         </ion-item>
 
 

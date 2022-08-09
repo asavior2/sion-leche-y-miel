@@ -11,15 +11,41 @@
 <ion-content padding-bottom>
 
   <ion-grid >
-    <ion-row >
+    <ion-row align="center">
       <ion-col size-md="2"  size-lg="3" >     </ion-col>
       <ion-col  size-xs="12"  size-md="8"  size-lg="6">
-  <br>
   
+      <img class="responsive" src="assets/icon/icon-medium.png">
+      <br>
+
+      <ion-text>
+        <font  [style.font-size.px]=this.fontSize>
+          En el libro <i>"Esclavos de rebelión a súbditos del Reino de los cielos"</i> encontrara una explicación detallada del proyecto  <ion-text color="warning"><strong>"Sion:Leche y Miel"</strong></ion-text>
+        </font>
+      <br>
+      </ion-text>
+      <br>
+      <img class="responsive" src="assets/imgs/ESCLAVOS-DE-REBELION-A-SUBDITOS-DEL-REINO-DE-LOS-CIELOS-Pedro-Rangel.jpg">
+      <a  href="https://sionlecheymiel.com/ESCLAVOS-DE-REBELION-A-SUBDITOS-DEL-REINO-DE-LOS-CIELOS-Pedro-Rangel.pdf">
+      <ion-button color="primary">
+ 
+        <ion-icon name="cloud-download"></ion-icon>
+          &nbsp;PDF
+      </ion-button>
+    </a>
+     
+    <a  href="https://sionlecheymiel.com/ESCLAVOS-DE-REBELION-A-SUBDITOS-DEL-REINO-DE-LOS-CIELOS-Pedro-Rangel.pdf">
+      <ion-button color="primary">
+        <ion-icon name="cloud-download"></ion-icon>
+        &nbsp;ePub
+      </ion-button>
+    </a>
+
     <ion-label text-wrap>    
-      <div padding-horizontal padding-bottom align="justify">  
+      <div padding-horizontal padding-bottom class="ion-margin" align="center"> 
+        <ion-title align="center" [style.font-size.px]=this.fontSize+5 >Resumen</ion-title> 
         <ion-text>
-          <font  size={{this.fontSize}}>
+          <font  [style.font-size.px]=this.fontSize>
            Es una versión bíblica, basada en la revisión de 24 versiones de la biblias existentes hoy en día.
             <br><br>
             El instrumento para realizar esta Obra es el hermano Pedro José Rangel Torres llamado como

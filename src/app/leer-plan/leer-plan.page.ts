@@ -17,6 +17,9 @@ import {File} from '@ionic-native/file/ngx';
 import { NavController } from '@ionic/angular';
 import planesFile from '../../assets/planesLectura.json';
 //import { ConsoleReporter } from 'jasmine';
+import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-leer-plan',
@@ -86,6 +89,21 @@ export class LeerPlanPage implements OnInit {
   cantDetalleDia;
   contParteDia;
   detalleTemp;
+  private fragment: string;
+  private sub: Subscription;
+  audioMP3:string;
+  private win: any = window;
+  tiempoAudio;
+  colorVar = "blue"
+  readVersiculo: boolean = true;
+  isPlaying: boolean = false;
+  audio;
+  idPlay = 0;
+  tiempoRecorrido = 0;
+  ultimoTiempo = 0;
+  playPausa:string ="play";
+  share:boolean = false;
+  copiaCondensado = [];
 
   @ViewChild(IonContent, { static: true }) ionContent: IonContent;
   constructor(private activatedRoute: ActivatedRoute,
@@ -101,15 +119,16 @@ export class LeerPlanPage implements OnInit {
               private zip:Zip,
               public file:File,
               private navCtrl: NavController,
+              public router:Router
               ) { 
                 this.platform.backButton.observers.pop();
               }
 
   async ngOnInit() {
 
-    this.storage.get('fontSize').then((val) => {
-      if (val == null) {
-        this.fontSize = 4;
+    await this.storage.get('fontSize').then((val) => {
+      if (val == null || val < 15) {
+        this.fontSize = 20;
       } else {
         this.fontSize = val;
       }
@@ -139,6 +158,8 @@ export class LeerPlanPage implements OnInit {
     } else {                           // libro capitulo y versiculo y versiculo final
 
     }*/
+
+    await this.storage.set('playAuto', false);
 
     await this.storage.get('detalleDia').then((val) => {
       if (val !== null) {
@@ -209,9 +230,71 @@ export class LeerPlanPage implements OnInit {
       console.log('Desde el storage');
       console.log(this.planOfStora);
     });
-
+    
+    this.dataTemp = this.textoJsonFinal = await this.bibliaService.getTextoImport(this.libro, this.capitulo);
   } // fin ngOnInit
 
+  async playAudio(){
+    //this.ionContent.scrollToTop(300); //subir scroll al inicio
+    
+    let tiempo
+  
+    console.log("this.isPlaying " + this.isPlaying)
+    if (this.isPlaying){
+      this.isPlaying = !this.isPlaying;
+      this.audio.pause();
+      await this.storage.set('playAuto', false);
+      this.playPausa = "play"
+      console.log("pause")
+      this.marcarVersiculoAudioRemove("all")
+    }else {
+      this.isPlaying = !this.isPlaying;
+      this.audio.currentTime = this.tiempoRecorrido - this.ultimoTiempo;
+      //this.audio.currentTime = 244
+      //let listoPlay = true
+      //while( listoPlay){     
+        
+      //} 
+      this.audio.play();
+      await this.storage.set('playAuto', false);
+      this.playPausa = "pause"
+        console.log("play")
+    
+      //this.audio.onplaying  =  async function() {
+        //console.log("Event onplaying **")
+     
+        
+      //};
+      
+    }
+    
+  }
+
+  marcarVersiculoAudioAdd(clase) {
+    //console.log(clase)
+    //this.readVersiculo = !this.readVersiculo;
+    document.body.classList.add(clase);   //toggle
+  }
+  marcarVersiculoAudioRemove(clase) {
+    //console.log(clase)
+    //this.readVersiculo = !this.readVersiculo;
+    document.body.classList.remove(clase);
+    if (clase == "all"){
+      this.share = false          //Ocultar boton de copia o marcado
+      this.copiaCondensado = []   //baciar versiculos seleccionados
+      for (let i = 1; i < 177; i ++){
+        document.body.classList.remove("readVersiculol" + i);
+      }
+    }
+  }
+
+  ngAfterViewInit(): void {
+    //this.router.navigate( ['/leer-plan/' + this.libro + "/" + this.capitulo + "/undefined/undefined"], {fragment: ""});    //Esto es para linpiar el fragment la url #
+    //this.navCtrl.navigateForward([`/leer-plan/${this.libro}/${this.capitulo}/undefined/undefined`],{fragment: ""});
+    //this.navCtrl.navigateForward(`/plan-detalle/${this.nombrePlan}`);
+
+
+  }
   getCleanedString(cadena) {
     cadena = cadena.replace(/á/gi,"a");
     cadena = cadena.replace(/Éxodo/gi,"Exodo");
@@ -233,6 +316,7 @@ export class LeerPlanPage implements OnInit {
   }
 
   async mostrarTextoMetodo(libro, capitulo, versiculo, versiculoFinal) {
+    this.marcarVersiculoAudioRemove("all")
     this.citas = [];
     // this.storage.set('libro', libro);
     // this.storage.set('capitulo', capitulo);
@@ -249,7 +333,19 @@ export class LeerPlanPage implements OnInit {
     this.capitulo = capitulo;
     this.actualizarLibroTitulo(this.libro);
     // update es referente a si se actualizo los arquivos JSON que tienen el texto.
-
+    if (this.isPlaying){
+      //this.playAudio()
+      await this.delay2(900);
+      this.idPlay = 0
+      this.tiempoRecorrido = 0
+      console.log("desde si *** audioReproductor")
+      await this.audioReproductor()
+    }else{
+      this.idPlay = 0
+      this.tiempoRecorrido = 0
+      console.log("desde no *** audioReproductor")
+      await this.audioReproductor()
+    }
 
     if (this.update) {
       await this.bibliaService.getTextoFile(this.libro, this.capitulo).then((data) => {
@@ -286,6 +382,103 @@ export class LeerPlanPage implements OnInit {
     this.mostrarTexto = true;
   }
 
+  async audioReproductor(){
+    //Validar si el audio existe con readAsText
+    
+    let promiseAudio = this.file.readAsText(this.file.applicationStorageDirectory + "/files/Documents/", "por-Capitulos/" + this.libro + "/" + this.capitulo);
+    if(promiseAudio != undefined){
+      await promiseAudio.then((value) => {
+        console.log("ARCHIVO  existente ");
+        let localAudioURL = this.file.applicationStorageDirectory + "/files/Documents/por-Capitulos/" + this.libro + "/" + this.capitulo;
+        this.audioMP3 = this.win.Ionic.WebView.convertFileSrc(localAudioURL);
+      }).catch(err => {
+        console.error(err);
+        console.log("ARCHIVO AUDIO no  existente ir a internet ");
+        this.audioMP3 = "https://sionlecheymiel.com/file/audios/" + this.libro + "/" + this.capitulo + ".mp3";
+      });
+    }else{
+      this.audioMP3 = "https://sionlecheymiel.com/file/audios/" + this.libro + "/" + this.capitulo + ".mp3";
+    }
+    //this.audioMP3 = "assets/audios/" + this.libro + "-" + libro + "/" + this.capitulo +".mp3"
+    this.tiempoAudio = this.bibliaService.getTextoAudio(this.libro, this.capitulo);
+    console.log(this.tiempoAudio)
+    console.log("***** " + this.audioMP3)
+    this.audio = new Audio();
+    this.audio.src = this.audioMP3;
+    this.audio.load();
+    
+    await this.storage.get('playAuto').then((val) => {
+      if (val != null && val == true) {
+        this.isPlaying = false
+        this.playAudio()
+      }
+      console.log("playAuto " + val);
+    });
+
+    this.audio.addEventListener("play", async () => {
+      console.log("Event play");
+      let tiempo
+      //console.log("Event onplaying");
+      //console.log(this.tiempoAudio)
+      if (this.tiempoAudio != null){
+        this.tiempoRecorrido = 0; 
+        for (const entry  of this.tiempoAudio){
+          //console.log(entry)
+          let versiculoAnterior = entry.versiculo - 1
+          if (!this.isPlaying){
+            this.idPlay = parseInt(entry.id) - 1 ;
+            //console.log("idPlay")
+            //console.log(this.idPlay)            
+            break;
+          }
+          if (parseInt(entry.id) >= this.idPlay){
+            if (parseInt(entry.versiculo) > 1){
+              this.marcarVersiculoAudioRemove("readVersiculol" + versiculoAnterior)
+              this.marcarVersiculoAudioAdd("readVersiculol" + entry.versiculo)
+            }else {
+              this.marcarVersiculoAudioAdd("readVersiculol" + entry.versiculo)
+            }
+            ///tiempo = entry.seg*1000
+            tiempo = parseInt(entry.seg)
+            let tiempoRestante = (entry.seg - tiempo)*1000
+            if (entry.versiculo != ""){
+              //this.router.navigate( ["/leer-plan/" + this.libro + "/" + this.capitulo + "/undefined/undefined"], {fragment: "l"+entry.versiculo});
+              //this.navCtrl.navigateForward([`/leer-plan/${this.libro}/${this.capitulo}/undefined/undefined`],{fragment: "l"+entry.versiculo});
+            }
+            //Siguiente linea es para hacer efecto el route frament [recordar debe existir el id en el html]
+            this.sub = this.activatedRoute.fragment.pipe(filter(f => !!f)).subscribe(f => document.getElementById(f).scrollIntoView());
+
+            if (tiempo > 1){
+              for (let _i = 0; _i < tiempo*2; _i++) { //ms*2  y time 500 es para solucionar pause play rapido
+                if (!this.isPlaying){
+                  break
+                }
+                await new Promise( resolve => setTimeout(resolve, 500) );
+              }
+              await new Promise( resolve => setTimeout(resolve, tiempoRestante) );
+            }else {
+              await new Promise( resolve => setTimeout(resolve, tiempoRestante) );
+            }
+          }
+          this.tiempoRecorrido = this.tiempoRecorrido + entry.seg;
+          this.ultimoTiempo = entry.seg; 
+        }
+      }
+      
+    });
+    this.audio.addEventListener("ended", async () => {
+      await this.storage.set('playAuto', true);
+      console.log("Event finalizo el audio reproducción");
+      this.isPlaying = !this.isPlaying
+      this.nextboton()
+    });
+    
+  }
+  
+  delay2(ms: number) {
+    console.log("delay")
+    return new Promise( resolve => setTimeout(resolve, ms) );
+  }
   previousboton2() {
     this.ionContent.scrollToTop(300);
     if (this.capitulo > this.capituloMenor) {
@@ -306,7 +499,18 @@ export class LeerPlanPage implements OnInit {
     }
       //this.navCtrl.navigateForward(`/plan-detalle/${this.nombrePlan}`);
     
-
+    //this.router.navigate( ["/leer-plan" + this.libro + "/" + this.capitulo + "/undefined/undefined"], {fragment: ""});
+    //this.navCtrl.navigateForward([`/leer-plan/${this.libro}/${this.capitulo}/undefined/undefined`],{fragment: ""});
+    this.marcarVersiculoAudioRemove("all")
+    
+    if (this.isPlaying){
+      await this.delay2(900);
+      this.idPlay = 0
+      this.tiempoRecorrido = 0
+    }else{
+      this.idPlay = 0
+      this.tiempoRecorrido = 0
+    }
   }
 
   async nextboton() {
@@ -334,7 +538,25 @@ export class LeerPlanPage implements OnInit {
       }
       this.navCtrl.navigateForward(`/plan-detalle/${this.nombrePlan}`);
     }
-
+    
+    //this.router.navigate( ["/leer-plan/" + this.libro + "/" + this.capitulo + "/undefined/undefined"], {fragment: ""});
+    //this.navCtrl.navigateForward([`/leer-plan/${this.libro}/${this.capitulo}/undefined/undefined`],{fragment: ""});
+    this.marcarVersiculoAudioRemove("all")
+    console.log("Desde Next this.isPlaying " + this.isPlaying )
+    if (this.isPlaying ){
+      console.log("Desde if next ")
+      await this.delay2(1500);
+      this.tiempoRecorrido = 0
+      this.idPlay = 0
+  
+    }else{
+      console.log("Desde else next ")
+      await this.delay2(1500);
+      this.tiempoRecorrido = 0
+      this.idPlay = 0
+    
+    }
+ 
   }
 
   statusCheckbox(dia, libro, capitulo, versiculo, versiculoFinal) {                 // CONTROLA la marca de capitulos leidos
@@ -546,13 +768,12 @@ async mostrarCitaAlert(cita, textoVersiculo,idLibro, capituloC) {
 async buscarVersiculo(idLibro, capitulo, versiculo) {
   if (this.update) {
     await this.bibliaService.getTextoFile(idLibro, capitulo).then((data) => {
-      // console.log(data);
       this.dataTemp = JSON.parse(data);
       // console.log ("Texto cita" + this.arregloTextoCita);
       for (let text of this.dataTemp) {
         if (versiculo === text.versiculo) {
-          this.textTemp = '';
           if (text.hasOwnProperty('comprimido')) {
+            this.textTemp = '';
             for (let texto of text.comprimido){
               this.textTemp = this.textTemp + ' ' + texto.parteText;
               if (texto.hasOwnProperty('parteFinal')) {
@@ -566,8 +787,9 @@ async buscarVersiculo(idLibro, capitulo, versiculo) {
       }
     });
   } else {
-    this.dataTemp = await this.bibliaService.getTextoImport(idLibro, capitulo);
-    console.log (this.dataTemp);
+    //Siguiente linea la movi para ngOnInit, aqui daba peo.
+    //this.dataTemp = this.textoJsonFinal = await this.bibliaService.getTextoImport(idLibro, capitulo);
+    // console.log ("Texto cita" + this.arregloTextoCita);
     for (let text of this.dataTemp) {
       if (versiculo === text.versiculo) {
         if (text.hasOwnProperty('comprimido')) {
@@ -583,12 +805,35 @@ async buscarVersiculo(idLibro, capitulo, versiculo) {
         }
       }
     }
+          
+    
   }
-  console.log(this.textTemp);
 }
 
-async seleccionarVersiculo(texto, idLibro, capitulo, versiculo) {
-  await this.buscarVersiculo(idLibro, capitulo, versiculo);
+seleccionarVersiculo(texto, idLibro, capitulo, versiculo) {
+  document.body.classList.toggle("readVersiculol" + versiculo); 
+  this.buscarVersiculo(idLibro, capitulo, versiculo);
+  let arreglo = [idLibro, capitulo, versiculo, this.textTemp]
+  if (this.copiaCondensado[versiculo] == null){
+    this.copiaCondensado[versiculo] = arreglo
+    console.log(this.copiaCondensado.length)
+  }else{
+    this.copiaCondensado.splice(versiculo,1);
+    //delete this.copiaCondensado[versiculo]
+  }
+  let contador = 0 
+  for (let clave in this.copiaCondensado){
+    contador ++
+  }
+  //console.log("contador "+ contador);
+  if (contador > 0 ){
+    this.share = true
+  }else{
+    this.share = false
+  }
+  //this.marcarVersiculoAudioRemove("readVersiculol" + versiculoAnterior)
+  //this.marcarVersiculoAudioAdd("readVersiculol" + versiculo)
+  /* 
   const actionSheet = await this.actionSheetController.create({
     mode: 'ios',
     buttons: [{
@@ -610,16 +855,35 @@ async seleccionarVersiculo(texto, idLibro, capitulo, versiculo) {
     ]
     });
     await actionSheet.present();
+    */
+  }
+
+  copiarVersiculo(){
+    let textTemp = "";
+    for (let clave in this.copiaCondensado){
+      textTemp = textTemp + " " + this.copiaCondensado[clave][2] +this.copiaCondensado[clave][3]  
+      //console.log(this.copiaCondensado[clave])
+    }
+    //console.log(textTemp + " " + this.librot + " " + this.capitulo + ":"  + ' Biblia SLM http://sionlecheymiel.com')
+    this.clipboard.copy(textTemp + " " + this.librot + " " + this.capitulo + ":"  + ' Biblia SLM https://sionlecheymiel.com');
+    this.marcarVersiculoAudioRemove("all")
+  }
+  async marcarVersiculo(){
+    for (let clave in this.copiaCondensado){
+      //this.guardarMarcador(idLibro, capitulo, versiculo);
+      await this.guardarMarcador(this.copiaCondensado[clave][0], this.copiaCondensado[clave][1], this.copiaCondensado[clave][2]);
+    }
+    this.marcarVersiculoAudioRemove("all")
   }
 
   aumentarSize() {
-    if(this.fontSize < 6){
-      this.fontSize++;
+    if(this.fontSize < 28){
+      this.fontSize = this.fontSize + 1;
       this.storage.set("fontSize", this.fontSize);
     }
   }
   disminuirSize() {
-    if (this.fontSize >2){
+    if (this.fontSize >16){
       this.fontSize--
       this.storage.set('fontSize', this.fontSize);
     }

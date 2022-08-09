@@ -63,7 +63,8 @@ export class PlanDetallePage implements OnInit {
    verDiaAtraso;
    planArrayTemp: Array<any> = new Array();
    diaFinPlan;
-
+   posicionSlide:number;
+   el;
 
 
   constructor(
@@ -160,11 +161,16 @@ export class PlanDetallePage implements OnInit {
       this.diaLecturaV = '1';
     }
 
+    await this.estadoPlan();
+
+    this.posicionSlide = parseInt(this.diaLecturaV) - parseInt(this.diaAtraso)
+    console.log("posicionSlide " + this.posicionSlide)
     for (let dia of this.planOfStora) {
+      console.log();
       console.log('dia de lectura ' + this.diaLecturaV);
-      if (dia.dia === this.diaLecturaV) {
+      if (dia.dia == this.posicionSlide ) {   //antes this.diaLecturaV
         console.log(' Dentro del IF Va en el dia ' + dia.dia);
-        this.slideOpts.initialSlide = dia.dia - 4;
+        this.slideOpts.initialSlide = Number(this.diaLecturaV) - this.posicionSlide;
         this.obtenerLibroCapitulos(dia.dia, dia.libro, dia.detalles);
         this.statusSlide(dia.dia);
         this.marcarSlite = true;
@@ -172,11 +178,12 @@ export class PlanDetallePage implements OnInit {
       }
      
     }
-    this.estadoPlan();
+    
 
     this.diaFinPlan = this.planOfStora.length;
 
   } //fin ngOnIniT
+
 
   atras() {
   // this.navCtrl.pop();
@@ -302,12 +309,15 @@ export class PlanDetallePage implements OnInit {
 
 
   statusSlide(dia) {
-    if (dia === this.dia) {
+    if (Number(dia) == this.posicionSlide) {  //this.posicionSlide o this.dia
       return true;
     } else {
       return false;
-    }
+    } 
+  
   }
+ 
+
 
 
   /////////////////////////////////////////////////////////////Verificar
@@ -320,7 +330,9 @@ export class PlanDetallePage implements OnInit {
   }
 
   pushLeerPlan(libro, capitulo, versiculo,versiculoFinal) {
-    this.navCtrl.navigateForward(`/leer-plan/${libro}/${capitulo}/${versiculo}/${versiculoFinal}`);
+    //this.navCtrl.navigateForward(`/leer-plan/${libro}/${capitulo}/${versiculo}/${versiculoFinal}`);
+    this.router.navigate([`/leer-plan/${libro}/${capitulo}/${versiculo}/${versiculoFinal}`]);    
+
   }
 
   obtenerLibroCapitulos(dia, libro, detalles) {
@@ -395,6 +407,15 @@ export class PlanDetallePage implements OnInit {
     this.planOfStora = tempoDia;
     this.storage.set(this.nombrePlan, this.planOfStora);
     this.estadoPlan();
+  }
+
+  marcarDiasFaltantes(dia){
+    let diasListos = parseInt(this.diaLecturaV) - parseInt(this.diaAtraso)
+    if(parseInt(dia) >= diasListos && parseInt(dia) < parseInt(this.diaLecturaV)){
+      return true
+    }else{
+      return false
+    }
   }
 
 }

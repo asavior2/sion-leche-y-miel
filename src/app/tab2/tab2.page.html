@@ -1,11 +1,11 @@
-<ion-header>
+<ion-header mode="md" >
   <ion-toolbar>
-    <ion-title>
+    
       <div align="center">
-          <strong> <h6> Concordancia </h6> </strong>
-            <ion-title ></ion-title>
+          <strong> <h6><ion-title> Concordancia  </ion-title></h6> </strong>
+            
       </div>
-    </ion-title>
+   
   </ion-toolbar>
   <!--
   <ion-searchbar (ionInput)="getItems($event)"
@@ -32,13 +32,13 @@
                   
               </form>
         
-              <div *ngIf="showText" >
-                <ion-label  text-wrap padding-horizontal padding-bottom position="floating" *ngFor="let versiculo of versiculos">
-                  <ion-item text-justify>
-                  <FONT size={{this.fontSize}} face="roboto">
+              <div *ngIf="showText"  align="center">
+                <ion-label class="ion-margin-horizontal ion-margin-bottom"  *ngFor="let versiculo of versiculos" >
+                  <ion-item >
+                  <FONT [style.font-size.px]=this.fontSize face="roboto" >
                     <strong>{{versiculo.nombreLibro}} {{versiculo.capitulo}}:{{versiculo.versiculo}}</strong>
                     {{versiculo.texto.substring(0,versiculo.posicionPalabra) }}
-                    <FONT size={{this.fontSize}} face = "roboto" color = "red">{{versiculo.palabra}}</FONT>
+                    <FONT [style.font-size.px]=this.fontSize face = "roboto" color = "red">{{versiculo.palabra}}</FONT>
                     {{versiculo.texto.substring((versiculo.posicionPalabra) + this.palabra.length)}}
                   </FONT>
                 </ion-item>

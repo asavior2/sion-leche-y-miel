@@ -11,8 +11,8 @@ export class SobrePage implements OnInit {
   fontSize;
   constructor(private storage: Storage) {
     this.storage.get('fontSize').then((val) => {
-      if (val == null) {
-        this.fontSize = 4;
+      if (val == null || val < 15) {
+        this.fontSize = 20;
       } else {
         this.fontSize = val;
       }

@@ -7,12 +7,8 @@ ion-button {
   --border-width:1px;
 }
 
-body {
-  user-select: text;
-  }
-a {
-  user-select: text;
-}
+
+
 .alert-ios .alert-radio-label{ white-space: pre-line;}
 .alert-md .alert-radio-label{ white-space: pre-line;}
 .alert-wp .alert-radio-label{ white-space: pre-line;}
@@ -33,7 +29,9 @@ a {
 }
 
 .highlight {
-  background-color:rgba(0, 162, 255, 0.199);
+  background-color:rgba(0, 162, 255, 0.171);
+  text-decoration: none;
+
   }
   
 

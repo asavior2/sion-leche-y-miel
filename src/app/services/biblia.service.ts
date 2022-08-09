@@ -50,7 +50,7 @@ export class BibliaService {
   }
 
   getTextoAudio(libro: number, capitulo: number) {
-    this.temporalA = require('../../assets/audios/' + libro + '/' + capitulo + '.json');
+    this.temporalA = require('../../assets/audios-json/' + libro + '/' + capitulo + '.json');
     return (JSON.parse(JSON.stringify(this.temporalA)));
   }
 
