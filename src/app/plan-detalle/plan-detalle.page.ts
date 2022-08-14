@@ -170,7 +170,7 @@ export class PlanDetallePage implements OnInit {
       console.log('dia de lectura ' + this.diaLecturaV);
       if (dia.dia == this.posicionSlide ) {   //antes this.diaLecturaV
         console.log(' Dentro del IF Va en el dia ' + dia.dia);
-        this.slideOpts.initialSlide = Number(this.diaLecturaV) - this.posicionSlide;
+        this.slideOpts.initialSlide =  this.posicionSlide -4 ;
         this.obtenerLibroCapitulos(dia.dia, dia.libro, dia.detalles);
         this.statusSlide(dia.dia);
         this.marcarSlite = true;
@@ -240,7 +240,7 @@ export class PlanDetallePage implements OnInit {
       // console.log(this.planesActivos);
       for (let planActivo of  this.planesActivos) {
         if (planActivo.nombre === this.nombrePlan) {
-          progresoUpdate = ((100 * parseInt(dia)) / 365) / 100;
+          progresoUpdate = ((100 * parseInt(dia)) / this.diaFinPlan) / 100;
           this.planArrayTemp.push(
             {titulo: planActivo.titulo,
               nombre: planActivo.nombre,

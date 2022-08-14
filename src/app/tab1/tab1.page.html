@@ -1,6 +1,6 @@
-<ion-header mode="md" >
+<ion-header mode="md">
   <!-- Allow everything but only from the same origin and foo.com -->
-  <ion-toolbar align="center" >
+  <ion-toolbar align="center" class="minuscula" >
         <!-- Boton de los libros-->
         <ion-button clear small (click) = "mostrarLibrosMetodo()" 
            size ="small" fill="clear" color="dark" >
@@ -9,11 +9,11 @@
         <ion-button color="dark" clear small  fill="clear" (click)="mostrarCapitulosMetodo(libro)">
           <strong> <h6>{{capitulo}} </h6> </strong>
         </ion-button> 
-        <ion-button color="dark" clear small  fill="clear" (click)="aumentarSize()" size="small">
-          <strong> <h6>A+</h6></strong>  
+        <ion-button color="dark" clear small  fill="clear" (click)="aumentarSize()" size="small" >
+          <strong> <h6 >A+</h6></strong>  
         </ion-button>
         <ion-button color="dark" clear small  fill="clear" (click)="disminuirSize()" size="small">
-          <strong><h6>a-</h6></strong>  
+          <strong><h6><small>a-</small></h6></strong>  
         </ion-button> 
   
 

@@ -6,6 +6,7 @@ import {File} from '@ionic-native/file/ngx';
 import { Storage } from '@ionic/storage';
 import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer/ngx';
 import { HttpClient } from '@angular/common/http';
+import { HTTP } from '@ionic-native/http/ngx';
 import { JsonPipe } from '@angular/common';
 
 import { AlertController } from '@ionic/angular';
@@ -33,6 +34,7 @@ export class TabsPage implements OnInit {
               private storage: Storage,
               private transfer: FileTransfer,
               private httpClient: HttpClient,
+              private nativeHTTP: HTTP,
               public alertController: AlertController,
               public actionSheetController: ActionSheetController) {
                 const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
@@ -67,6 +69,7 @@ export class TabsPage implements OnInit {
         this.estadoDark = 'Activar ';
       }
       //this.unZip('audio-SLM-calidad-baja.zip','audio')
+      //this.download('https://sionlecheymiel.com/file/audios/1/1.mp3','audioD.mp3')
     }
 
    validaUri() {
@@ -130,15 +133,15 @@ export class TabsPage implements OnInit {
      
     console.log('Descargar un Zip');
     await this.download(url, nombre); // Descargar
-    await this.unZip(nombre,'audio');    
+       
   }
 
 
-  async unZip(version: string, deQuien: string) {
+  async unZip(nombre: string, deQuien: string) {
   /*externalRootDirectory file:///storage/emulated/0/
     dataDirectorio file:///data/user/0/io.slm.starter/files/
     externalDataDirectory file:///storage/emulated/0/Android/data/io.slm.starter/files/*/
-    this.zipPath = this.file.applicationStorageDirectory + "files/Documents/" + version;
+    this.zipPath = this.file.applicationStorageDirectory + "files/Documents/" + nombre;
     console.log(this.zipPath);
 
     this.file.checkFile(this.zipPath, '').then(_ => {
@@ -150,8 +153,15 @@ export class TabsPage implements OnInit {
                           console.log('SUCCESS');
                           if(deQuien == 'audio'){
                             this.alertDownloadAudio('Descarga Completada','Biblia Sion Leche y Miel en audio')
+                            this.file.removeFile(this.file.applicationStorageDirectory + "files/Documents/", nombre).then(_=> {
+                              console.log("Archivo eliminado")
+                            }).catch((err) => {
+                              console.log("Como que no se pudo eliminar el archivo")
+                              console.log(err)
+                            });
+
                           }else {
-                            this.alertUpdate(version);
+                            this.alertUpdate(nombre);
                           }
                       }
                         if (result === -1) { 
@@ -159,7 +169,7 @@ export class TabsPage implements OnInit {
                           if(deQuien == 'audio'){
                             this.alertErrorDownloadAudio('Ocuarrio un error', ' :( ')
                           }else {
-                            this.alertUpdate(version); //aler error descarga
+                            this.alertUpdate(nombre); //aler error descarga
                           }
                         }
       });
@@ -169,11 +179,25 @@ export class TabsPage implements OnInit {
 
   }
 
-  async download(url: string, version: string) {
-    console.log(url + " " + version)
+  async download(url: string, nombre: string) {
+    console.log(url + " " + nombre)
+    
+    const filePath = this.file.applicationStorageDirectory + "/files/Documents/" + nombre; 
+    // for iOS use this.file.documentsDirectory
+    this.nativeHTTP.downloadFile(url, {}, {}, filePath).then(response => {
+      // prints 200
+      console.log('Archivo descargado...', response);
+      this.unZip(nombre,'audio'); 
+    }).catch(err => {
+      // prints 403
+      console.log('error block file ... ', err.status);
+      this.alertErrorDownloadAudio("Ocurrio un problema", err.status +" " + err.error)
+    })
+
+    /* 
     const fileTransfer: FileTransferObject = this.transfer.create();
     // const url = 'https://raw.githubusercontent.com/asavior2/sion-leche-y-miel/master/ionic.config.json';
-    await fileTransfer.download(url, this.file.applicationStorageDirectory + "/files/Documents/" + version).then((entry) => { //externalDataDirectory
+    await fileTransfer.download(url, this.file.applicationStorageDirectory + "/files/Documents/" + nombre).then((entry) => { //externalDataDirectory
       console.log('download complete: ' + entry.toURL());
     }, (error) => {
       console.log(console.error)
@@ -184,6 +208,7 @@ export class TabsPage implements OnInit {
       console.log("upload error source " + error.source);
       console.log("upload error target " + error.target);
     });
+    */
   }
 
 

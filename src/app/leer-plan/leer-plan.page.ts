@@ -104,6 +104,7 @@ export class LeerPlanPage implements OnInit {
   playPausa:string ="play";
   share:boolean = false;
   copiaCondensado = [];
+  botonPlay:boolean=false;
 
   @ViewChild(IonContent, { static: true }) ionContent: IonContent;
   constructor(private activatedRoute: ActivatedRoute,
@@ -142,6 +143,20 @@ export class LeerPlanPage implements OnInit {
       }
     });
 
+    await this.storage.get('nombrePlan').then((val) => {
+      if (val !== null) {
+        this.nombrePlan = val;
+      }
+      if (this.nombrePlan == 'bibleOneYear'){
+        this.botonPlay = true
+      }
+    });
+
+    this.textoJsonFinal = await this.bibliaService.getTextoImport(this.libro, this.capitulo);
+    this.dataTemp = await this.textoJsonFinal 
+    console.log("***dataTemp");
+    console.log(this.dataTemp);
+    
     this.mostrarTextoMetodo(this.libro, this.capitulo, this.versiculo, this.versiculoFinal);
 
     /*
@@ -215,11 +230,7 @@ export class LeerPlanPage implements OnInit {
         this.dia = val;
       }
     });
-    await this.storage.get('nombrePlan').then((val) => {
-      if (val !== null) {
-        this.nombrePlan = val;
-      }
-    });
+    
 
     await this.storage.get(this.nombrePlan).then((val) => {
       if (val !== null) {
@@ -230,8 +241,9 @@ export class LeerPlanPage implements OnInit {
       console.log('Desde el storage');
       console.log(this.planOfStora);
     });
+
     
-    this.dataTemp = this.textoJsonFinal = await this.bibliaService.getTextoImport(this.libro, this.capitulo);
+    
   } // fin ngOnInit
 
   async playAudio(){
@@ -383,96 +395,114 @@ export class LeerPlanPage implements OnInit {
   }
 
   async audioReproductor(){
-    //Validar si el audio existe con readAsText
-    
-    let promiseAudio = this.file.readAsText(this.file.applicationStorageDirectory + "/files/Documents/", "por-Capitulos/" + this.libro + "/" + this.capitulo);
-    if(promiseAudio != undefined){
-      await promiseAudio.then((value) => {
-        console.log("ARCHIVO  existente ");
-        let localAudioURL = this.file.applicationStorageDirectory + "/files/Documents/por-Capitulos/" + this.libro + "/" + this.capitulo;
-        this.audioMP3 = this.win.Ionic.WebView.convertFileSrc(localAudioURL);
-      }).catch(err => {
-        console.error(err);
-        console.log("ARCHIVO AUDIO no  existente ir a internet ");
-        this.audioMP3 = "https://sionlecheymiel.com/file/audios/" + this.libro + "/" + this.capitulo + ".mp3";
-      });
-    }else{
-      this.audioMP3 = "https://sionlecheymiel.com/file/audios/" + this.libro + "/" + this.capitulo + ".mp3";
-    }
-    //this.audioMP3 = "assets/audios/" + this.libro + "-" + libro + "/" + this.capitulo +".mp3"
-    this.tiempoAudio = this.bibliaService.getTextoAudio(this.libro, this.capitulo);
-    console.log(this.tiempoAudio)
-    console.log("***** " + this.audioMP3)
-    this.audio = new Audio();
-    this.audio.src = this.audioMP3;
-    this.audio.load();
-    
-    await this.storage.get('playAuto').then((val) => {
-      if (val != null && val == true) {
-        this.isPlaying = false
-        this.playAudio()
-      }
-      console.log("playAuto " + val);
-    });
-
-    this.audio.addEventListener("play", async () => {
-      console.log("Event play");
-      let tiempo
-      //console.log("Event onplaying");
-      //console.log(this.tiempoAudio)
-      if (this.tiempoAudio != null){
-        this.tiempoRecorrido = 0; 
-        for (const entry  of this.tiempoAudio){
-          //console.log(entry)
-          let versiculoAnterior = entry.versiculo - 1
-          if (!this.isPlaying){
-            this.idPlay = parseInt(entry.id) - 1 ;
-            //console.log("idPlay")
-            //console.log(this.idPlay)            
-            break;
-          }
-          if (parseInt(entry.id) >= this.idPlay){
-            if (parseInt(entry.versiculo) > 1){
-              this.marcarVersiculoAudioRemove("readVersiculol" + versiculoAnterior)
-              this.marcarVersiculoAudioAdd("readVersiculol" + entry.versiculo)
-            }else {
-              this.marcarVersiculoAudioAdd("readVersiculol" + entry.versiculo)
-            }
-            ///tiempo = entry.seg*1000
-            tiempo = parseInt(entry.seg)
-            let tiempoRestante = (entry.seg - tiempo)*1000
-            if (entry.versiculo != ""){
-              //this.router.navigate( ["/leer-plan/" + this.libro + "/" + this.capitulo + "/undefined/undefined"], {fragment: "l"+entry.versiculo});
-              //this.navCtrl.navigateForward([`/leer-plan/${this.libro}/${this.capitulo}/undefined/undefined`],{fragment: "l"+entry.versiculo});
-            }
-            //Siguiente linea es para hacer efecto el route frament [recordar debe existir el id en el html]
-            this.sub = this.activatedRoute.fragment.pipe(filter(f => !!f)).subscribe(f => document.getElementById(f).scrollIntoView());
-
-            if (tiempo > 1){
-              for (let _i = 0; _i < tiempo*2; _i++) { //ms*2  y time 500 es para solucionar pause play rapido
-                if (!this.isPlaying){
-                  break
-                }
-                await new Promise( resolve => setTimeout(resolve, 500) );
-              }
-              await new Promise( resolve => setTimeout(resolve, tiempoRestante) );
-            }else {
-              await new Promise( resolve => setTimeout(resolve, tiempoRestante) );
-            }
-          }
-          this.tiempoRecorrido = this.tiempoRecorrido + entry.seg;
-          this.ultimoTiempo = entry.seg; 
-        }
-      }
+    if(this.nombrePlan =='bibleOneYear'){
+      //Validar si el audio existe con readAsText
       
-    });
-    this.audio.addEventListener("ended", async () => {
-      await this.storage.set('playAuto', true);
-      console.log("Event finalizo el audio reproducción");
-      this.isPlaying = !this.isPlaying
-      this.nextboton()
-    });
-    
+      let promiseAudio = this.file.readAsText(this.file.applicationStorageDirectory + "/files/Documents/", "por-Capitulos/" + this.libro + "/" + this.capitulo);
+      if(promiseAudio != undefined){
+        await promiseAudio.then((value) => {
+          console.log("ARCHIVO  existente ");
+          let localAudioURL = this.file.applicationStorageDirectory + "/files/Documents/por-Capitulos/" + this.libro + "/" + this.capitulo;
+          this.audioMP3 = this.win.Ionic.WebView.convertFileSrc(localAudioURL);
+        }).catch(err => {
+          console.error(err);
+          console.log("ARCHIVO AUDIO no  existente ir a internet ");
+          this.audioMP3 = "https://sionlecheymiel.com/file/audios/" + this.libro + "/" + this.capitulo + ".mp3";
+        });
+      }else{
+        this.audioMP3 = "https://sionlecheymiel.com/file/audios/" + this.libro + "/" + this.capitulo + ".mp3";
+      }
+      //this.audioMP3 = "assets/audios/" + this.libro + "-" + libro + "/" + this.capitulo +".mp3"
+      this.tiempoAudio = this.bibliaService.getTextoAudio(this.libro, this.capitulo);
+      console.log(this.tiempoAudio)
+      console.log("***** " + this.audioMP3)
+      this.audio = new Audio();
+      this.audio.src = this.audioMP3;
+      this.audio.load();
+      
+      await this.storage.get('playAuto').then((val) => {
+        if (val != null && val == true) {
+          this.isPlaying = false
+          this.playAudio()
+        }
+        console.log("playAuto " + val);
+      });
+
+      this.audio.addEventListener("play", async () => {
+        console.log("Event play");
+        let tiempo
+        //console.log("Event onplaying");
+        //console.log(this.tiempoAudio)
+        if (this.tiempoAudio != null){
+          this.tiempoRecorrido = 0; 
+          for (const entry  of this.tiempoAudio){
+            //console.log(entry)
+            let versiculoAnterior = entry.versiculo - 1
+            if (!this.isPlaying){
+              this.idPlay = parseInt(entry.id) - 1 ;
+              //console.log("idPlay")
+              //console.log(this.idPlay)            
+              break;
+            }
+            if (parseInt(entry.id) >= this.idPlay){
+              if (parseInt(entry.versiculo) > 1){
+                this.marcarVersiculoAudioRemove("readVersiculol" + versiculoAnterior)
+                this.marcarVersiculoAudioAdd("readVersiculol" + entry.versiculo)
+              }else {
+                this.marcarVersiculoAudioAdd("readVersiculol" + entry.versiculo)
+              }
+              ///tiempo = entry.seg*1000
+              tiempo = parseInt(entry.seg)
+              let tiempoRestante = (entry.seg - tiempo)*1000
+              if (entry.versiculo != ""){
+                //this.router.navigate( ["/leer-plan/" + this.libro + "/" + this.capitulo + "/undefined/undefined"], {fragment: "l"+entry.versiculo});
+                //this.navCtrl.navigateForward([`/leer-plan/${this.libro}/${this.capitulo}/undefined/undefined`],{fragment: "l"+entry.versiculo});
+              }
+              //Siguiente linea es para hacer efecto el route frament [recordar debe existir el id en el html]
+              this.sub = this.activatedRoute.fragment.pipe(filter(f => !!f)).subscribe(f => document.getElementById(f).scrollIntoView());
+
+              if (tiempo > 1){
+                for (let _i = 0; _i < tiempo*2; _i++) { //ms*2  y time 500 es para solucionar pause play rapido
+                  if (!this.isPlaying){
+                    break
+                  }
+                  await new Promise( resolve => setTimeout(resolve, 500) );
+                }
+                await new Promise( resolve => setTimeout(resolve, tiempoRestante) );
+              }else {
+                await new Promise( resolve => setTimeout(resolve, tiempoRestante) );
+              }
+            }
+            this.tiempoRecorrido = this.tiempoRecorrido + entry.seg;
+            this.ultimoTiempo = entry.seg; 
+          }
+        }
+        
+      });
+
+      this.audio.addEventListener("pause", async () => {
+        console.log("Event Pause");
+        //this.playAudio();
+        this.isPlaying = false;
+        await this.storage.set('playAuto', false);
+        this.playPausa = "play"
+        this.marcarVersiculoAudioRemove("all")
+        /*
+        this.isPlaying = !this.isPlaying;
+        await this.storage.set('playAuto', false);
+        this.playPausa = "play"
+        console.log("pause")
+        this.marcarVersiculoAudioRemove("all")
+        */
+      });
+      
+      this.audio.addEventListener("ended", async () => {
+        await this.storage.set('playAuto', true);
+        console.log("Event finalizo el audio reproducción");
+        this.isPlaying = !this.isPlaying
+        this.nextboton()
+      });
+    }
   }
   
   delay2(ms: number) {
@@ -529,7 +559,7 @@ export class LeerPlanPage implements OnInit {
       this.mostrarTextoMetodo(detalleMostrar.libro, detalleMostrar.capitulo, detalleMostrar.versiculo, detalleMostrar.versiculoFinal);
       this.detalleTemp = detalleMarcar;
     } else {
-      if (this.detalleTemp.hasOwnProperty('versiculoFinal')){
+      if (this.detalleTemp.hasOwnProperty('versiculoFinal') ){
         this.statusCheckbox(this.dia, this.libro.toString(), this.capitulo.toString(),this.detalleTemp.versiculo, this.detalleTemp.versiculoFinal);
       }else if (this.detalleTemp.hasOwnProperty('versiculo')){
         this.statusCheckbox(this.dia, this.libro.toString(), this.capitulo.toString(),this.detalleTemp.versiculo, null);

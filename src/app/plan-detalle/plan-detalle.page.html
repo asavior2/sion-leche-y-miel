@@ -20,7 +20,7 @@
             
       <ion-img src="{{this.imagen}}"></ion-img>
       
-        <ion-slides pager="false" [options]="slideOpts" >
+        <ion-slides pager="false" [options]="slideOpts">
           
             <ion-slide *ngFor="let dia of planOfStora"  
                         (click)="obtenerLibroCapitulos(dia.dia, dia.libro, dia.detalles)"

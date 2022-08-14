@@ -108,6 +108,7 @@
         </ion-label>
         <div align="center">
             <FONT face="Segoe UI" size="3"><strong>*(SLM) Sion: Leche y Miel</strong></FONT>    
+            <br><br>
         </div>
       </div>
 
@@ -125,7 +126,7 @@
     </ion-fab-button>
   </ion-fab>
 
-  <ion-fab vertical="bottom" horizontal="center" slot="fixed">
+  <ion-fab *ngIf="botonPlay" vertical="bottom" horizontal="center" slot="fixed">
     <ion-fab-button (click)="playAudio()" size="small" color="light">
       <ion-icon name="{{playPausa}}" color="primary"></ion-icon>
     </ion-fab-button>
