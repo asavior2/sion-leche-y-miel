@@ -895,7 +895,7 @@ seleccionarVersiculo(texto, idLibro, capitulo, versiculo) {
       //console.log(this.copiaCondensado[clave])
     }
     //console.log(textTemp + " " + this.librot + " " + this.capitulo + ":"  + ' Biblia SLM http://sionlecheymiel.com')
-    this.clipboard.copy(textTemp + " " + this.librot + " " + this.capitulo + ":"  + ' Biblia SLM https://sionlecheymiel.com');
+    this.clipboard.copy('*Biblia "Sion: Leche y Miel" '+ this.librot + " " + this.capitulo  + '*' + textTemp + ' https://sionlecheymiel.com');
     this.marcarVersiculoAudioRemove("all")
   }
   async marcarVersiculo(){
