@@ -246,7 +246,8 @@ export class Tab1Page implements OnInit {
      this.textoJsonFinal = await this.bibliaService.getTextoImport(this.libro, this.capitulo);
      //this.dataTemp = this.textoJsonFinal = await this.bibliaService.getTextoImport(this.libro, this.capitulo);
 
-
+    
+     
     
   } // ngOnInit
 
@@ -263,7 +264,7 @@ export class Tab1Page implements OnInit {
     console.log("this.isPlaying " + this.isPlaying)
 
     if (this.isPlaying){
-      this.isPlaying = !this.isPlaying;
+      this.isPlaying = false;
       //if (!this.audio.paused){
       this.audio.pause();
       //}
@@ -272,12 +273,14 @@ export class Tab1Page implements OnInit {
       console.log("pause")
       this.marcarVersiculoAudioRemove("all")
     }else {
-      this.isPlaying = !this.isPlaying;
+      this.isPlaying = true;
+      
+      this.audio.src = this.audioMP3;
+      this.audio.load();
       this.audio.currentTime = this.tiempoRecorrido - this.ultimoTiempo;
       //this.audio.currentTime = 244
       //let listoPlay = true
       //while( listoPlay){     
-        
       //} 
       this.audio.play();
       
@@ -551,10 +554,8 @@ export class Tab1Page implements OnInit {
     this.tiempoAudio = this.bibliaService.getTextoAudio(this.libro, this.capitulo);
     console.log(this.tiempoAudio)
     console.log("***** " + this.audioMP3)
-    this.audio = new Audio();
-    this.audio.src = this.audioMP3;
-    this.audio.load();
     
+
     await this.storage.get('playAuto').then((val) => {
       if (val != null && val == true) {
         this.isPlaying = false
@@ -563,7 +564,9 @@ export class Tab1Page implements OnInit {
       console.log("playAuto " + val);
     });
 
-    this.audio.addEventListener("play", async () => {
+    this.audio = new Audio();
+
+     this.audio.addEventListener("play", async () => {
       console.log("Event play");
       let tiempo
       //console.log("Event onplaying");
@@ -601,11 +604,14 @@ export class Tab1Page implements OnInit {
                 if (!this.isPlaying ){
                   break
                 }
+                //console.log("Espero " + 500)
                 await new Promise( resolve => setTimeout(resolve, 500) );
               }
+              //console.log("Espero " + tiempoRestante)
               await new Promise( resolve => setTimeout(resolve, tiempoRestante) );
             }else {
-              await new Promise( resolve => setTimeout(resolve, tiempoRestante) );
+              //console.log("Espero " + entry.seg*1000)
+              await new Promise( resolve => setTimeout(resolve, entry.seg*1000) );
             }
           }
           this.tiempoRecorrido = this.tiempoRecorrido + entry.seg;
@@ -640,6 +646,7 @@ export class Tab1Page implements OnInit {
     this.audio.addEventListener("paused", async () => {
       console.log("Event Paused");
     });
+    
     
   }
 
@@ -903,9 +910,9 @@ organizarCitas(textoJson){
       });
     } else {
       //Siguiente linea la movi para ngOnInit, aqui daba peo.
-      //this.dataTemp = this.textoJsonFinal = await this.bibliaService.getTextoImport(idLibro, capitulo);
+      this.dataTemp = await this.bibliaService.getTextoImport(idLibro, capitulo);
       // console.log ("Texto cita" + this.arregloTextoCita);
-      console.log(this.textoJsonFinal)
+      console.log(this.dataTemp)
       for (let text of this.textoJsonFinal) {
         if (versiculo == text.versiculo) {
           if (text.hasOwnProperty('comprimido')) {
@@ -926,9 +933,9 @@ organizarCitas(textoJson){
     }
   }
 
-  seleccionarVersiculo(texto, idLibro, capitulo, versiculo) {
+  async seleccionarVersiculo(texto, idLibro, capitulo, versiculo) {
     document.body.classList.toggle("readVersiculol" + versiculo); 
-    this.buscarVersiculo(idLibro, capitulo, versiculo);
+    await this.buscarVersiculo(idLibro, capitulo, versiculo);
     let arreglo = [idLibro, capitulo, versiculo, this.textTemp]
     if (this.copiaCondensado[versiculo] == null){
       this.copiaCondensado[versiculo] = arreglo
@@ -983,6 +990,7 @@ organizarCitas(textoJson){
       this.clipboard.copy('*Biblia "Sion: Leche y Miel" '+ this.librot + " " + this.capitulo  + '*' + textTemp + ' https://sionlecheymiel.com');
       this.marcarVersiculoAudioRemove("all")
     }
+    
     async marcarVersiculo(){
       for (let clave in this.copiaCondensado){
         //this.guardarMarcador(idLibro, capitulo, versiculo);

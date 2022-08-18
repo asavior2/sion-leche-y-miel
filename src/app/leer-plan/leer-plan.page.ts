@@ -152,10 +152,7 @@ export class LeerPlanPage implements OnInit {
       }
     });
 
-    this.textoJsonFinal = await this.bibliaService.getTextoImport(this.libro, this.capitulo);
-    this.dataTemp = await this.textoJsonFinal 
-    console.log("***dataTemp");
-    console.log(this.dataTemp);
+    
     
     this.mostrarTextoMetodo(this.libro, this.capitulo, this.versiculo, this.versiculoFinal);
 
@@ -242,7 +239,10 @@ export class LeerPlanPage implements OnInit {
       console.log(this.planOfStora);
     });
 
-    
+    this.textoJsonFinal = await this.bibliaService.getTextoImport(this.libro, this.capitulo);
+    //this.dataTemp = await this.textoJsonFinal 
+    //console.log("***dataTemp");
+    //console.log(this.dataTemp);
     
   } // fin ngOnInit
 
@@ -253,20 +253,18 @@ export class LeerPlanPage implements OnInit {
   
     console.log("this.isPlaying " + this.isPlaying)
     if (this.isPlaying){
-      this.isPlaying = !this.isPlaying;
+      this.isPlaying = false;
       this.audio.pause();
       await this.storage.set('playAuto', false);
       this.playPausa = "play"
       console.log("pause")
       this.marcarVersiculoAudioRemove("all")
     }else {
-      this.isPlaying = !this.isPlaying;
+      this.isPlaying = true;
+      this.audio.src = this.audioMP3;
+      this.audio.load();
       this.audio.currentTime = this.tiempoRecorrido - this.ultimoTiempo;
       //this.audio.currentTime = 244
-      //let listoPlay = true
-      //while( listoPlay){     
-        
-      //} 
       this.audio.play();
       await this.storage.set('playAuto', false);
       this.playPausa = "pause"
@@ -417,8 +415,7 @@ export class LeerPlanPage implements OnInit {
       console.log(this.tiempoAudio)
       console.log("***** " + this.audioMP3)
       this.audio = new Audio();
-      this.audio.src = this.audioMP3;
-      this.audio.load();
+      
       
       await this.storage.get('playAuto').then((val) => {
         if (val != null && val == true) {
@@ -470,7 +467,7 @@ export class LeerPlanPage implements OnInit {
                 }
                 await new Promise( resolve => setTimeout(resolve, tiempoRestante) );
               }else {
-                await new Promise( resolve => setTimeout(resolve, tiempoRestante) );
+                await new Promise( resolve => setTimeout(resolve, entry.seg*1000) );
               }
             }
             this.tiempoRecorrido = this.tiempoRecorrido + entry.seg;
@@ -818,7 +815,7 @@ async buscarVersiculo(idLibro, capitulo, versiculo) {
     });
   } else {
     //Siguiente linea la movi para ngOnInit, aqui daba peo.
-    //this.dataTemp = this.textoJsonFinal = await this.bibliaService.getTextoImport(idLibro, capitulo);
+    this.dataTemp = await this.bibliaService.getTextoImport(idLibro, capitulo);
     // console.log ("Texto cita" + this.arregloTextoCita);
     for (let text of this.dataTemp) {
       if (versiculo === text.versiculo) {

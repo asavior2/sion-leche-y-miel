@@ -17,7 +17,7 @@ import { BibliaService} from './services/biblia.service';
 
 
 
-import { AngularFireModule} from "@angular/fire";
+//import { AngularFireModule} from "@angular/fire";
 
 import { FirebaseAuthentication } from "@ionic-native/firebase-authentication/ngx";
 import { GooglePlus } from '@ionic-native/google-plus/ngx';
