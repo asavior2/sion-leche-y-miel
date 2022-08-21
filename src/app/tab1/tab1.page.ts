@@ -37,7 +37,7 @@ export class Tab1Page implements OnInit {
   titulos;
   citas;
   cantCapitulo: any[] = new Array;
-  librot = 'Juan';
+  librot:string = '';
   mostrarLibros = false;
   mostrarCapitulos = false;
   mostrarGenesis = false;
@@ -160,6 +160,7 @@ export class Tab1Page implements OnInit {
         }
         console.log(this.libro);
       }
+      this.librot = 'Juan';
     });
     await this.storage.get('fontSize').then((val) => {
       if (val == null || val < 15) {
@@ -279,7 +280,7 @@ export class Tab1Page implements OnInit {
       //}
       await this.storage.set('playAuto', false);
     console.log('2') 
-      this.playPausa = "play"
+   
       console.log("pause")
       this.marcarVersiculoAudioRemove("all")
     }else {
@@ -296,7 +297,7 @@ export class Tab1Page implements OnInit {
       await this.storage.set('playAuto', false);
     console.log('3')
 
-      this.playPausa = "pause"
+      
         console.log("play")
     
       //this.audio.onplaying  =  async function() {
@@ -453,6 +454,7 @@ export class Tab1Page implements OnInit {
   }
 
   mostrarLibrosMetodo() {
+    this.marcarVersiculoAudioRemove("all")
     if (this.mostrarLibros === this.mostrarTexto) {
       this.mostrarCapitulos = false;
       this.mostrarTexto = true;
@@ -463,9 +465,12 @@ export class Tab1Page implements OnInit {
   }
 
   mostrarCapitulosMetodo(libro) {
+    this.marcarVersiculoAudioRemove("all")
+    this.router.navigate( ['/tabs/tab1'], {fragment: ""});
+    
     for (let entry of Libros) {
       if (libro === entry.id) {
-        this.librot = entry.libro;
+        this.librot = entry.libro; 
       }
     }
     this.libro = libro;
@@ -488,9 +493,12 @@ export class Tab1Page implements OnInit {
     }
     this.getcapitulos(this.libro);
   }
-
+  
   async mostrarTextoMetodo(libro, capitulo) {
+    this.ionContent.scrollToTop(300);
     this.marcarVersiculoAudioRemove("all")
+    this.router.navigate( ['/tabs/tab1'], {fragment: ""});
+
     this.citas = [];
     this.storage.set('libro', libro);
     this.storage.set('capitulo', capitulo);
@@ -577,9 +585,12 @@ export class Tab1Page implements OnInit {
 
     this.audio = new Audio();
 
-     this.audio.addEventListener("play", async () => {
+     this.audio.addEventListener("playing", async () => { 
+      //playing  Tras una falta de datos, el recurso multimedia vuelve a estar listo para reproducirse.
+      this.playPausa = "pause"
+
       this.isPlaying = true;
-      console.log("Event play");
+      console.log("Event playing");
       let tiempo
       //console.log("Event onplaying");
       //console.log(this.tiempoAudio)
@@ -658,11 +669,36 @@ export class Tab1Page implements OnInit {
       this.nextboton()
     });
 
-    this.audio.addEventListener("paused", async () => {
-      console.log("Event Paused");
+    this.audio.addEventListener("loadstart", () => {
+      console.log("Event loadstart");
     });
-    
-    
+    this.audio.addEventListener("canplaythrough", () => {
+      console.log("Event canplaythrough");
+    });
+    this.audio.addEventListener("waiting", () => {
+      //La reproducción se ha detenido por ausencia (temporal) de datos.
+      console.log("Event waiting");
+      this.isPlaying = false
+      this.playPausa = "alert-circle-outline"
+    });
+    this.audio.addEventListener(".canplay", () => {
+      //	La carga del recurso multimedia se ha detenido, pero no por un error.
+      console.log("Event .canplay");
+      this.isPlaying = false
+      this.playPausa = "alert-circle-outline"
+    });
+    this.audio.addEventListener(".abort", () => {
+      //	La carga del recurso multimedia se ha detenido, pero no por un error.
+      console.log("Event .abort");
+      this.isPlaying = false
+      this.playPausa = "alert-circle-outline"
+    });
+    this.audio.addEventListener(".error", () => {
+      //	La carga del recurso multimedia se ha detenido, resultado de un error.
+      console.log("Event .error");
+      this.isPlaying = false
+      this.playPausa = "alert-circle-outline"
+    });
   }
 
 

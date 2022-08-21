@@ -405,11 +405,11 @@ export class LeerPlanPage implements OnInit {
     if(this.nombrePlan =='bibleOneYear'){
       //Validar si el audio existe con readAsText
       
-      let promiseAudio = this.file.readAsText(this.file.applicationStorageDirectory + this.pathDiviceIosAndroid, "por-Capitulos/" + this.libro + "/" + this.capitulo);
+      let promiseAudio = this.file.readAsText(this.file.applicationStorageDirectory + this.pathDiviceIosAndroid, "por-Capitulos/" + this.libro + "/" + this.capitulo + ".mp3");
       if(promiseAudio != undefined){
         await promiseAudio.then((value) => {
           console.log("ARCHIVO  existente ");
-          let localAudioURL = this.file.applicationStorageDirectory + this.pathDiviceIosAndroid + "por-Capitulos/" + this.libro + "/" + this.capitulo;
+          let localAudioURL = this.file.applicationStorageDirectory + this.pathDiviceIosAndroid + "por-Capitulos/" + this.libro + "/" + this.capitulo + ".mp3";
           this.audioMP3 = this.win.Ionic.WebView.convertFileSrc(localAudioURL);
         }).catch(err => {
           console.error(err);
@@ -508,6 +508,40 @@ export class LeerPlanPage implements OnInit {
         //this.isPlaying = !this.isPlaying
         this.nextboton()
       });
+
+      /*
+      Provar mejor los eventos
+      this.audio.addEventListener("loadstart", () => {
+        console.log("Event loadstart");
+      });
+      this.audio.addEventListener("canplaythrough", () => {
+        console.log("Event canplaythrough");
+      });
+      this.audio.addEventListener("waiting", () => {
+        //La reproducción se ha detenido por ausencia (temporal) de datos.
+        console.log("Event waiting");
+        this.isPlaying = false
+        this.playPausa = "alert-circle-outline"
+      });
+      this.audio.addEventListener(".canplay", () => {
+        //	La carga del recurso multimedia se ha detenido, pero no por un error.
+        console.log("Event .canplay");
+        this.isPlaying = false
+        this.playPausa = "alert-circle-outline"
+      });
+      this.audio.addEventListener(".abort", () => {
+        //	La carga del recurso multimedia se ha detenido, pero no por un error.
+        console.log("Event .abort");
+        this.isPlaying = false
+        this.playPausa = "alert-circle-outline"
+      });
+      this.audio.addEventListener(".error", () => {
+        //	La carga del recurso multimedia se ha detenido, resultado de un error.
+        console.log("Event .error");
+        this.isPlaying = false
+        this.playPausa = "alert-circle-outline"
+      });
+       */
     }
   }
   

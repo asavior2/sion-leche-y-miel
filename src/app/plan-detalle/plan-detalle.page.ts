@@ -21,7 +21,7 @@ export class PlanDetallePage implements OnInit {
   planes = planesFile;
   slideOpts = {
     slidesPerView: 6,
-    initialSlide: 0,
+    initialSlide: 6,
     speed: 400
   };
   nombrePlan = null;
@@ -65,6 +65,7 @@ export class PlanDetallePage implements OnInit {
    diaFinPlan;
    posicionSlide:number;
    el;
+   activarDia;
 
 
   constructor(
@@ -163,16 +164,17 @@ export class PlanDetallePage implements OnInit {
 
     await this.estadoPlan();
 
-    this.posicionSlide = parseInt(this.diaLecturaV) - parseInt(this.diaAtraso)
+    this.posicionSlide = await parseInt(this.diaLecturaV) - parseInt(this.diaAtraso)
     console.log("posicionSlide " + this.posicionSlide)
+    this.slideOpts.initialSlide = this.posicionSlide ;
     for (let dia of this.planOfStora) {
-      console.log();
-      console.log('dia de lectura ' + this.diaLecturaV);
+      //console.log();
+      //console.log('dia de lectura ' + this.diaLecturaV);
       if (dia.dia == this.posicionSlide ) {   //antes this.diaLecturaV
         console.log(' Dentro del IF Va en el dia ' + dia.dia);
-        this.slideOpts.initialSlide =  this.posicionSlide -4 ;
-        this.obtenerLibroCapitulos(dia.dia, dia.libro, dia.detalles);
-        this.statusSlide(dia.dia);
+        
+        await this.obtenerLibroCapitulos(dia.dia, dia.libro, dia.detalles);
+        await this.statusSlide(dia.dia);
         this.marcarSlite = true;
         this.verBadge = true;
       }
@@ -309,7 +311,7 @@ export class PlanDetallePage implements OnInit {
 
 
   statusSlide(dia) {
-    if (Number(dia) == this.posicionSlide) {  //this.posicionSlide o this.dia
+    if (Number(dia) == this.posicionSlide || Number(dia) == this.activarDia) {  //this.posicionSlide o this.dia
       return true;
     } else {
       return false;
@@ -335,11 +337,12 @@ export class PlanDetallePage implements OnInit {
 
   }
 
-  obtenerLibroCapitulos(dia, libro, detalles) {
+  async obtenerLibroCapitulos(dia, libro, detalles) {
+    this.activarDia = dia
     // console.log(Object.keys(capitulos));
     this.dia = dia;
-    this.storage.set('diaPlan', this.dia);
-    this.storage.set('nombrePlan', this.nombrePlan);
+    await this.storage.set('diaPlan', this.dia);
+    await this.storage.set('nombrePlan', this.nombrePlan);
     this.libro = libro;
     for (let entry of Libros) {
       if (libro === entry.id) {
@@ -347,7 +350,7 @@ export class PlanDetallePage implements OnInit {
       }
     }
     this.detallesDia = detalles;
-    this.storage.set('detalleDia', this.detallesDia);
+    await this.storage.set('detalleDia', this.detallesDia);
     console.log(libro);
     console.log(detalles);
     this.verCapitulos = true;
