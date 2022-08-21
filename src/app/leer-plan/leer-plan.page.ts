@@ -105,6 +105,7 @@ export class LeerPlanPage implements OnInit {
   share:boolean = false;
   copiaCondensado = [];
   botonPlay:boolean=false;
+  pathDiviceIosAndroid:string;
 
   @ViewChild(IonContent, { static: true }) ionContent: IonContent;
   constructor(private activatedRoute: ActivatedRoute,
@@ -126,6 +127,14 @@ export class LeerPlanPage implements OnInit {
               }
 
   async ngOnInit() {
+
+    if (this.platform.is("android")){
+      this.pathDiviceIosAndroid = "/files/Documents/"
+      console.log("***ANDROID***")
+    }else if (this.platform.is("ios")){
+      this.pathDiviceIosAndroid = "/Documents/"
+      console.log("***IOS***")
+    }
 
     await this.storage.get('fontSize').then((val) => {
       if (val == null || val < 15) {
@@ -253,14 +262,14 @@ export class LeerPlanPage implements OnInit {
   
     console.log("this.isPlaying " + this.isPlaying)
     if (this.isPlaying){
-      this.isPlaying = false;
+      //this.isPlaying = false;
       this.audio.pause();
       await this.storage.set('playAuto', false);
       this.playPausa = "play"
       console.log("pause")
       this.marcarVersiculoAudioRemove("all")
     }else {
-      this.isPlaying = true;
+      //this.isPlaying = true;
       this.audio.src = this.audioMP3;
       this.audio.load();
       this.audio.currentTime = this.tiempoRecorrido - this.ultimoTiempo;
@@ -396,11 +405,11 @@ export class LeerPlanPage implements OnInit {
     if(this.nombrePlan =='bibleOneYear'){
       //Validar si el audio existe con readAsText
       
-      let promiseAudio = this.file.readAsText(this.file.applicationStorageDirectory + "/files/Documents/", "por-Capitulos/" + this.libro + "/" + this.capitulo);
+      let promiseAudio = this.file.readAsText(this.file.applicationStorageDirectory + this.pathDiviceIosAndroid, "por-Capitulos/" + this.libro + "/" + this.capitulo);
       if(promiseAudio != undefined){
         await promiseAudio.then((value) => {
           console.log("ARCHIVO  existente ");
-          let localAudioURL = this.file.applicationStorageDirectory + "/files/Documents/por-Capitulos/" + this.libro + "/" + this.capitulo;
+          let localAudioURL = this.file.applicationStorageDirectory + this.pathDiviceIosAndroid + "por-Capitulos/" + this.libro + "/" + this.capitulo;
           this.audioMP3 = this.win.Ionic.WebView.convertFileSrc(localAudioURL);
         }).catch(err => {
           console.error(err);
@@ -419,7 +428,6 @@ export class LeerPlanPage implements OnInit {
       
       await this.storage.get('playAuto').then((val) => {
         if (val != null && val == true) {
-          this.isPlaying = false
           this.playAudio()
         }
         console.log("playAuto " + val);
@@ -427,6 +435,7 @@ export class LeerPlanPage implements OnInit {
 
       this.audio.addEventListener("play", async () => {
         console.log("Event play");
+        this.isPlaying = true;
         let tiempo
         //console.log("Event onplaying");
         //console.log(this.tiempoAudio)
@@ -496,7 +505,7 @@ export class LeerPlanPage implements OnInit {
       this.audio.addEventListener("ended", async () => {
         await this.storage.set('playAuto', true);
         console.log("Event finalizo el audio reproducción");
-        this.isPlaying = !this.isPlaying
+        //this.isPlaying = !this.isPlaying
         this.nextboton()
       });
     }

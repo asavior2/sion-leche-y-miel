@@ -91,6 +91,7 @@ export class Tab1Page implements OnInit {
   playPausa:string ="play";
   share:boolean = false;
   copiaCondensado = [];
+  pathDiviceIosAndroid:string;
 
   @ViewChild(IonContent) ionContent: IonContent;
   constructor(private bibliaService: BibliaService,
@@ -123,7 +124,13 @@ export class Tab1Page implements OnInit {
        
   async ngOnInit() {
 
-    
+    if (this.platform.is("android")){
+      this.pathDiviceIosAndroid = "/files/Documents/"
+      console.log("***ANDROID***")
+    }else if (this.platform.is("ios")){
+      this.pathDiviceIosAndroid = "/Documents/"
+      console.log("***IOS***")
+    }
    
     //this.activeRoute.fragment.subscribe(fragment => { this.fragment = fragment; });
   
@@ -172,7 +179,9 @@ export class Tab1Page implements OnInit {
       }
     });
 
+ 
     await this.storage.set('playAuto', false);
+    console.log('1')
 
     //await this.audioReproductor();
 
@@ -264,16 +273,17 @@ export class Tab1Page implements OnInit {
     console.log("this.isPlaying " + this.isPlaying)
 
     if (this.isPlaying){
-      this.isPlaying = false;
+      //this.isPlaying = false; se pasa al evento
       //if (!this.audio.paused){
       this.audio.pause();
       //}
       await this.storage.set('playAuto', false);
+    console.log('2') 
       this.playPausa = "play"
       console.log("pause")
       this.marcarVersiculoAudioRemove("all")
     }else {
-      this.isPlaying = true;
+      //this.isPlaying = true; se pasa al evento
       
       this.audio.src = this.audioMP3;
       this.audio.load();
@@ -283,7 +293,9 @@ export class Tab1Page implements OnInit {
       //while( listoPlay){     
       //} 
       this.audio.play();
-      
+      await this.storage.set('playAuto', false);
+    console.log('3')
+
       this.playPausa = "pause"
         console.log("play")
     
@@ -528,7 +540,6 @@ export class Tab1Page implements OnInit {
     } else {
       this.textoJsonFinal = await this.bibliaService.getTextoImport(this.libro, this.capitulo);
     }
-    //this.audioReproductor();
 
     this.mostrarTexto = true;
   }
@@ -536,11 +547,11 @@ export class Tab1Page implements OnInit {
   async audioReproductor(){
     //Validar si el audio existe con readAsText
     
-    let promiseAudio = this.file.readAsText(this.file.applicationStorageDirectory + "files/Documents/", "por-Capitulos/" + this.libro + "/" + this.capitulo + ".mp3");
+    let promiseAudio = this.file.readAsText(this.file.applicationStorageDirectory + this.pathDiviceIosAndroid, "por-Capitulos/" + this.libro + "/" + this.capitulo + ".mp3");
     if(promiseAudio != undefined){
       await promiseAudio.then((value) => {
         console.log("ARCHIVO  existente ");
-        let localAudioURL = this.file.applicationStorageDirectory + "files/Documents/por-Capitulos/" + this.libro + "/" + this.capitulo + ".mp3";
+        let localAudioURL = this.file.applicationStorageDirectory + this.pathDiviceIosAndroid + "por-Capitulos/" + this.libro + "/" + this.capitulo + ".mp3";
         this.audioMP3 = this.win.Ionic.WebView.convertFileSrc(localAudioURL);
       }).catch(err => {
         console.error(err);
@@ -556,17 +567,18 @@ export class Tab1Page implements OnInit {
     console.log("***** " + this.audioMP3)
     
 
-    await this.storage.get('playAuto').then((val) => {
+    this.storage.get('playAuto').then((val) => {
       if (val != null && val == true) {
-        this.isPlaying = false
+        //this.isPlaying = false
         this.playAudio()
       }
-      console.log("playAuto " + val);
+      console.log("playAuto reproductor " + val);
     });
 
     this.audio = new Audio();
 
      this.audio.addEventListener("play", async () => {
+      this.isPlaying = true;
       console.log("Event play");
       let tiempo
       //console.log("Event onplaying");
@@ -604,13 +616,13 @@ export class Tab1Page implements OnInit {
                 if (!this.isPlaying ){
                   break
                 }
-                //console.log("Espero " + 500)
+                console.log("Espero " + 500)
                 await new Promise( resolve => setTimeout(resolve, 500) );
               }
               //console.log("Espero " + tiempoRestante)
               await new Promise( resolve => setTimeout(resolve, tiempoRestante) );
             }else {
-              //console.log("Espero " + entry.seg*1000)
+              console.log("Espero " + entry.seg*1000)
               await new Promise( resolve => setTimeout(resolve, entry.seg*1000) );
             }
           }
@@ -626,6 +638,8 @@ export class Tab1Page implements OnInit {
       //this.playAudio();
       this.isPlaying = false;
       await this.storage.set('playAuto', false);
+      console.log('4')
+
       this.playPausa = "play"
       this.marcarVersiculoAudioRemove("all")
       /*
@@ -640,9 +654,10 @@ export class Tab1Page implements OnInit {
     this.audio.addEventListener("ended", async () => {
       await this.storage.set('playAuto', true);
       console.log("Event finalizo el audio reproducción");
-      this.isPlaying = !this.isPlaying
+      //this.isPlaying = false
       this.nextboton()
     });
+
     this.audio.addEventListener("paused", async () => {
       console.log("Event Paused");
     });

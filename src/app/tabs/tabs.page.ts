@@ -8,8 +8,10 @@ import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer/ng
 import { HttpClient } from '@angular/common/http';
 import { HTTP } from '@ionic-native/http/ngx';
 import { JsonPipe } from '@angular/common';
+import { Platform } from '@ionic/angular';
 
 import { AlertController } from '@ionic/angular';
+import { Console } from 'console';
 
 
 
@@ -27,6 +29,7 @@ export class TabsPage implements OnInit {
   hash;
   darkMode: boolean = true;
   estadoDark;
+  pathDiviceIosAndroid:string;
 
   constructor(private router: Router,
               private zip: Zip,
@@ -36,6 +39,7 @@ export class TabsPage implements OnInit {
               private httpClient: HttpClient,
               private nativeHTTP: HTTP,
               public alertController: AlertController,
+              public platform: Platform,
               public actionSheetController: ActionSheetController) {
                 const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
                 this.darkMode = prefersDark.matches;
@@ -70,6 +74,16 @@ export class TabsPage implements OnInit {
       }
       //this.unZip('audio-SLM-calidad-baja.zip','audio')
       //this.download('https://sionlecheymiel.com/file/audios/1/1.mp3','audioD.mp3')
+
+      if (this.platform.is("android")){
+        this.pathDiviceIosAndroid = "/files/Documents/"
+        console.log("***ANDROID***")
+      }else if (this.platform.is("ios")){
+        this.pathDiviceIosAndroid = "/Documents/"
+        console.log("***IOS***")
+      }
+
+
     }
 
    validaUri() {
@@ -141,22 +155,22 @@ export class TabsPage implements OnInit {
   /*externalRootDirectory file:///storage/emulated/0/
     dataDirectorio file:///data/user/0/io.slm.starter/files/
     externalDataDirectory file:///storage/emulated/0/Android/data/io.slm.starter/files/*/
-    this.zipPath = this.file.applicationStorageDirectory + "files/Documents/" + nombre;
+    this.zipPath = this.file.applicationStorageDirectory + this.pathDiviceIosAndroid + nombre;
     console.log(this.zipPath);
 
     this.file.checkFile(this.zipPath, '').then(_ => {
       this.zip.unzip (this.zipPath,
-                      this.file.applicationStorageDirectory + "files/Documents/",
+                      this.file.applicationStorageDirectory + this.pathDiviceIosAndroid,
                       (progress) =>
                       console.log('Unzipping, ' + Math.round((progress.loaded / progress.total) * 100) + '%')).then((result) => {
                         if (result === 0) {
                           console.log('SUCCESS');
                           if(deQuien == 'audio'){
                             this.alertDownloadAudio('Descarga Completada','Biblia Sion Leche y Miel en audio')
-                            this.file.removeFile(this.file.applicationStorageDirectory + "files/Documents/", nombre).then(_=> {
-                              console.log("Archivo eliminado")
+                            this.file.removeFile(this.file.applicationStorageDirectory + this.pathDiviceIosAndroid, nombre).then(_=> {
+                              console.log("Archivo zip eliminado")
                             }).catch((err) => {
-                              console.log("Como que no se pudo eliminar el archivo")
+                              console.log("Como que no se pudo eliminar el archivo zip")
                               console.log(err)
                             });
 
@@ -181,13 +195,26 @@ export class TabsPage implements OnInit {
 
   async download(url: string, nombre: string) {
     console.log(url + " " + nombre)
-    
-    const filePath = this.file.applicationStorageDirectory + "/files/Documents/" + nombre; 
+    //documentsDirectory
+    const filePath = this.file.applicationStorageDirectory + this.pathDiviceIosAndroid + nombre; 
     // for iOS use this.file.documentsDirectory
     this.nativeHTTP.downloadFile(url, {}, {}, filePath).then(response => {
       // prints 200
       console.log('Archivo descargado...', response);
-      this.unZip(nombre,'audio'); 
+      
+      this.file.checkDir(this.file.applicationStorageDirectory + this.pathDiviceIosAndroid, 'por-Capitulos').then(_ => {
+        this.file.removeRecursively(this.file.applicationStorageDirectory + this.pathDiviceIosAndroid, 'por-Capitulos').then(_=> {
+          console.log("Carpeta por-Capitulos eliminado")
+          this.unZip(nombre,'audio'); 
+        }).catch((err) => {
+          console.log("Como que no se pudo eliminar la carpeta por-Capitulos")
+          console.log(err)
+        });
+      }).catch((err) => {
+        console.log("Carpeta por-Capitulo no existe")
+        this.unZip(nombre,'audio'); 
+      });
+      
     }).catch(err => {
       // prints 403
       console.log('error block file ... ', err.status);
@@ -307,7 +334,7 @@ async alertErrorDownloadAudio(statusError: string, statusTextError: string,  ) {
             icon: 'musical-notes',
           },
           {
-            text: 'Alta calidad 1.100MB',
+            text: 'Alta calidad 1.1GB',
             role: '',
             icon: 'cloud-download',
             handler: () => {
