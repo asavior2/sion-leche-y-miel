@@ -22,7 +22,7 @@ export class PlanDetallePage implements OnInit {
   slideOpts = {
     slidesPerView: 6,
     initialSlide: 6,
-    speed: 400
+    speed: 2800
   };
   nombrePlan = null;
   titulo;
@@ -76,18 +76,26 @@ export class PlanDetallePage implements OnInit {
   ) {
     
    }
-   ionViewWillEnter() {                           // Este es para que refresque las variables del storag
+  ionViewWillEnter() {                           // Este es para que refresque las variables del storag
     this.ngOnInit();
   }
+
   ionViewDidLoad() {
     this.ngOnInit();
   }
 
   ionViewCanEnter() {
-    this.ngOnInit();
+    //this.ngOnInit();
   }
 
   async ngOnInit() {
+
+    await this.storage.get('initialSlidePlanAño').then((val) => {
+      if (val != null) {
+        this.slideOpts.initialSlide = val
+      } 
+    });
+
     this.dd = this.fecha.getDate();
     this.mm = this.fecha.getMonth() + 1;
     this.yyyy = this.fecha.getFullYear();
@@ -162,27 +170,45 @@ export class PlanDetallePage implements OnInit {
       this.diaLecturaV = '1';
     }
 
-    await this.estadoPlan();
+    this.diaFinPlan = this.planOfStora.length;
+    //await this.estadoPlan();
 
-    this.posicionSlide = await parseInt(this.diaLecturaV) - parseInt(this.diaAtraso)
-    console.log("posicionSlide " + this.posicionSlide)
-    this.slideOpts.initialSlide = this.posicionSlide ;
+    let diaT;
     for (let dia of this.planOfStora) {
       //console.log();
       //console.log('dia de lectura ' + this.diaLecturaV);
-      if (dia.dia == this.posicionSlide ) {   //antes this.diaLecturaV
+      //if (dia.dia == this.posicionSlide ) {   //antes this.diaLecturaV  //este if fue cambiado por el anterior
+      if (!dia.statusDia) {
         console.log(' Dentro del IF Va en el dia ' + dia.dia);
-        
+        diaT = dia.dia
         await this.obtenerLibroCapitulos(dia.dia, dia.libro, dia.detalles);
         await this.statusSlide(dia.dia);
         this.marcarSlite = true;
         this.verBadge = true;
+        break;
       }
      
     }
-    
+    if (parseInt(this.diaLecturaV) >= parseInt(diaT)) {
+     
+      if(parseInt(this.diaLecturaV) > this.diaFinPlan){
+        this.diaAtraso = this.diaFinPlan -parseInt(diaT);
+      }else{
+        this.diaAtraso = parseInt(this.diaLecturaV) - parseInt(diaT);
+      }
+      if (this.diaAtraso === 0) {
+        this.verDiaAtraso = false;
+      } else  {
+        this.verDiaAtraso = true;
+      }
+      console.log ("dias de atraso " + this.diaAtraso);
+    }
 
-    this.diaFinPlan = this.planOfStora.length;
+    this.posicionSlide = await parseInt(this.diaLecturaV) - parseInt(this.diaAtraso)
+    console.log("posicionSlide " + this.posicionSlide)
+    this.slideOpts.initialSlide = this.posicionSlide -4 ;
+    await this.storage.set('initialSlidePlanAño', this.slideOpts.initialSlide);
+    console.log(this.slideOpts) 
 
   } //fin ngOnIniT
 
@@ -204,14 +230,18 @@ export class PlanDetallePage implements OnInit {
     }
   }
 
-  estadoPlan() {
+  async estadoPlan() {
     let diaT;
     for (let entry of this.planOfStora) {
       if (!entry.statusDia) {
         diaT = entry.dia;
-        this.updatePlanActual(diaT);
+        console.log("diaT " + diaT)
+        await this.updatePlanActual(diaT);
         break;
         break;
+      }else{
+        console.log("alñ")
+        await this.updatePlanActual(entry.dia);
       }
     }
     if (parseInt(this.diaLecturaV) >= parseInt(diaT)) {
@@ -243,6 +273,8 @@ export class PlanDetallePage implements OnInit {
       for (let planActivo of  this.planesActivos) {
         if (planActivo.nombre === this.nombrePlan) {
           progresoUpdate = ((100 * parseInt(dia)) / this.diaFinPlan) / 100;
+          console.log("dia parseINT " + parseInt(dia) ) 
+          console.log("dia diaFinPlan " + this.diaFinPlan) 
           this.planArrayTemp.push(
             {titulo: planActivo.titulo,
               nombre: planActivo.nombre,

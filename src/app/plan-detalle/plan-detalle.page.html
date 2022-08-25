@@ -64,7 +64,15 @@
         <ion-item color="light" lines="none" *ngIf="this.verDiaAtraso" class="itemPersonalizado">
           <ion-label  >
             <FONT size="2" slot="end">
-              &nbsp;&nbsp;DIA {{this.diaLecturaV}} de {{this.diaFinPlan}}
+              &nbsp;&nbsp;DIA
+            </FONT>
+            <FONT size="2"  style="color:rgba(41, 194, 3, 0.887)">
+              <strong>
+                {{this.diaLecturaV}} 
+              </strong>
+            </FONT>
+            <FONT size="2" slot="end">
+               de {{this.diaFinPlan}}
             </FONT>
           </ion-label>
 

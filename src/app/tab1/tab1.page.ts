@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, OnDestroy, ElementRef, Renderer2 } from '
 import {BibliaService} from '../services/biblia.service';
 import Libros from '../../assets/libros.json';
 import LibrosHebreo from '../../assets/librosHebreo.json';
-import { IonContent, AlertController} from '@ionic/angular';
+import { IonContent, AlertController, NumericValueAccessor} from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { HttpClient } from '@angular/common/http';
 import { HTTP } from '@ionic-native/http/ngx';
@@ -28,9 +28,9 @@ import { filter } from 'rxjs/operators';
 })
 export class Tab1Page implements OnInit {
   @ViewChild("myButton") myButton: ElementRef;
-  libro = 43;
+  libro:number;
   LibrosPrueba;
-  capitulo = 3;
+  capitulo:number;
   primerP: Array<any> = new Array();
   segundoP: Array<any> = new Array();
   textoJson;
@@ -92,6 +92,8 @@ export class Tab1Page implements OnInit {
   share:boolean = false;
   copiaCondensado = [];
   pathDiviceIosAndroid:string;
+  darkMode:boolean= true;
+  estadoDark:string = "moon";
 
   @ViewChild(IonContent) ionContent: IonContent;
   constructor(private bibliaService: BibliaService,
@@ -115,7 +117,8 @@ export class Tab1Page implements OnInit {
                 //this.guardarMarcador();
                 this.platform.backButton.observers.pop();
                 
-                
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+                this.darkMode = prefersDark.matches;
                 
                 
                 
@@ -160,6 +163,7 @@ export class Tab1Page implements OnInit {
         }
         console.log(this.libro);
       }
+      this.libro = 43;
       this.librot = 'Juan';
     });
     await this.storage.get('fontSize').then((val) => {
@@ -176,6 +180,7 @@ export class Tab1Page implements OnInit {
         this.mostrarTextoMetodo (this.libro, this.capitulo);
         // console.log(val);
       } else {
+        this.capitulo = 3;
         this.mostrarTextoMetodo (this.libro, this.capitulo);
       }
     });
@@ -278,13 +283,11 @@ export class Tab1Page implements OnInit {
       //if (!this.audio.paused){
       this.audio.pause();
       //}
-      await this.storage.set('playAuto', false);
-    console.log('2') 
-   
+      await this.storage.set('playAuto', false);   
       console.log("pause")
       this.marcarVersiculoAudioRemove("all")
     }else {
-      //this.isPlaying = true; se pasa al evento
+    
       
       this.audio.src = this.audioMP3;
       this.audio.load();
@@ -295,19 +298,20 @@ export class Tab1Page implements OnInit {
       //} 
       this.audio.play();
       await this.storage.set('playAuto', false);
-    console.log('3')
-
-      
-        console.log("play")
-    
-      //this.audio.onplaying  =  async function() {
-        //console.log("Event onplaying **")
-     
-        
-      //};
+      console.log("play")
       
     }
     
+  }
+
+  changeDark() {
+    this.darkMode = !this.darkMode;
+    document.body.classList.toggle('dark');
+    if (this.darkMode){
+      this.estadoDark = 'sunny';
+    } else {
+      this.estadoDark = 'moon';
+    }
   }
 
   marcarVersiculoAudioAdd(clase) {
@@ -500,7 +504,7 @@ export class Tab1Page implements OnInit {
     this.router.navigate( ['/tabs/tab1'], {fragment: ""});
 
     this.citas = [];
-    this.storage.set('libro', libro);
+    this.storage.set('libro',parseInt(libro));
     this.storage.set('capitulo', capitulo);
     this.storage.get(libro.toString()).then((val) => {
       if (val == null){
@@ -577,7 +581,7 @@ export class Tab1Page implements OnInit {
 
     this.storage.get('playAuto').then((val) => {
       if (val != null && val == true) {
-        //this.isPlaying = false
+
         this.playAudio()
       }
       console.log("playAuto reproductor " + val);
@@ -605,6 +609,11 @@ export class Tab1Page implements OnInit {
             console.log(this.idPlay)            
             break;
           }
+          //if(this.audio.currentTime){
+          //console.log("this.audio.currentTime " + this.audio.currentTime)
+          //console.log("this.tiempoRecorrido " + this.tiempoRecorrido)
+          //}
+
           if (parseInt(entry.id) >= this.idPlay){
             if (parseInt(entry.versiculo) > 1){
               this.marcarVersiculoAudioRemove("readVersiculol" + versiculoAnterior)

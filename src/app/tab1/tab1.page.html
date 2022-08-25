@@ -4,17 +4,31 @@
         <!-- Boton de los libros-->
         <ion-button clear small (click) = "mostrarLibrosMetodo()" 
            size ="small" fill="clear" color="dark" >
-           <strong> <h6> (SLM)&nbsp;{{librot}}</h6> </strong>
+           <FONT face="Segoe UI" [style.font-size.px]=this.fontSize-3 >
+            (SLM)&nbsp;{{librot}}
+           </FONT>
         </ion-button>  
         <ion-button color="dark" clear small  fill="clear" (click)="mostrarCapitulosMetodo(libro)">
-          <strong> <h6>{{capitulo}} </h6> </strong>
+          <FONT face="Segoe UI" [style.font-size.px]=this.fontSize-3 >
+            {{capitulo}} 
+           </FONT>
         </ion-button> 
         <ion-button color="dark" clear small  fill="clear" (click)="aumentarSize()" size="small" >
-          <strong> <h6 >A+</h6></strong>  
+          <FONT face="Segoe UI" [style.font-size.px]=this.fontSize-3 >
+            A+
+           </FONT>
+           
         </ion-button>
         <ion-button color="dark" clear small  fill="clear" (click)="disminuirSize()" size="small">
-          <strong><h6><small>a-</small></h6></strong>  
+          <FONT face="Segoe UI" [style.font-size.px]=this.fontSize-8 >
+            a-
+           </FONT>
+          
         </ion-button> 
+        <ion-button color="dark" clear fill="clear" (click)="changeDark()" size="small">
+            <ion-icon name="{{estadoDark}}"></ion-icon>
+        </ion-button> 
+        
   
 
    

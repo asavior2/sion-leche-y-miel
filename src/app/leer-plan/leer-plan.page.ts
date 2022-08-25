@@ -433,6 +433,7 @@ export class LeerPlanPage implements OnInit {
         console.log("playAuto " + val);
       });
 
+ 
       this.audio.addEventListener("play", async () => {
         console.log("Event play");
         this.isPlaying = true;
@@ -590,6 +591,7 @@ export class LeerPlanPage implements OnInit {
     console.log ("contadorParteDia " + this.contParteDia + " cantDetalleDia "+ this.cantDetalleDia);
     console.log('Detalle mostrar');
     console.log(detalleMostrar);
+    this.detalleTemp = detalleMarcar;
     if (this.contParteDia < this.cantDetalleDia) {  
       console.log(this.contParteDia);
       console.log(this.cantDetalleDia);
@@ -597,7 +599,7 @@ export class LeerPlanPage implements OnInit {
       this.contParteDia++;
       console.log(detalleMostrar);
       this.mostrarTextoMetodo(detalleMostrar.libro, detalleMostrar.capitulo, detalleMostrar.versiculo, detalleMostrar.versiculoFinal);
-      this.detalleTemp = detalleMarcar;
+
     } else {
       if (this.detalleTemp.hasOwnProperty('versiculoFinal') ){
         this.statusCheckbox(this.dia, this.libro.toString(), this.capitulo.toString(),this.detalleTemp.versiculo, this.detalleTemp.versiculoFinal);
