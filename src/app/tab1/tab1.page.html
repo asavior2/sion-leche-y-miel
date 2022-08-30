@@ -1,9 +1,9 @@
 <ion-header mode="md">
   <!-- Allow everything but only from the same origin and foo.com -->
-  <ion-toolbar align="center" class="minuscula" >
+  <ion-toolbar align="center" class="minuscula"  >
         <!-- Boton de los libros-->
         <ion-button clear small (click) = "mostrarLibrosMetodo()" 
-           size ="small" fill="clear" color="dark" >
+           size ="small" fill="clear" color="dark" class="ion-no-padding" >
            <FONT face="Segoe UI" [style.font-size.px]=this.fontSize-3 >
             (SLM)&nbsp;{{librot}}
            </FONT>
@@ -13,19 +13,19 @@
             {{capitulo}} 
            </FONT>
         </ion-button> 
-        <ion-button color="dark" clear small  fill="clear" (click)="aumentarSize()" size="small" >
+        <ion-button color="dark" clear small  fill="clear" (click)="aumentarSize()" size="small" class="ion-no-padding" >
           <FONT face="Segoe UI" [style.font-size.px]=this.fontSize-3 >
             A+
            </FONT>
            
         </ion-button>
-        <ion-button color="dark" clear small  fill="clear" (click)="disminuirSize()" size="small">
+        <ion-button color="dark" clear small  fill="clear" (click)="disminuirSize()" size="small" class="ion-no-padding">
           <FONT face="Segoe UI" [style.font-size.px]=this.fontSize-8 >
             a-
            </FONT>
           
         </ion-button> 
-        <ion-button color="dark" clear fill="clear" (click)="changeDark()" size="small">
+        <ion-button color="dark" clear fill="clear" (click)="changeDark()" size="small" >
             <ion-icon name="{{estadoDark}}"></ion-icon>
         </ion-button> 
         

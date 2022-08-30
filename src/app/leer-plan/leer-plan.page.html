@@ -1,26 +1,35 @@
-<ion-header>
+<ion-header mode="md">
   <!-- Allow everything but only from the same origin and foo.com -->
-  <ion-toolbar>
-    <ion-buttons small slot="start" >
-      <ion-back-button defaultHref="/"></ion-back-button>
+  <ion-toolbar align="center">
+    <ion-buttons size="small" slot="start" class="ion-no-padding">
+      <ion-back-button size="small" defaultHref="/" (click)="botonAtras()"></ion-back-button>
     </ion-buttons>
-    <div align="center">      
-      
-      <ion-button clear small  
+    
+    <ion-button clear small class="ion-no-padding"
       size ="small" fill="clear" color="dark" >
-      <strong> <h6> {{librot}}</h6> </strong>
-      </ion-button>  
-      <ion-button color="dark" clear small  fill="clear" >
-        <strong> <h6>{{capitulo}} </h6> </strong>
-      </ion-button> 
-      <ion-button color="dark" clear small  fill="clear" (click)="aumentarSize()" size="small">
-        <strong> <h6>A+</h6></strong>  
-      </ion-button>
-      <ion-button color="dark" clear small  fill="clear" (click)="disminuirSize()" size="small">
-        <strong><h6>a-</h6></strong>  
-      </ion-button>   
-      
-    </div>
+      <FONT face="Segoe UI" [style.font-size.px]=this.fontSize-3 >
+      {{librot}}
+      </FONT>
+    </ion-button>  
+    <ion-button color="dark" clear small  fill="clear" >
+      <FONT face="Segoe UI" [style.font-size.px]=this.fontSize-3 >
+        {{capitulo}} 
+        </FONT>
+    </ion-button> 
+    <ion-button color="dark" clear small  fill="clear" (click)="aumentarSize()" size="small" class="ion-no-padding">
+      <FONT face="Segoe UI" [style.font-size.px]=this.fontSize-3 >
+        A+
+        </FONT>
+    </ion-button>
+    <ion-button color="dark" clear small  fill="clear" (click)="disminuirSize()" size="small" class="ion-no-padding">
+      <FONT face="Segoe UI" [style.font-size.px]=this.fontSize-8 >
+        a-
+        </FONT>
+    </ion-button> 
+    <ion-button color="dark" clear fill="clear" (click)="changeDark()" size="small">
+        <ion-icon name="{{estadoDark}}"></ion-icon>
+    </ion-button>       
+   
   </ion-toolbar>
 </ion-header>
 

@@ -28,9 +28,9 @@ import { filter } from 'rxjs/operators';
 })
 export class Tab1Page implements OnInit {
   @ViewChild("myButton") myButton: ElementRef;
-  libro:number;
+  libro:number=43;
   LibrosPrueba;
-  capitulo:number;
+  capitulo:number=3;
   primerP: Array<any> = new Array();
   segundoP: Array<any> = new Array();
   textoJson;
@@ -119,7 +119,11 @@ export class Tab1Page implements OnInit {
                 
                 const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
                 this.darkMode = prefersDark.matches;
-                
+                if (this.darkMode){
+                  this.estadoDark = 'sunny';
+                } else {
+                  this.estadoDark = 'moon';
+                }
                 
                 
               }
@@ -157,14 +161,16 @@ export class Tab1Page implements OnInit {
       if (val !== null) {
         this.libro = val;
         for (let entry of Libros) {
-          if (val === entry.id){
+          if (val == entry.id){
             this.librot = entry.libro;
           }
         }
-        console.log(this.libro);
+        console.log("libro "+ this.libro + " " + this.librot);
+      }else{
+        this.libro = 43;
+        this.librot = 'Juan';
       }
-      this.libro = 43;
-      this.librot = 'Juan';
+      
     });
     await this.storage.get('fontSize').then((val) => {
       if (val == null || val < 15) {
@@ -636,13 +642,13 @@ export class Tab1Page implements OnInit {
                 if (!this.isPlaying ){
                   break
                 }
-                console.log("Espero " + 500)
+                //console.log("Espero " + 500)
                 await new Promise( resolve => setTimeout(resolve, 500) );
               }
               //console.log("Espero " + tiempoRestante)
               await new Promise( resolve => setTimeout(resolve, tiempoRestante) );
             }else {
-              console.log("Espero " + entry.seg*1000)
+              //console.log("Espero " + entry.seg*1000)
               await new Promise( resolve => setTimeout(resolve, entry.seg*1000) );
             }
           }

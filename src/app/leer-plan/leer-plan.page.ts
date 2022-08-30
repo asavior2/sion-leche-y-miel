@@ -106,6 +106,8 @@ export class LeerPlanPage implements OnInit {
   copiaCondensado = [];
   botonPlay:boolean=false;
   pathDiviceIosAndroid:string;
+  darkMode:boolean= true;
+  estadoDark:string = "moon";
 
   @ViewChild(IonContent, { static: true }) ionContent: IonContent;
   constructor(private activatedRoute: ActivatedRoute,
@@ -124,6 +126,13 @@ export class LeerPlanPage implements OnInit {
               public router:Router
               ) { 
                 this.platform.backButton.observers.pop();
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+                this.darkMode = prefersDark.matches;
+                if (this.darkMode){
+                  this.estadoDark = 'sunny';
+                } else {
+                  this.estadoDark = 'moon';
+                }
               }
 
   async ngOnInit() {
@@ -264,7 +273,7 @@ export class LeerPlanPage implements OnInit {
     if (this.isPlaying){
       //this.isPlaying = false;
       this.audio.pause();
-      await this.storage.set('playAuto', false);
+      //await this.storage.set('playAuto', false);
       this.playPausa = "play"
       console.log("pause")
       this.marcarVersiculoAudioRemove("all")
@@ -275,7 +284,7 @@ export class LeerPlanPage implements OnInit {
       this.audio.currentTime = this.tiempoRecorrido - this.ultimoTiempo;
       //this.audio.currentTime = 244
       this.audio.play();
-      await this.storage.set('playAuto', false);
+      //await this.storage.set('playAuto', false);
       this.playPausa = "pause"
         console.log("play")
     
@@ -314,6 +323,27 @@ export class LeerPlanPage implements OnInit {
 
 
   }
+
+  async botonAtras(){
+    if (this.isPlaying){
+      this.audio.pause();//Stop
+      this.audio.currentTime = 0;
+      await this.delay2(900);
+      this.idPlay = 0
+      this.tiempoRecorrido = 0  
+    }
+  }
+
+  changeDark() {
+    this.darkMode = !this.darkMode;
+    document.body.classList.toggle('dark');
+    if (this.darkMode){
+      this.estadoDark = 'sunny';
+    } else {
+      this.estadoDark = 'moon';
+    }
+  }
+
   getCleanedString(cadena) {
     cadena = cadena.replace(/á/gi,"a");
     cadena = cadena.replace(/Éxodo/gi,"Exodo");
@@ -353,7 +383,6 @@ export class LeerPlanPage implements OnInit {
     this.actualizarLibroTitulo(this.libro);
     // update es referente a si se actualizo los arquivos JSON que tienen el texto.
     if (this.isPlaying){
-      //this.playAudio()
       await this.delay2(900);
       this.idPlay = 0
       this.tiempoRecorrido = 0
@@ -434,7 +463,8 @@ export class LeerPlanPage implements OnInit {
       });
 
  
-      this.audio.addEventListener("play", async () => {
+      this.audio.addEventListener("playing", async () => {
+        await this.storage.set('playAuto', false);
         console.log("Event play");
         this.isPlaying = true;
         let tiempo
@@ -489,13 +519,11 @@ export class LeerPlanPage implements OnInit {
 
       this.audio.addEventListener("pause", async () => {
         console.log("Event Pause");
-        //this.playAudio();
         this.isPlaying = false;
-        await this.storage.set('playAuto', false);
         this.playPausa = "play"
         this.marcarVersiculoAudioRemove("all")
         /*
-        this.isPlaying = !this.isPlaying;
+
         await this.storage.set('playAuto', false);
         this.playPausa = "play"
         console.log("pause")
@@ -506,7 +534,7 @@ export class LeerPlanPage implements OnInit {
       this.audio.addEventListener("ended", async () => {
         await this.storage.set('playAuto', true);
         console.log("Event finalizo el audio reproducción");
-        //this.isPlaying = !this.isPlaying
+
         this.nextboton()
       });
 
@@ -575,9 +603,12 @@ export class LeerPlanPage implements OnInit {
     this.marcarVersiculoAudioRemove("all")
     
     if (this.isPlaying){
+      this.audio.pause();//Stop
+      this.audio.currentTime = 0;
       await this.delay2(900);
       this.idPlay = 0
       this.tiempoRecorrido = 0
+      
     }else{
       this.idPlay = 0
       this.tiempoRecorrido = 0
@@ -617,14 +648,14 @@ export class LeerPlanPage implements OnInit {
     console.log("Desde Next this.isPlaying " + this.isPlaying )
     if (this.isPlaying ){
       console.log("Desde if next ")
-      await this.delay2(1500);
-      this.tiempoRecorrido = 0
+      this.audio.pause() //Stop
+      this.audio.currentTime = 0
       this.idPlay = 0
-  
+      await this.delay2(1500);
     }else{
       console.log("Desde else next ")
       await this.delay2(1500);
-      this.tiempoRecorrido = 0
+      this.audio.currentTime = 0
       this.idPlay = 0
     
     }

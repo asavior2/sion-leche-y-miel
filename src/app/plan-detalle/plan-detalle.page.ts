@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ViewChild } from '@angular/core'
 // import bibleOneYear from '../../assets/bibleOneYear.json';
 import planesFile from '../../assets/planesLectura.json';
 import { ActivatedRoute } from '@angular/router';
@@ -7,6 +8,7 @@ import { NavController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { Console } from 'console';
 import { Router } from "@angular/router";
+import {IonSlides} from '@ionic/angular';
 
 @Component({
   selector: 'app-plan-detalle',
@@ -14,15 +16,16 @@ import { Router } from "@angular/router";
   styleUrls: ['./plan-detalle.page.scss'],
 })
 export class PlanDetallePage implements OnInit {
-
-  bibleOneYear;
+  @ViewChild(IonSlides) slides: IonSlides;  
+  
+  bibleOneYear;  
   planOfStora;
   temporalPlan;
   planes = planesFile;
   slideOpts = {
     slidesPerView: 6,
     initialSlide: 6,
-    speed: 2800
+    speed: 500
   };
   nombrePlan = null;
   titulo;
@@ -89,12 +92,6 @@ export class PlanDetallePage implements OnInit {
   }
 
   async ngOnInit() {
-
-    await this.storage.get('initialSlidePlanAño').then((val) => {
-      if (val != null) {
-        this.slideOpts.initialSlide = val
-      } 
-    });
 
     this.dd = this.fecha.getDate();
     this.mm = this.fecha.getMonth() + 1;
@@ -207,8 +204,14 @@ export class PlanDetallePage implements OnInit {
     this.posicionSlide = await parseInt(this.diaLecturaV) - parseInt(this.diaAtraso)
     console.log("posicionSlide " + this.posicionSlide)
     this.slideOpts.initialSlide = this.posicionSlide -4 ;
-    await this.storage.set('initialSlidePlanAño', this.slideOpts.initialSlide);
     console.log(this.slideOpts) 
+
+    this.slides.slideTo(this.posicionSlide -4)
+    /*this.slides.slideTo(this.imageIndex, 0).then(() => {
+      setTimeout(() => {
+      this.loading = false;
+      }, 250);
+      }); */
 
   } //fin ngOnIniT
 
