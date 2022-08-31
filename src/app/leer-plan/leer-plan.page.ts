@@ -269,7 +269,7 @@ export class LeerPlanPage implements OnInit {
     
     let tiempo
   
-    console.log("this.isPlaying " + this.isPlaying)
+    console.log("this.isPlaying playAudio " + this.isPlaying)
     if (this.isPlaying){
       //this.isPlaying = false;
       this.audio.pause();
@@ -465,7 +465,7 @@ export class LeerPlanPage implements OnInit {
  
       this.audio.addEventListener("playing", async () => {
         await this.storage.set('playAuto', false);
-        console.log("Event play");
+        console.log("Event playing");
         this.isPlaying = true;
         let tiempo
         //console.log("Event onplaying");
@@ -534,7 +534,6 @@ export class LeerPlanPage implements OnInit {
       this.audio.addEventListener("ended", async () => {
         await this.storage.set('playAuto', true);
         console.log("Event finalizo el audio reproducción");
-
         this.nextboton()
       });
 
@@ -617,6 +616,20 @@ export class LeerPlanPage implements OnInit {
 
   async nextboton() {
     this.ionContent.scrollToTop(300);
+    this.marcarVersiculoAudioRemove("all")
+    console.log("Desde Next this.isPlaying " + this.isPlaying )
+    if (this.isPlaying ){
+      console.log("Desde if next ")
+      this.audio.pause() //Stop
+      this.audio.currentTime = 0
+      this.idPlay = 0
+      await this.delay2(1500);
+    }else{
+      console.log("Desde else next ")
+      await this.delay2(1500);
+      this.audio.currentTime = 0
+      this.idPlay = 0
+    }
     let detalleMarcar = this.detalleDia[this.contParteDia];
     let detalleMostrar = this.detalleDia[this.contParteDia + 1];  // Para plan q año this.detalleDia[this.contParteDia]; 
     console.log ("contadorParteDia " + this.contParteDia + " cantDetalleDia "+ this.cantDetalleDia);
@@ -644,21 +657,7 @@ export class LeerPlanPage implements OnInit {
     
     //this.router.navigate( ["/leer-plan/" + this.libro + "/" + this.capitulo + "/undefined/undefined"], {fragment: ""});
     //this.navCtrl.navigateForward([`/leer-plan/${this.libro}/${this.capitulo}/undefined/undefined`],{fragment: ""});
-    this.marcarVersiculoAudioRemove("all")
-    console.log("Desde Next this.isPlaying " + this.isPlaying )
-    if (this.isPlaying ){
-      console.log("Desde if next ")
-      this.audio.pause() //Stop
-      this.audio.currentTime = 0
-      this.idPlay = 0
-      await this.delay2(1500);
-    }else{
-      console.log("Desde else next ")
-      await this.delay2(1500);
-      this.audio.currentTime = 0
-      this.idPlay = 0
     
-    }
  
   }
 

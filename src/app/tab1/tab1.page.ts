@@ -174,7 +174,7 @@ export class Tab1Page implements OnInit {
     });
     await this.storage.get('fontSize').then((val) => {
       if (val == null || val < 15) {
-        this.fontSize = 20;
+        this.fontSize = 22;
       } else {
         this.fontSize = val;
       }
@@ -941,6 +941,14 @@ organizarCitas(textoJson){
                 {
                   text: 'Ir al Capitulo',
                   handler: () => {
+                    if (this.isPlaying){
+                      this.audio.pause();//Stop
+                      this.audio.currentTime = 0;
+                      this.idPlay = 0
+                      this.tiempoRecorrido = 0  
+                      this.router.navigate( ['/tabs/tab1'], {fragment: ""});
+                      this.marcarVersiculoAudioRemove("all")
+                    }
                     this.mostrarTextoMetodo(idLibro, capituloC);
                     this.ionContent.scrollToTop(300);
                   }
@@ -1066,13 +1074,13 @@ organizarCitas(textoJson){
     }
 
   aumentarSize() {
-    if(this.fontSize < 28){
+    if(this.fontSize < 30){
       this.fontSize = this.fontSize + 1;
       this.storage.set("fontSize", this.fontSize);
     }
   }
   disminuirSize() {
-    if (this.fontSize >16){
+    if (this.fontSize >18){
       this.fontSize--
       this.storage.set('fontSize', this.fontSize);
     }
