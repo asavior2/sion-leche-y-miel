@@ -3,6 +3,8 @@ import { Storage } from '@ionic/storage';
 import {File} from '@ionic-native/file/ngx';
 import { HTTP } from '@ionic-native/http/ngx';
 import { AlertController } from '@ionic/angular';
+import { Platform } from '@ionic/angular';
+import { ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-sobre',
@@ -12,9 +14,12 @@ import { AlertController } from '@ionic/angular';
 export class SobrePage implements OnInit {
 
   fontSize;
+  pathDiviceIosAndroid: string;
   constructor(private storage: Storage,
     public file: File,
+    private toastController: ToastController,
     private nativeHTTP: HTTP,
+    public platform: Platform,
     public alertController: AlertController
     ) {
     this.storage.get('fontSize').then((val) => {
@@ -29,6 +34,13 @@ export class SobrePage implements OnInit {
   
 
   ngOnInit() {
+    if (this.platform.is("android")){
+      this.pathDiviceIosAndroid = this.file.externalRootDirectory + 'Download/'
+      console.log("***ANDROID***")
+    }else if (this.platform.is("ios")){
+      this.pathDiviceIosAndroid = this.file.documentsDirectory
+      console.log("***IOS***")
+    }
   }
 
   
@@ -57,16 +69,54 @@ export class SobrePage implements OnInit {
     })*/
   }
 
-  async alertErrorDownloadAudio(statusError: string, statusTextError: string,  ) {
+  /* 
+  copyFile(){
+    
+    this.file.copyFile(this.file.applicationStorageDirectory + this.pathDiviceIosAndroid, nombre, ,).then(_=> {
+      console.log("Archivo zip eliminado")
+    }).catch((err) => {
+      console.log("Como que no se pudo eliminar el archivo zip")
+      console.log(err)
+    });
+  }*/
+
+  downloadLibro(url: string,extencion) {
+    console.log(url )
+    this.presentToast('bottom');
+    //documentsDirectory
+    const filePath = this.pathDiviceIosAndroid + "ESCLAVOS-DE-REBELION-A-SUBDITOS-DEL-REINO-DE-LOS-CIELOS-Pedro-Rangel." + extencion; 
+    // for iOS use this.file.documentsDirectory
+    this.nativeHTTP.downloadFile(url, {}, {}, filePath).then(response => {
+      console.log('Archivo descargado...', response);      
+      this.alertDownloadAudio('Archivo descargado', "Archivo descargado, en directorio Descargas")
+    }).catch(err => {
+      console.log('error block file ... ', err.status);
+      this.alertDownloadAudio('Error de descarga', err.status +" " + err.error)
+    })
+  }
+
+
+  async alertDownloadAudio(header: string, statusTextError: string,  ) {
     const alert = await this.alertController.create({
       cssClass: 'my-custom-class',
-      header: 'Error de descarga',
-      subHeader: statusError + ' ' + statusTextError,
+      header: header,
+      subHeader: statusTextError,
       message: '',
       buttons: ['OK'],
       mode: 'ios'
     });
     await alert.present();
   }
+
+  async presentToast(position: 'top' | 'middle' | 'bottom') {
+    const toast = await this.toastController.create({
+      message: 'Iniciando descarga del libro...',
+      duration: 2500,
+      position: position
+    });
+
+    await toast.present();
+  }
+
 
 }

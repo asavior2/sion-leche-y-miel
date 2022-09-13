@@ -37,9 +37,9 @@
                   <ion-item >
                   <FONT [style.font-size.px]=this.fontSize face="roboto" >
                     <strong>{{versiculo.nombreLibro}} {{versiculo.capitulo}}:{{versiculo.versiculo}}</strong>
-                    {{versiculo.texto.substring(0,versiculo.posicionPalabra) }}
+                    {{versiculo.texto.substring(0,versiculo.posicionPalabra)}}
                     <FONT [style.font-size.px]=this.fontSize face = "roboto" color = "red">{{versiculo.palabra}}</FONT>
-                    {{versiculo.texto.substring((versiculo.posicionPalabra) + this.palabra.length)}}
+                    {{(versiculo.texto.substring((versiculo.posicionPalabra) + this.palabra.length)).trim()}}
                   </FONT>
                 </ion-item>
                 </ion-label>

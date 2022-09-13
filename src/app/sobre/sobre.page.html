@@ -26,16 +26,17 @@
       </ion-text>
       <br>
       <img class="responsive" src="assets/imgs/ESCLAVOS-DE-REBELION-A-SUBDITOS-DEL-REINO-DE-LOS-CIELOS-Pedro-Rangel.jpg">
-        <ion-button color="primary" onclick = "window.open('https://drive.google.com/file/d/1mCbBRMSsSg8qb-QYedLUn-kpupLsNv5c/view?usp=sharing', '_system','location=yes')">
- 
+      
+      <ion-button color="primary" (click)="downloadLibro('https://sionlecheymiel.com/file/ESCLAVOS-DE-REBELION-A-SUBDITOS-DEL-REINO-DE-LOS-CIELOS-Pedro-Rangel.pdf','pdf')"> 
         <ion-icon name="cloud-download"></ion-icon>
           &nbsp;PDF
       </ion-button>
-        
-      <ion-button color="primary" onclick="window.open('https://drive.google.com/file/d/1Y-zQ7hoGLp8B0Q8iFtPh5tiDxuYbVbvn/view?usp=sharing', '_system','location=yes')" >
+
+      <ion-button color="primary" (click)="downloadLibro('https://sionlecheymiel.com/file/ESCLAVOS-DE-REBELION-A-SUBDITOS-DEL-REINO-DE-LOS-CIELOS-Pedro-Rangel.epub','epub')"> 
         <ion-icon name="cloud-download"></ion-icon>
-        &nbsp;ePub
+          &nbsp;ePub
       </ion-button>
+
 
     <ion-label text-wrap>    
       <div padding-horizontal padding-bottom class="ion-margin" align="center"> 

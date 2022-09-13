@@ -71,7 +71,7 @@ export class Tab2Page {
       }
     }
     this.palabra = this.getCleanedString(this.concordanciaForm.value.palablaBuscar);
-    if (this.palabra.length > 3) {
+    if (this.palabra.length > 1) {
       this.versiculos = [];
       for (let entry of JSON.parse(JSON.stringify(SLM))) {
         var re = new RegExp(this.palabra, 'i');
@@ -88,6 +88,7 @@ export class Tab2Page {
           }
         }
       }
+      console.log(this.versiculos)
       if (this.versiculos.length == 0){
         this.presentLoadingWithOptions();
       } else {
