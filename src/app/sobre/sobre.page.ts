@@ -38,9 +38,13 @@ export class SobrePage implements OnInit {
       this.pathDiviceIosAndroid = this.file.externalRootDirectory + 'Download/'
       console.log("***ANDROID***")
     }else if (this.platform.is("ios")){
-      this.pathDiviceIosAndroid = this.file.documentsDirectory
+      this.pathDiviceIosAndroid = this.file.dataDirectory
       console.log("***IOS***")
     }
+
+
+
+
   }
 
   

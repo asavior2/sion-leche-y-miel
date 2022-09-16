@@ -578,15 +578,14 @@ export class LeerPlanPage implements OnInit {
     return new Promise( resolve => setTimeout(resolve, ms) );
   }
   previousboton2() {
-    this.ionContent.scrollToTop(300);
     if (this.capitulo > this.capituloMenor) {
       this.capitulo--;
       this.mostrarTextoMetodo(this.libro, this.capitulo, this.versiculo, this.versiculoFinal);
     }
+    this.ionContent.scrollToTop(300);
   }
 
   async previousboton() {
-    this.ionContent.scrollToTop(300);
     let detalleMarcar = this.detalleDia[this.contParteDia];
     let detalleMostrar = this.detalleDia[this.contParteDia - 1];  // Para plan q año this.detalleDia
     console.log(detalleMostrar);
@@ -612,10 +611,10 @@ export class LeerPlanPage implements OnInit {
       this.idPlay = 0
       this.tiempoRecorrido = 0
     }
+    this.ionContent.scrollToTop(300);
   }
 
   async nextboton() {
-    this.ionContent.scrollToTop(300);
     this.marcarVersiculoAudioRemove("all")
     console.log("Desde Next this.isPlaying " + this.isPlaying )
     if (this.isPlaying ){
@@ -658,7 +657,7 @@ export class LeerPlanPage implements OnInit {
     //this.router.navigate( ["/leer-plan/" + this.libro + "/" + this.capitulo + "/undefined/undefined"], {fragment: ""});
     //this.navCtrl.navigateForward([`/leer-plan/${this.libro}/${this.capitulo}/undefined/undefined`],{fragment: ""});
     
- 
+    this.ionContent.scrollToTop(300);
   }
 
   statusCheckbox(dia, libro, capitulo, versiculo, versiculoFinal) {                 // CONTROLA la marca de capitulos leidos
