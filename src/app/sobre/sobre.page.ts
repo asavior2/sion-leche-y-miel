@@ -5,6 +5,7 @@ import { HTTP } from '@ionic-native/http/ngx';
 import { AlertController } from '@ionic/angular';
 import { Platform } from '@ionic/angular';
 import { ToastController } from '@ionic/angular';
+import { FileOpener } from '@awesome-cordova-plugins/file-opener/ngx';
 
 @Component({
   selector: 'app-sobre',
@@ -20,6 +21,7 @@ export class SobrePage implements OnInit {
     private toastController: ToastController,
     private nativeHTTP: HTTP,
     public platform: Platform,
+    private fileOpener: FileOpener,
     public alertController: AlertController
     ) {
     this.storage.get('fontSize').then((val) => {
@@ -91,12 +93,22 @@ export class SobrePage implements OnInit {
     const filePath = this.pathDiviceIosAndroid + "ESCLAVOS-DE-REBELION-A-SUBDITOS-DEL-REINO-DE-LOS-CIELOS-Pedro-Rangel." + extencion; 
     // for iOS use this.file.documentsDirectory
     this.nativeHTTP.downloadFile(url, {}, {}, filePath).then(response => {
-      console.log('Archivo descargado...', response);      
-      this.alertDownloadAudio('Archivo descargado', "Archivo descargado, en directorio Descargas")
+      console.log('Archivo descargado...', response);   
+      this.abrirArchivo(filePath)
+      //this.alertDownloadAudio('Archivo descargado', "Archivo descargado, en directorio Descargas")
     }).catch(err => {
       console.log('error block file ... ', err.status);
       this.alertDownloadAudio('Error de descarga', err.status +" " + err.error)
     })
+  }
+
+  abrirArchivo(filePath){
+    this.fileOpener.open(filePath, 'application/pdf')
+        .then(() => console.log('File is opened'))
+        .catch(e => console.log('Error opening file', e));
+    this.fileOpener.showOpenWithDialog(filePath, 'application/pdf')
+        .then(() => console.log('File is opened'))
+        .catch(e => console.log('Error opening file', e));
   }
 
 

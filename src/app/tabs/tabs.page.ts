@@ -4,7 +4,7 @@ import { ActionSheetController } from '@ionic/angular';
 import {Zip} from '@ionic-native/zip/ngx';
 import {File} from '@ionic-native/file/ngx';
 import { Storage } from '@ionic/storage';
-import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer/ngx';
+//import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer/ngx';
 import { HttpClient } from '@angular/common/http';
 import { HTTP } from '@ionic-native/http/ngx';
 import { JsonPipe } from '@angular/common';
@@ -35,7 +35,7 @@ export class TabsPage implements OnInit {
               private zip: Zip,
               public file: File,
               private storage: Storage,
-              private transfer: FileTransfer,
+              //private transfer: FileTransfer,
               private httpClient: HttpClient,
               private nativeHTTP: HTTP,
               public alertController: AlertController,

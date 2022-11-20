@@ -130,6 +130,8 @@ export class Tab1Page implements OnInit {
 
        
   async ngOnInit() {
+    console.log("Update 1")
+    console.log(this.platform.platforms())
 
     if (this.platform.is("android")){
       this.pathDiviceIosAndroid = "/files/Documents/"
@@ -265,6 +267,7 @@ export class Tab1Page implements OnInit {
     // console.log(this.primerP);
     // console.log(this.segundoP);
      this.textoJsonFinal = await this.bibliaService.getTextoImport(this.libro, this.capitulo);
+
      //this.dataTemp = this.textoJsonFinal = await this.bibliaService.getTextoImport(this.libro, this.capitulo);
 
     
@@ -558,6 +561,8 @@ export class Tab1Page implements OnInit {
     } else {
       this.textoJsonFinal = await this.bibliaService.getTextoImport(this.libro, this.capitulo);
     }
+    console.log("textoJsonFinal***********")
+    console.log(this.textoJsonFinal)
 
     this.mostrarTexto = true;
   }
@@ -874,6 +879,7 @@ organizarCitas(textoJson){
       this.textoJsonFinal.push(text);
     }
   }
+
   console.log(this.textoJsonFinal);
 
 

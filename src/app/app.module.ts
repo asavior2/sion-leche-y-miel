@@ -15,19 +15,19 @@ import { IonicStorageModule } from '@ionic/storage';
 // Services
 import { BibliaService} from './services/biblia.service';
 
-
+import { FileOpener } from '@awesome-cordova-plugins/file-opener/ngx';
 
 //import { AngularFireModule} from "@angular/fire";
 
-import { FirebaseAuthentication } from "@ionic-native/firebase-authentication/ngx";
-import { GooglePlus } from '@ionic-native/google-plus/ngx';
+//import { FirebaseAuthentication } from "@ionic-native/firebase-authentication/ngx";
+//import { GooglePlus } from '@ionic-native/google-plus/ngx';
 
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 
 import {Zip} from '@ionic-native/zip/ngx';
 import {File} from '@ionic-native/file/ngx';
 import { Httpd, HttpdOptions } from '@ionic-native/httpd/ngx';
-import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer/ngx';
+//import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer/ngx';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 
@@ -40,7 +40,10 @@ import { RouterModule } from '@angular/router';
   imports: [BrowserModule,
     HttpClientModule,
     IonicModule.forRoot(),
-    IonicStorageModule.forRoot(),
+    IonicStorageModule.forRoot({
+      name: '_myDb',
+      driverOrder: ['localstorage']
+    }),
     AppRoutingModule,
     RouterModule.forRoot(
 			[],
@@ -70,19 +73,18 @@ import { RouterModule } from '@angular/router';
   ],
   providers: [
     StatusBar,
-    GooglePlus,
     BibliaService,
     Clipboard,
     SplashScreen,
-    FirebaseAuthentication,
     { provide: RouteReuseStrategy,
       useClass: IonicRouteStrategy },
     Zip,
     File,
+    FileOpener,
     Httpd,
     HTTP,
-    FileTransfer,
-    FileTransferObject
+    //FileTransfer,
+    //FileTransferObject
   ],
   bootstrap: [AppComponent]
 })
