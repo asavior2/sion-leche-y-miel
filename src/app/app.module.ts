@@ -30,7 +30,6 @@ import { Httpd, HttpdOptions } from '@ionic-native/httpd/ngx';
 //import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer/ngx';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
-
 import { RouterModule } from '@angular/router';
 
 

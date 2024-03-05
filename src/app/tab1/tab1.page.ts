@@ -177,6 +177,7 @@ export class Tab1Page implements OnInit {
     await this.storage.get('fontSize').then((val) => {
       if (val == null || val < 15) {
         this.fontSize = 22;
+        this.storage.set("fontSize", this.fontSize);
       } else {
         this.fontSize = val;
       }

@@ -31,6 +31,7 @@ export class Tab2Page {
   buferVersiculos = 99;
   masResult = false;
   fontSize;
+  partesArray = [];
 
   // Documentacion de formulario login https://www.youtube.com/watch?v=2vVxieW-yyE
 
@@ -50,7 +51,7 @@ export class Tab2Page {
     this.storage.get('fontSize').then((val) => {
       if (val == null) {
 
-        this.fontSize = 4;
+        this.fontSize = 22;
       } else {
         this.fontSize = val;
       }
@@ -74,9 +75,11 @@ export class Tab2Page {
     if (this.palabra.length > 1) {
       this.versiculos = [];
       for (let entry of JSON.parse(JSON.stringify(SLM))) {
+        console.log(entry)
         var re = new RegExp(this.palabra, 'i');
-        // this.getCleanedString(entry.texto);
-        this.posicionPalabra = this.getCleanedString(entry.texto).search(re);
+        const re2 = new RegExp("\\b" + this.palabra + "\\b", "gi"); //Consulta mejorada
+
+        this.posicionPalabra = this.getCleanedString(entry.texto).search(re2);
         if (this.posicionPalabra !== -1) {
           if (this.contVersiculos < this.buferVersiculos){
             entry['palabra'] = entry.texto.substring(this.posicionPalabra,(this.posicionPalabra + this.palabra.length));
@@ -108,6 +111,9 @@ export class Tab2Page {
     cadena = cadena.replace(/í/gi,"i");
     cadena = cadena.replace(/ó/gi,"o");
     cadena = cadena.replace(/ú/gi,"u");
+    //cadena = cadena.replace(/\s/g, "");
+    //this.partesArray = cadena.split(" ");
+    //console.log(this.partesArray[0]);
     return cadena;
   }
   getlibroId(id){

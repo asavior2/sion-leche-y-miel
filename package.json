@@ -100,13 +100,13 @@
       "cordova-plugin-zip": {},
       "cordova-plugin-file": {},
       "cordova-plugin-httpd": {},
-      "cordova-plugin-advanced-http": {},
+      "cordova-plugin-advanced-http": {
+        "ANDROIDBLACKLISTSECURESOCKETPROTOCOLS": "SSLv3,TLSv1"
+      },
       "cordova-plugin-file-opener2": {
         "ANDROID_SUPPORT_V4_VERSION": "27.+"
       }
     },
-    "platforms": [
-      "android"
-    ]
+    "platforms": []
   }
 }

@@ -13,7 +13,7 @@ export class Tab3Page {
   constructor(private storage: Storage) {
     this.storage.get('fontSize').then((val) => {
       if (val == null) {
-        this.fontSize = 4;
+        this.fontSize = 22;
       } else {
         this.fontSize = val;
       }
