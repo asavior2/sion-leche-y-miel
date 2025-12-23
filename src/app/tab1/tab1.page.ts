@@ -939,6 +939,7 @@ organizarCitas(textoJson){
     }
 
   }
+
   async mostrarCitaAlert(cita, textoVersiculo,idLibro, capituloC) {
     const alert = await this.alertController.create({
       header: cita,
@@ -1061,6 +1062,7 @@ organizarCitas(textoJson){
       await actionSheet.present();
       */
     }
+    
     copiarVersiculo(){
       let textTemp = "";
       for (let clave in this.copiaCondensado){

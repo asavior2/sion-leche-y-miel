@@ -5,7 +5,7 @@ import { HTTP } from '@ionic-native/http/ngx';
 import { AlertController } from '@ionic/angular';
 import { Platform } from '@ionic/angular';
 import { ToastController } from '@ionic/angular';
-import { FileOpener } from '@awesome-cordova-plugins/file-opener/ngx';
+//import { FileOpener } from '@awesome-cordova-plugins/file-opener/ngx';
 
 @Component({
   selector: 'app-sobre',
@@ -21,7 +21,7 @@ export class SobrePage implements OnInit {
     private toastController: ToastController,
     private nativeHTTP: HTTP,
     public platform: Platform,
-    private fileOpener: FileOpener,
+    //private fileOpener: FileOpener,
     public alertController: AlertController
     ) {
     this.storage.get('fontSize').then((val) => {
@@ -102,14 +102,17 @@ export class SobrePage implements OnInit {
     })
   }
 
+  
   abrirArchivo(filePath){
+    /* 
     this.fileOpener.open(filePath, 'application/pdf')
         .then(() => console.log('File is opened'))
         .catch(e => console.log('Error opening file', e));
     this.fileOpener.showOpenWithDialog(filePath, 'application/pdf')
         .then(() => console.log('File is opened'))
         .catch(e => console.log('Error opening file', e));
-  }
+  */
+    }
 
 
   async alertDownloadAudio(header: string, statusTextError: string,  ) {

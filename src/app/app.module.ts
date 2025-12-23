@@ -15,7 +15,7 @@ import { IonicStorageModule } from '@ionic/storage';
 // Services
 import { BibliaService} from './services/biblia.service';
 
-import { FileOpener } from '@awesome-cordova-plugins/file-opener/ngx';
+//import { FileOpener } from '@awesome-cordova-plugins/file-opener/ngx';
 
 //import { AngularFireModule} from "@angular/fire";
 
@@ -79,7 +79,7 @@ import { RouterModule } from '@angular/router';
       useClass: IonicRouteStrategy },
     Zip,
     File,
-    FileOpener,
+    //FileOpener,
     Httpd,
     HTTP,
     //FileTransfer,
