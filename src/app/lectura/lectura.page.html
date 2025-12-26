@@ -1,0 +1,270 @@
+<ion-header mode="md">
+  <!-- Allow everything but only from the same origin and foo.com -->
+  <ion-toolbar align="center" class="minuscula">
+    <!-- Boton de los libros-->
+    <ion-button clear (click)="mostrarLibrosMetodo()" fill="clear" color="dark" class="ion-no-padding">
+      <span class="text-segoe" [style.font-size.px]="fontSize-3">
+        {{librot}}
+      </span>
+    </ion-button>
+    <ion-button color="dark" clear fill="clear" (click)="mostrarCapitulosMetodo(libro)">
+      <span class="text-segoe" [style.font-size.px]="fontSize-3">
+        {{capitulo}}
+      </span>
+    </ion-button>
+    <ion-button color="dark" clear fill="clear" (click)="aumentarSize()" class="ion-no-padding">
+      <span class="text-segoe" [style.font-size.px]="fontSize-3">
+        A+
+      </span>
+
+    </ion-button>
+    <ion-button color="dark" clear fill="clear" (click)="disminuirSize()">
+      <span class="text-segoe" [style.font-size.px]="fontSize-8">
+        a-
+      </span>
+
+    </ion-button>
+    <ion-button color="dark" clear fill="clear" (click)="changeDark()">
+      <ion-icon name="{{estadoDark}}"></ion-icon>
+    </ion-button>
+
+
+
+
+    <!-- 
+    <ion-list>
+      <ion-item>
+        <ion-icon slot="start" name="moon"></ion-icon>
+        <ion-label>Toogle Dark Mode</ion-label>
+        <ion-toggle slot="end" [ngModel]="darkMode" (ionChange)="change()"></ion-toggle>
+      </ion-item>
+    </ion-list> 
+    -->
+  </ion-toolbar>
+
+
+
+</ion-header>
+
+<ion-content>
+
+  <ion-fab *ngIf="share" horizontal="start" vertical="top" slot="fixed">
+    <ion-fab-button color="primary">
+      <ion-icon name="share-social"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list side="end">
+      <ion-fab-button color="light" (click)="copiarVersiculo()">
+        <ion-icon color="primary" name="copy"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button color="light" (click)="marcarVersiculo()">
+        <ion-icon color="primary" name="bookmark"></ion-icon>
+      </ion-fab-button>
+    </ion-fab-list>
+  </ion-fab>
+
+  <ion-grid part="placeholder">
+    <ion-row>
+      <ion-col size-md="2" size-lg="3">
+      </ion-col>
+      <ion-col size-xs="12" size-md="8" size-lg="6">
+
+        <div *ngIf="mostrarLibros" align="center">
+
+          <ion-toolbar>
+            <ion-segment [(ngModel)]="tipoOrdenName">
+              <ion-segment-button value="tradicional" (click)="tipoOrdenLibro('tradicional')">
+                Tradicional
+              </ion-segment-button>
+              <ion-segment-button value="moderno" (click)="tipoOrdenLibro('moderno')">
+                Moderno
+              </ion-segment-button>
+              <ion-segment-button value="hebreo" (click)="tipoOrdenLibro('hebreo')">
+                Hebreo
+              </ion-segment-button>
+            </ion-segment>
+          </ion-toolbar>
+
+          <div *ngIf="tipoOrdenT"> <!--Vista Tradicional-->
+            <ion-item>
+              <ion-icon name="ios-search"></ion-icon>
+              <!-- eliminado del ion input (ionBlur)="filterListLibro('limpiar')" -->
+              <ion-input show-cancel-button="always" clear-on-edit=true placeholder="Buscar libro" type="text"
+                (ionInput)="filterListLibro($event)"></ion-input>
+            </ion-item>
+
+            <ion-list>
+              <ion-item button *ngFor="let primerpacto of librosTodos"
+                (click)="mostrarCapitulosMetodo(primerpacto.id, primerpacto.capitulos)">
+                {{ primerpacto.libro }}
+                <ion-label></ion-label>
+                <ion-chip color="primary" mode="ios" outline=true>
+                  <ion-label>{{primerpacto.capitulos}}</ion-label>
+                </ion-chip>
+              </ion-item>
+            </ion-list>
+          </div>
+
+          <div *ngIf="tipoOrdenM">
+            <br> <!--Vista Moderna-->
+            <span class="text-segoe ion-margin" style="color: black; font-size: 16px;"> PRIMER PACTO</span> <br>
+            <!--<ion-button expand="full"   fill="outline" 
+            *ngFor="let primerpacto of primerP" 
+            (click)=" mostrarCapitulosMetodo(primerpacto.id, primerpacto.capitulos)"
+            border-radius>
+                {{ primerpacto.libro }}
+          </ion-button> -->
+
+            <ion-button ion-button shape="round" size="small" color="dark" fill="outline"
+              *ngFor="let primerpacto of primerP"
+              (click)=" mostrarCapitulosMetodo(primerpacto.id, primerpacto.capitulos)" border-radius>
+              {{ primerpacto.libro }}
+            </ion-button>
+            <br> <br>
+            <span class="text-segoe" style="color: black; font-size: 16px;"> SEGUNDO PACTO</span> <br><br>
+
+            <ion-button ion-button clear shape="round" size="small" color="dark" fill="outline"
+              *ngFor="let segundopacto of segundoP"
+              (click)="mostrarCapitulosMetodo(segundopacto.id, segundopacto.capitulos)">
+              {{ segundopacto.libro }}
+            </ion-button>
+          </div>
+
+          <div *ngIf="tipoOrdenH"> <!--Vista Tradicional-->
+            <ion-item>
+              <ion-icon name="ios-search"></ion-icon>
+              <!-- eliminado del ion-input  (ionBlur)="filterListLibro('limpiar')"  -->
+              <ion-input show-cancel-button="always" clear-on-edit=true placeholder="Buscar libro" type="text"
+                (ionInput)="filterListLibro($event)"></ion-input>
+            </ion-item>
+
+            <ion-list>
+              <div *ngFor="let primerpacto of librosTodosHebreo">
+                <div [innerHTML]="primerpacto.seccion"></div>
+                <ion-item button (click)="mostrarCapitulosMetodo(primerpacto.id, primerpacto.capitulos)">
+                  {{ primerpacto.libro }}
+                  <ion-label></ion-label>
+                  <ion-chip color="primary" mode="ios" outline=true>
+                    <ion-label>{{primerpacto.capitulos}}</ion-label>
+                  </ion-chip>
+                </ion-item>
+              </div>
+
+            </ion-list>
+          </div>
+
+
+        </div>
+
+
+
+        <!-- Mostrar los capitulos de cada libro  #elementGénesis-->
+        <div *ngIf="mostrarCapitulos" align="center">
+          <ion-button ion-button shape="round" size="default" color="dark" fill="outline" slot="start"
+            *ngFor="let item of cantCapitulo" (click)="mostrarTextoMetodo(this.libro, item)">
+            {{item}}
+          </ion-button>
+          <!--
+            <button ion-button outline round color="dark" *ngFor="let capitulo of cantCapitulo; let cap=index" (click)="seleccionarCapitulo(capitulo)" >
+                {{capitulo}}
+            </button> 
+            -->
+        </div>
+
+        <div class="scroll-container" *ngIf="mostrarTexto" align="justify">
+          <ion-label text-wrap part="placeholder" *ngFor="let text of textoJsonFinal">
+
+            <div *ngIf="text.hasOwnProperty('idTitulo')" class="ion-margin2">
+              <h4 align="center"><span class="text-segoe"
+                  [style.font-size.px]="fontSize+6"><strong>{{text.titulo}}</strong></span></h4>
+            </div>
+
+            <div *ngIf="text.hasOwnProperty('comprimido')" class="ion-margin-horizontal ion-margin-bottom">
+              <div id=l{{text.versiculo}} class="l{{text.versiculo}}">
+                <span class="text-segoe" [style.font-size.px]="fontSize-7"><ion-text color="medium">{{text.versiculo}}
+                  </ion-text></span>
+                <span *ngFor="let construirVersiculo of text.comprimido" [style.font-size.px]="fontSize">
+                  <ion-text class={{marcar(construirVersiculo.capitulo,construirVersiculo.versiculo)}}>
+                    <span
+                      (click)="seleccionarVersiculo('noText', construirVersiculo.id_libro, construirVersiculo.capitulo, construirVersiculo.versiculo)"
+                      class={{this.marcarV}}>
+                      {{construirVersiculo.parteText}}
+                    </span>
+                    <span
+                      (click)="citaAlert(construirVersiculo.cita, construirVersiculo.ibroCita, construirVersiculo.capituloCita, construirVersiculo.versiculoCitaInicial)"
+                      class={{this.marcarV}}>
+                      <sup>
+                        <!--<ion-icon class='ico-cita' color='medium' ios='ios-quote' md='md-quote'></ion-icon>-->
+                        <ion-icon name='medical' class='ico-cita' color='medium'></ion-icon>
+                        <!--<ion-icon name="bookmark" class='ico-cita' color='medium'></ion-icon>-->
+                      </sup>
+                    </span>
+                    <span
+                      (click)="seleccionarVersiculo('noText', construirVersiculo.id_libro, construirVersiculo.capitulo, construirVersiculo.versiculo)"
+                      class={{this.marcarV}}>
+                      {{construirVersiculo.parteFinal}}
+                    </span>
+                  </ion-text>
+
+                </span>
+              </div>
+            </div>
+
+            <div *ngIf="!text.hasOwnProperty('comprimido') && text.texto"
+              class="ion-margin-horizontal ion-margin-bottom">
+              <div id=l{{text.versiculo}} outline="true" class=l{{text.versiculo}} #myButton>
+                <span class="text-segoe" [style.font-size.px]="fontSize-7"><ion-text
+                    *ngIf="!text.hasOwnProperty('idTitulo')" color="medium">{{text.versiculo}} </ion-text>
+                </span>
+                <span [style.font-size.px]="fontSize">
+                  <!-- size={{this.fontSize}}  style="font-size: 20px"   size={{this.fontSize-2}}-->
+                  <ion-text class={{marcar(text.capitulo,text.versiculo)}}>
+                    <span (click)="seleccionarVersiculo(text.texto,text.id_libro, text.capitulo, text.versiculo)"
+                      class={{this.marcarV}}>
+                      {{text.texto}}
+                    </span>
+                  </ion-text>
+                </span>
+              </div>
+            </div>
+
+
+          </ion-label>
+
+          <div align="center">
+            <span class="text-segoe" style="font-size: 16px;"><strong>Sion: Leche y Miel (SLM) </strong></span>
+            <br><br>
+          </div>
+        </div>
+
+
+      </ion-col>
+      <ion-col size-md="2" size-lg="3">
+      </ion-col>
+
+    </ion-row>
+
+
+  </ion-grid>
+
+  <!--Botones flotantes para la version de escritorio middle y middle right-->
+  <ion-fab vertical="bottom" horizontal="start" slot="fixed">
+    <ion-fab-button (click)="previousboton()" size="small">
+      <ion-icon name="chevron-back-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed">
+    <ion-fab-button (click)="playAudio()" size="small" color="light">
+      <ion-icon name="{{playPausa}}" color="primary"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" size="small">
+    <ion-fab-button (click)="nextboton()" size="small">
+      <ion-icon name="chevron-forward-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+  <br>
+</ion-content>

@@ -3,15 +3,15 @@ import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-import { Tab2Page } from './tab2.page';
+import { ConcordanciaPage } from './concordancia.page';
 
 @NgModule({
   imports: [
     IonicModule,
     CommonModule,
     ReactiveFormsModule,
-    RouterModule.forChild([{ path: '', component: Tab2Page }])
+    RouterModule.forChild([{ path: '', component: ConcordanciaPage }])
   ],
-  declarations: [Tab2Page]
+  declarations: [ConcordanciaPage]
 })
-export class Tab2PageModule {}
+export class ConcordanciaPageModule { }

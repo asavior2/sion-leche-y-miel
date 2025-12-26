@@ -2,11 +2,11 @@ import { Component } from '@angular/core';
 import { Storage as IonicStorage } from '@ionic/storage-angular';
 
 @Component({
-  selector: 'app-tab3',
-  templateUrl: 'tab3.page.html',
-  styleUrls: ['tab3.page.scss']
+  selector: 'app-contacto',
+  templateUrl: 'contacto.page.html',
+  styleUrls: ['contacto.page.scss']
 })
-export class Tab3Page {
+export class ContactoPage {
 
   fontSize;
 

@@ -22,11 +22,11 @@ import { filter } from 'rxjs/operators';
 
 
 @Component({
-  selector: 'app-tab1',
-  templateUrl: 'tab1.page.html',
-  styleUrls: ['tab1.page.scss']
+  selector: 'app-lectura',
+  templateUrl: 'lectura.page.html',
+  styleUrls: ['lectura.page.scss']
 })
-export class Tab1Page implements OnInit {
+export class LecturaPage implements OnInit {
   @ViewChild("myButton") myButton: ElementRef;
   libro: number = 43;
   LibrosPrueba;
@@ -279,7 +279,7 @@ export class Tab1Page implements OnInit {
   botonclick(link) {
     //this.router.navigate(["/tabs/tab1",'#parte1']);
     let n = "10"
-    this.router.navigate(['/tabs/tab1'], { fragment: n });
+    this.router.navigate(['/tabs/lectura'], { fragment: n });
   }
 
 
@@ -324,27 +324,27 @@ export class Tab1Page implements OnInit {
     }
   }
 
-  marcarVersiculoAudioAdd(clase) {
-    //console.log(clase)
-    //this.readVersiculo = !this.readVersiculo;
-    document.body.classList.add(clase);   //toggle
+  marcarVersiculoAudioAdd(versiculo) {
+    const id = 'l' + versiculo;
+    const el = document.getElementById(id);
+    if (el) el.classList.add('versiculo-highlight');
   }
-  marcarVersiculoAudioRemove(clase) {
-    //console.log(clase)
-    //this.readVersiculo = !this.readVersiculo;
-    document.body.classList.remove(clase);
-    if (clase == "all") {
-      this.share = false          //Ocultar boton de copia o marcado
-      this.copiaCondensado = []   //baciar versiculos seleccionados
-      for (let i = 1; i < 177; i++) {
-        document.body.classList.remove("readVersiculol" + i);
-      }
+  marcarVersiculoAudioRemove(versiculo) {
+    if (versiculo === "all") {
+      this.share = false;
+      this.copiaCondensado = [];
+      const els = document.querySelectorAll('.versiculo-highlight');
+      els.forEach(el => el.classList.remove('versiculo-highlight'));
+    } else {
+      const id = 'l' + versiculo;
+      const el = document.getElementById(id);
+      if (el) el.classList.remove('versiculo-highlight');
     }
   }
 
 
   ngAfterViewInit(): void {
-    this.router.navigate(['/tabs/tab1'], { fragment: "" });    //Esto es para linpiar el fragment la url #
+    this.router.navigate(['/tabs/lectura'], { fragment: "" });    //Esto es para linpiar el fragment la url #
 
   }
 
@@ -628,16 +628,16 @@ export class Tab1Page implements OnInit {
 
           if (parseInt(entry.id) >= this.idPlay) {
             if (parseInt(entry.versiculo) > 1) {
-              this.marcarVersiculoAudioRemove("readVersiculol" + versiculoAnterior)
-              this.marcarVersiculoAudioAdd("readVersiculol" + entry.versiculo)
+              this.marcarVersiculoAudioRemove(versiculoAnterior)
+              this.marcarVersiculoAudioAdd(entry.versiculo)
             } else {
-              this.marcarVersiculoAudioAdd("readVersiculol" + entry.versiculo)
+              this.marcarVersiculoAudioAdd(entry.versiculo)
             }
             ///tiempo = entry.seg*1000
             tiempo = parseInt(entry.seg)
             let tiempoRestante = (entry.seg - tiempo) * 1000
             if (entry.versiculo != "") {
-              this.router.navigate(['/tabs/tab1'], { fragment: "l" + entry.versiculo });
+              this.router.navigate(['/tabs/lectura'], { fragment: "l" + entry.versiculo });
             }
             //Siguiente linea es para hacer efecto el route frament [recordar debe existir el id en el html]
             this.sub = this.activeRoute.fragment.pipe(filter(f => !!f)).subscribe(f => document.getElementById(f).scrollIntoView());
@@ -741,7 +741,7 @@ export class Tab1Page implements OnInit {
       }
       this.mostrarTextoMetodo(this.libro, this.capitulo);
     }
-    this.router.navigate(['/tabs/tab1'], { fragment: "" });
+    this.router.navigate(['/tabs/lectura'], { fragment: "" });
     this.marcarVersiculoAudioRemove("all")
 
     if (this.isPlaying) {
@@ -777,7 +777,7 @@ export class Tab1Page implements OnInit {
       }
       this.mostrarTextoMetodo(this.libro, this.capitulo);
     }
-    this.router.navigate(['/tabs/tab1'], { fragment: "" });
+    this.router.navigate(['/tabs/lectura'], { fragment: "" });
     this.marcarVersiculoAudioRemove("all")
 
     console.log("Desde Next this.isPlaying " + this.isPlaying)
@@ -1016,7 +1016,8 @@ export class Tab1Page implements OnInit {
   }
 
   async seleccionarVersiculo(texto, idLibro, capitulo, versiculo) {
-    document.body.classList.toggle("readVersiculol" + versiculo);
+    const el = document.getElementById('l' + versiculo);
+    if (el) el.classList.toggle('versiculo-highlight');
     await this.buscarVersiculo(idLibro, capitulo, versiculo);
     let arreglo = [idLibro, capitulo, versiculo, this.textTemp]
     if (this.copiaCondensado[versiculo] == null) {

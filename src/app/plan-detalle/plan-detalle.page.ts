@@ -220,10 +220,7 @@ export class PlanDetallePage implements OnInit {
 
 
   atras() {
-    // this.navCtrl.pop();
-    this.navCtrl.navigateRoot(['/tabs/plan-lectura']);
-    // this.navCtrl.navigateForward('/tabs/plan-lectura');
-    this.router.navigate(["/tabs/plan-lectura"]);
+    this.navCtrl.back();
   }
 
 

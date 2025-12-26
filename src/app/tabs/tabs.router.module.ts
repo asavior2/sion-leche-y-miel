@@ -29,21 +29,21 @@ const routes: Routes = [
         ]
       },*/
       {
-        path: 'tab1',
+        path: 'lectura',
         children: [
           {
             path: '',
-            loadChildren: () => import('../tab1/tab1.module').then(m => m.Tab1PageModule),
+            loadChildren: () => import('../lectura/lectura.module').then(m => m.LecturaPageModule),
             canActivate: []
           }
         ]
       },
       {
-        path: 'tab2',
+        path: 'concordancia',
         children: [
           {
             path: '',
-            loadChildren: () => import('../tab2/tab2.module').then(m => m.Tab2PageModule),
+            loadChildren: () => import('../concordancia/concordancia.module').then(m => m.ConcordanciaPageModule),
             canActivate: []
           }
         ]
@@ -53,7 +53,7 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: () => import('../tab3/tab3.module').then(m => m.Tab3PageModule),
+            loadChildren: () => import('../contacto/contacto.module').then(m => m.ContactoPageModule),
             canActivate: []
           }
         ]
@@ -65,15 +65,6 @@ const routes: Routes = [
             path: '',
             /*loadChildren: '../tab3/tab3.module#Tab3PageModule',*/
             loadChildren: () => import('../plan-lectura/plan-lectura.module').then(m => m.PlanLecturaPageModule), // este es paraplan de lectura
-            canActivate: []
-          }
-        ]
-      },{
-        path: 'tab3',
-        children: [
-          {
-            path: '',
-            loadChildren: () => import('../tab3/tab3.module').then(m => m.Tab3PageModule), // Este es para el contacto
             canActivate: []
           }
         ]
@@ -90,14 +81,14 @@ const routes: Routes = [
       },
       {
         path: '',
-        redirectTo: '/tabs/tab1',
+        redirectTo: '/tabs/lectura',
         pathMatch: 'full'
       }
     ]
   },
   {
     path: '',
-    redirectTo: '/tabs/tab1',
+    redirectTo: '/tabs/lectura',
     pathMatch: 'full',
     canActivate: []
   }
@@ -120,4 +111,4 @@ const routes: Routes = [
   ],
   exports: [RouterModule]
 })
-export class TabsPageRoutingModule {}
+export class TabsPageRoutingModule { }

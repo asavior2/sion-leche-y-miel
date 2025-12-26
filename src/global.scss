@@ -10,20 +10,21 @@
 @import '~@ionic/angular/css/text-transformation.css';
 @import '~@ionic/angular/css/flex-utils.css';
 
-.icon{
+.custom-centered-icon {
     display: block;
     margin-left: auto;
     margin-right: auto;
     width: 50%;
 }
 
-.ion-margin-horizontal{
+.ion-margin-horizontal {
     margin: 0 8px
 }
-.ion-margin-bottom{
+
+.ion-margin-bottom {
     margin-bottom: 8px
 }
 
-.ion-margin2{
+.ion-margin2 {
     margin-bottom: 16px
 }

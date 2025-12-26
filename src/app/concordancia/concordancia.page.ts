@@ -8,11 +8,11 @@ import Libros from '../../assets/libros.json';
 import SLM from '../../assets/SLM.json';
 
 @Component({
-  selector: 'app-tab2',
-  templateUrl: 'tab2.page.html',
-  styleUrls: ['tab2.page.scss']
+  selector: 'app-concordancia',
+  templateUrl: 'concordancia.page.html',
+  styleUrls: ['concordancia.page.scss']
 })
-export class Tab2Page {
+export class ConcordanciaPage {
 
   versiculos: Array<any> = new Array();
   palabra;
