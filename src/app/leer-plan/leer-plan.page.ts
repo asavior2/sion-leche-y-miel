@@ -109,6 +109,8 @@ export class LeerPlanPage implements OnInit {
   pathDiviceIosAndroid: string;
   darkMode: boolean = true;
   estadoDark: string = "moon";
+  timeMap: any[] = [];
+  currentHighlightedVerse: any = null;
 
   @ViewChild(IonContent, { static: true }) ionContent: IonContent;
   constructor(private activatedRoute: ActivatedRoute,
@@ -434,6 +436,21 @@ export class LeerPlanPage implements OnInit {
     this.mostrarTexto = true;
   }
 
+  calculateTimeMap(audioData) {
+    this.timeMap = [];
+    let currentTime = 0;
+    for (const entry of audioData) {
+      if (entry.versiculo) {
+        this.timeMap.push({
+          versiculo: entry.versiculo,
+          start: currentTime,
+          end: currentTime + entry.seg
+        });
+      }
+      currentTime += entry.seg;
+    }
+  }
+
   async audioReproductor() {
     if (this.nombrePlan == 'bibleOneYear') {
       //Validar si el audio existe con readAsText
@@ -454,6 +471,10 @@ export class LeerPlanPage implements OnInit {
       }
       //this.audioMP3 = "assets/audios/" + this.libro + "-" + libro + "/" + this.capitulo +".mp3"
       this.tiempoAudio = await this.bibliaService.getTextoAudio(this.libro, this.capitulo);
+      if (this.tiempoAudio) {
+        this.calculateTimeMap(this.tiempoAudio);
+      }
+
       console.log(this.tiempoAudio)
       console.log("***** " + this.audioMP3)
       this.audio = new Audio();
@@ -466,78 +487,59 @@ export class LeerPlanPage implements OnInit {
         console.log("playAuto " + val);
       });
 
+      this.audio.addEventListener("timeupdate", () => {
+        if (!this.isPlaying) return;
+
+        const currentTime = this.audio.currentTime;
+        // Find the verse corresponding to the current time
+        const currentVerseEntry = this.timeMap.find(entry => currentTime >= entry.start && currentTime < entry.end);
+
+        if (currentVerseEntry) {
+          // Only update if the verse has changed
+          if (this.currentHighlightedVerse !== currentVerseEntry.versiculo) {
+
+            // Remove highlight from previous verse
+            if (this.currentHighlightedVerse) {
+              this.marcarVersiculoAudioRemove("readVersiculol" + this.currentHighlightedVerse);
+            }
+
+            // Add highlight to new verse
+            this.marcarVersiculoAudioAdd("readVersiculol" + currentVerseEntry.versiculo);
+            this.currentHighlightedVerse = currentVerseEntry.versiculo;
+
+            // Scroll logic
+            // Note: LeerPlanPage might maintain the old IDs or need the fragment logic. 
+            // Previous code used fragment and scrollIntoView.
+            // Let's use clean scrollIntoView.
+
+            const id = 'l' + currentVerseEntry.versiculo;
+            const el = document.getElementById(id);
+            if (el) {
+              el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+          }
+        }
+      });
 
       this.audio.addEventListener("playing", async () => {
         await this.storage.set('playAuto', false);
         console.log("Event playing");
+        this.playPausa = "pause";
         this.isPlaying = true;
-        let tiempo
-        //console.log("Event onplaying");
-        //console.log(this.tiempoAudio)
-        if (this.tiempoAudio != null) {
-          this.tiempoRecorrido = 0;
-          for (const entry of this.tiempoAudio) {
-            //console.log(entry)
-            let versiculoAnterior = entry.versiculo - 1
-            if (!this.isPlaying) {
-              this.idPlay = parseInt(entry.id) - 1;
-              //console.log("idPlay")
-              //console.log(this.idPlay)            
-              break;
-            }
-            if (parseInt(entry.id) >= this.idPlay) {
-              if (parseInt(entry.versiculo) > 1) {
-                this.marcarVersiculoAudioRemove("readVersiculol" + versiculoAnterior)
-                this.marcarVersiculoAudioAdd("readVersiculol" + entry.versiculo)
-              } else {
-                this.marcarVersiculoAudioAdd("readVersiculol" + entry.versiculo)
-              }
-              ///tiempo = entry.seg*1000
-              tiempo = parseInt(entry.seg)
-              let tiempoRestante = (entry.seg - tiempo) * 1000
-              if (entry.versiculo != "") {
-                //this.router.navigate( ["/leer-plan/" + this.libro + "/" + this.capitulo + "/undefined/undefined"], {fragment: "l"+entry.versiculo});
-                //this.navCtrl.navigateForward([`/leer-plan/${this.libro}/${this.capitulo}/undefined/undefined`],{fragment: "l"+entry.versiculo});
-              }
-              //Siguiente linea es para hacer efecto el route frament [recordar debe existir el id en el html]
-              this.sub = this.activatedRoute.fragment.pipe(filter(f => !!f)).subscribe(f => document.getElementById(f).scrollIntoView());
-
-              if (tiempo > 1) {
-                for (let _i = 0; _i < tiempo * 2; _i++) { //ms*2  y time 500 es para solucionar pause play rapido
-                  if (!this.isPlaying) {
-                    break
-                  }
-                  await new Promise(resolve => setTimeout(resolve, 500));
-                }
-                await new Promise(resolve => setTimeout(resolve, tiempoRestante));
-              } else {
-                await new Promise(resolve => setTimeout(resolve, entry.seg * 1000));
-              }
-            }
-            this.tiempoRecorrido = this.tiempoRecorrido + entry.seg;
-            this.ultimoTiempo = entry.seg;
-          }
-        }
-
       });
 
       this.audio.addEventListener("pause", async () => {
         console.log("Event Pause");
         this.isPlaying = false;
         this.playPausa = "play"
-        this.marcarVersiculoAudioRemove("all")
-        /*
-
-        await this.storage.set('playAuto', false);
-        this.playPausa = "play"
-        console.log("pause")
-        this.marcarVersiculoAudioRemove("all")
-        */
+        // this.marcarVersiculoAudioRemove("all")
       });
 
       this.audio.addEventListener("ended", async () => {
         await this.storage.set('playAuto', true);
         console.log("Event finalizo el audio reproducción");
+        this.marcarVersiculoAudioRemove("all");
+        this.currentHighlightedVerse = null;
         this.nextboton()
       });
 

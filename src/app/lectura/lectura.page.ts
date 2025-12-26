@@ -94,6 +94,8 @@ export class LecturaPage implements OnInit {
   pathDiviceIosAndroid: string;
   darkMode: boolean = true;
   estadoDark: string = "moon";
+  timeMap: any[] = [];
+  currentHighlightedVerse: any = null;
 
   @ViewChild(IonContent) ionContent: IonContent;
   constructor(private bibliaService: BibliaService,
@@ -568,9 +570,23 @@ export class LecturaPage implements OnInit {
     this.mostrarTexto = true;
   }
 
+  calculateTimeMap(audioData) {
+    this.timeMap = [];
+    let currentTime = 0;
+    for (const entry of audioData) {
+      if (entry.versiculo) {
+        this.timeMap.push({
+          versiculo: entry.versiculo,
+          start: currentTime,
+          end: currentTime + entry.seg
+        });
+      }
+      currentTime += entry.seg;
+    }
+  }
+
   async audioReproductor() {
     //Validar si el audio existe con readAsText
-
     let promiseAudio = this.file.readAsText(this.file.applicationStorageDirectory + this.pathDiviceIosAndroid, "por-Capitulos/" + this.libro + "/" + this.capitulo + ".mp3");
     if (promiseAudio != undefined) {
       await promiseAudio.then((value) => {
@@ -585,8 +601,12 @@ export class LecturaPage implements OnInit {
     } else {
       this.audioMP3 = "https://sionlecheymiel.com/file/audios/" + this.libro + "/" + this.capitulo + ".mp3";
     }
-    //this.audioMP3 = "assets/audios/" + this.libro + "-" + libro + "/" + this.capitulo +".mp3"
+
     this.tiempoAudio = await this.bibliaService.getTextoAudio(this.libro, this.capitulo);
+    if (this.tiempoAudio) {
+      this.calculateTimeMap(this.tiempoAudio);
+    }
+
     console.log(this.tiempoAudio)
     console.log("***** " + this.audioMP3)
 
@@ -601,92 +621,56 @@ export class LecturaPage implements OnInit {
 
     this.audio = new Audio();
 
-    this.audio.addEventListener("playing", async () => {
-      //playing  Tras una falta de datos, el recurso multimedia vuelve a estar listo para reproducirse.
-      this.playPausa = "pause"
+    this.audio.addEventListener("timeupdate", () => {
+      if (!this.isPlaying) return;
 
-      this.isPlaying = true;
-      console.log("Event playing");
-      let tiempo
-      //console.log("Event onplaying");
-      //console.log(this.tiempoAudio)
-      if (this.tiempoAudio != null) {
-        this.tiempoRecorrido = 0;
-        for (const entry of this.tiempoAudio) {
-          console.log(entry)
-          let versiculoAnterior = entry.versiculo - 1
-          if (!this.isPlaying) {
-            this.idPlay = parseInt(entry.id) - 1;
-            console.log("idPlay")
-            console.log(this.idPlay)
-            break;
+      const currentTime = this.audio.currentTime;
+      // Find the verse corresponding to the current time
+      const currentVerseEntry = this.timeMap.find(entry => currentTime >= entry.start && currentTime < entry.end);
+
+      if (currentVerseEntry) {
+        // Only update if the verse has changed
+        if (this.currentHighlightedVerse !== currentVerseEntry.versiculo) {
+
+          // Remove highlight from previous verse
+          if (this.currentHighlightedVerse) {
+            this.marcarVersiculoAudioRemove(this.currentHighlightedVerse);
           }
-          //if(this.audio.currentTime){
-          //console.log("this.audio.currentTime " + this.audio.currentTime)
-          //console.log("this.tiempoRecorrido " + this.tiempoRecorrido)
-          //}
 
-          if (parseInt(entry.id) >= this.idPlay) {
-            if (parseInt(entry.versiculo) > 1) {
-              this.marcarVersiculoAudioRemove(versiculoAnterior)
-              this.marcarVersiculoAudioAdd(entry.versiculo)
-            } else {
-              this.marcarVersiculoAudioAdd(entry.versiculo)
-            }
-            ///tiempo = entry.seg*1000
-            tiempo = parseInt(entry.seg)
-            let tiempoRestante = (entry.seg - tiempo) * 1000
-            if (entry.versiculo != "") {
-              this.router.navigate(['/tabs/lectura'], { fragment: "l" + entry.versiculo });
-            }
-            //Siguiente linea es para hacer efecto el route frament [recordar debe existir el id en el html]
-            this.sub = this.activeRoute.fragment.pipe(filter(f => !!f)).subscribe(f => document.getElementById(f).scrollIntoView());
+          // Add highlight to new verse
+          this.marcarVersiculoAudioAdd(currentVerseEntry.versiculo);
+          this.currentHighlightedVerse = currentVerseEntry.versiculo;
 
-            if (tiempo > 1) {
-              for (let _i = 0; _i < tiempo * 2; _i++) { //ms*2  y time 500 es para solucionar pause play rapido
-                //if (!this.isPlaying || this.audio.paused){                  
-                if (!this.isPlaying) {
-                  break
-                }
-                //console.log("Espero " + 500)
-                await new Promise(resolve => setTimeout(resolve, 500));
-              }
-              //console.log("Espero " + tiempoRestante)
-              await new Promise(resolve => setTimeout(resolve, tiempoRestante));
-            } else {
-              //console.log("Espero " + entry.seg*1000)
-              await new Promise(resolve => setTimeout(resolve, entry.seg * 1000));
-            }
+          // Scroll logic
+          const id = 'l' + currentVerseEntry.versiculo;
+          const el = document.getElementById(id);
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
           }
-          this.tiempoRecorrido = this.tiempoRecorrido + entry.seg;
-          this.ultimoTiempo = entry.seg;
         }
       }
+    });
 
+    this.audio.addEventListener("playing", async () => {
+      this.playPausa = "pause"
+      this.isPlaying = true;
     });
 
     this.audio.addEventListener("pause", async () => {
       console.log("Event Pause");
-      //this.playAudio();
       this.isPlaying = false;
       await this.storage.set('playAuto', false);
-      console.log('4')
+      this.playPausa = "play"
 
-      this.playPausa = "play"
-      this.marcarVersiculoAudioRemove("all")
-      /*
-      this.isPlaying = !this.isPlaying;
-      await this.storage.set('playAuto', false);
-      this.playPausa = "play"
-      console.log("pause")
-      this.marcarVersiculoAudioRemove("all")
-      */
+      // Clear highlight on pause if preferred, or keep it. Keeping it is usually better for UX.
+      // this.marcarVersiculoAudioRemove("all") 
     });
 
     this.audio.addEventListener("ended", async () => {
       await this.storage.set('playAuto', true);
       console.log("Event finalizo el audio reproducción");
-      //this.isPlaying = false
+      this.marcarVersiculoAudioRemove("all");
+      this.currentHighlightedVerse = null;
       this.nextboton()
     });
 
@@ -699,7 +683,7 @@ export class LecturaPage implements OnInit {
     this.audio.addEventListener("waiting", () => {
       //La reproducción se ha detenido por ausencia (temporal) de datos.
       console.log("Event waiting");
-      this.isPlaying = false
+      // this.isPlaying = false // Don't stop logic on waiting, buffering is normal
       this.playPausa = "alert-circle-outline"
     });
     this.audio.addEventListener(".canplay", () => {
