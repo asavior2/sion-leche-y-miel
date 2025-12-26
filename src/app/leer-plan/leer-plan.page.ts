@@ -139,6 +139,19 @@ export class LeerPlanPage implements OnInit {
   }
 
   async ngOnInit() {
+    // Moved logic to ionViewWillEnter for reliable updates
+  }
+
+  async ionViewWillEnter() {
+    this.libro = parseInt(this.activatedRoute.snapshot.paramMap.get('libro'));
+    this.capitulo = parseInt(this.activatedRoute.snapshot.paramMap.get('capitulo'));
+    // Handle 'undefined' string explicitly before parsing
+    const vParam = this.activatedRoute.snapshot.paramMap.get('versiculo');
+    const vfParam = this.activatedRoute.snapshot.paramMap.get('versiculoFinal');
+
+    this.versiculo = (vParam && vParam !== 'undefined') ? parseInt(vParam) : NaN;
+    this.versiculoFinal = (vfParam && vfParam !== 'undefined') ? parseInt(vfParam) : NaN;
+
 
     if (this.platform.is("android")) {
       this.pathDiviceIosAndroid = "/files/Documents/"
@@ -173,24 +186,7 @@ export class LeerPlanPage implements OnInit {
       }
     });
 
-
-
-    this.mostrarTextoMetodo(this.libro, this.capitulo, this.versiculo, this.versiculoFinal);
-
-    /*
-    if (!this.versiculo) {             // Mostrar libro y capitulo
-      this.mostrarTextoMetodo(this.libro, this.capitulo);
-    } else if (!this.versiculoFinal) {  //libro capitulo y versiculo
-      await this.buscarVersiculo(this.libro.toString(), this.capitulo.toString(), this.versiculo.toString());
-      //{id_libro: "5", capitulo: "9", versiculo: "1", texto: "Oye,  Israel: Ha llegado el momento d, versiculo: "27"}
-      this.textoJsonFinal = [{id_libro: this.libro, capitulo: this.capitulo, versiculo: this.versiculo, texto: this.textTemp}];
-      this.actualizarLibroTitulo(this.libro);
-      this.mostrarTexto = true;
-      console.log("***********************");
-      console.log(this.textoJsonFinal);
-    } else {                           // libro capitulo y versiculo y versiculo final
-
-    }*/
+    await this.mostrarTextoMetodo(this.libro, this.capitulo, this.versiculo, this.versiculoFinal);
 
     await this.storage.set('playAuto', false);
 
@@ -261,12 +257,8 @@ export class LeerPlanPage implements OnInit {
       console.log(this.planOfStora);
     });
 
-    this.textoJsonFinal = await this.bibliaService.getTextoImport(this.libro, this.capitulo);
-    //this.dataTemp = await this.textoJsonFinal 
-    //console.log("***dataTemp");
-    //console.log(this.dataTemp);
-
-  } // fin ngOnInit
+    // this.textoJsonFinal = await this.bibliaService.getTextoImport(this.libro, this.capitulo);
+  }
 
   async playAudio() {
     //this.ionContent.scrollToTop(300); //subir scroll al inicio
@@ -411,12 +403,15 @@ export class LeerPlanPage implements OnInit {
       this.textoJsonFinal = await this.bibliaService.getTextoImport(this.libro, this.capitulo);
     }
 
-    if (!isNaN(versiculoFinal)) {  //recopilar el rango de los versiclos 
-      console.log('dentrodel NAN')
+    const vInicio = parseInt(versiculo);
+    const vFin = parseInt(versiculoFinal);
+
+    console.log('DEBUG: versiculo:', versiculo, 'vInicio:', vInicio, 'isNaN:', isNaN(vInicio));
+    console.log('DEBUG: versiculoFinal:', versiculoFinal, 'vFin:', vFin, 'isNaN:', isNaN(vFin));
+
+    if (!isNaN(vFin) && !isNaN(vInicio)) {  // Rango de versículos
       this.textoJsonFinal = [];
-      for (let cont = versiculo; cont <= parseInt(versiculoFinal); cont++) {
-        console.log('cont ' + cont + ' versiculoFinal' + versiculoFinal);
-        console.log(typeof cont + '   ' + typeof versiculoFinal);
+      for (let cont = vInicio; cont <= vFin; cont++) {
         await this.buscarVersiculo(libro.toString(), capitulo.toString(), cont.toString());
         this.textoJsonFinal.push(
           {
@@ -426,10 +421,9 @@ export class LeerPlanPage implements OnInit {
             texto: this.textTemp
           });
       }
-    } else if (!isNaN(versiculo)) {  //recopilar libro capitulo y versiculo
-      await this.buscarVersiculo(libro.toString(), capitulo.toString(), versiculo.toString());
-      //{id_libro: "5", capitulo: "9", versiculo: "1", texto: "Oye,  Israel: Ha llegado el momento d, versiculo: "27"}
-      this.textoJsonFinal = [{ id_libro: libro, capitulo: capitulo, versiculo: versiculo, texto: this.textTemp }];
+    } else if (!isNaN(vInicio)) {  // Solo un versículo
+      await this.buscarVersiculo(libro.toString(), capitulo.toString(), vInicio.toString());
+      this.textoJsonFinal = [{ id_libro: libro, capitulo: capitulo, versiculo: vInicio, texto: this.textTemp }];
       console.log("***********************");
       console.log(this.textoJsonFinal);
     }
@@ -609,7 +603,7 @@ export class LeerPlanPage implements OnInit {
     if (this.isPlaying) {
       this.audio.pause();//Stop
       this.audio.currentTime = 0;
-      await this.delay2(900);
+      // await this.delay2(900);
       this.idPlay = 0
       this.tiempoRecorrido = 0
 
@@ -628,11 +622,13 @@ export class LeerPlanPage implements OnInit {
       this.audio.pause() //Stop
       this.audio.currentTime = 0
       this.idPlay = 0
-      await this.delay2(1500);
+      // await this.delay2(1500);
     } else {
       console.log("Desde else next ")
-      await this.delay2(1500);
-      this.audio.currentTime = 0
+      // await this.delay2(1500);
+      if (this.audio) {  // Safe check
+        this.audio.currentTime = 0
+      }
       this.idPlay = 0
     }
     let detalleMarcar = this.detalleDia[this.contParteDia];

@@ -119,7 +119,7 @@ export class PlanDetallePage implements OnInit {
         this.btnIniciarPlan = true;
       } else {
         for (let entry of val) {
-          this.planesActivos = [];
+          // this.planesActivos = []; // Bug: This was clearing the array on every iteration
           this.planesActivos.push(entry);
           if (entry.nombre === this.nombrePlan) {
             console.log('Desde  if dentre del planes activo ');
@@ -220,7 +220,7 @@ export class PlanDetallePage implements OnInit {
 
 
   atras() {
-    this.navCtrl.back();
+    this.navCtrl.navigateBack('/tabs/plan-lectura');
   }
 
 
@@ -321,24 +321,28 @@ export class PlanDetallePage implements OnInit {
   }
 
   iniciarPlan() {
-    for (let plan of this.planes) {
-      if (plan.nombre === this.nombrePlan) {
-        this.planesActivos.push(
-          {
-            titulo: plan.titulo,
-            nombre: plan.nombre,
-            imagen: plan.imagen,
-            descripcion: plan.descripcion,
-            URI: plan.URI,
-            diaInicio: this.dd,  // 
-            mesInicio: this.mm,                   //this.mm
-            anoInicio: this.yyyy,
-            progreso: 0
-          });
-        // this.planesActivos.push(plan);
+    // Check for duplicates before adding
+    const planExists = this.planesActivos.some(activePlan => activePlan.nombre === this.nombrePlan);
+
+    if (!planExists) {
+      for (let plan of this.planes) {
+        if (plan.nombre === this.nombrePlan) {
+          this.planesActivos.push(
+            {
+              titulo: plan.titulo,
+              nombre: plan.nombre,
+              imagen: plan.imagen,
+              descripcion: plan.descripcion,
+              URI: plan.URI,
+              diaInicio: this.dd,
+              mesInicio: this.mm,
+              anoInicio: this.yyyy,
+              progreso: 0
+            });
+        }
       }
+      this.storage.set('planesActivos', this.planesActivos);
     }
-    this.storage.set('planesActivos', this.planesActivos);
     this.btnIniciarPlan = false;
     for (let dias of this.temporalPlan) {
       for (let detalle of dias.detalles) {
