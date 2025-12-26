@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Storage } from '@ionic/storage';
-import {File} from '@ionic-native/file/ngx';
-import { HTTP } from '@ionic-native/http/ngx';
+import { Storage as IonicStorage } from '@ionic/storage-angular';
+import { File } from '@awesome-cordova-plugins/file/ngx';
+import { HTTP } from '@awesome-cordova-plugins/http/ngx';
 import { AlertController } from '@ionic/angular';
 import { Platform } from '@ionic/angular';
 import { ToastController } from '@ionic/angular';
@@ -16,14 +16,14 @@ export class SobrePage implements OnInit {
 
   fontSize;
   pathDiviceIosAndroid: string;
-  constructor(private storage: Storage,
+  constructor(private storage: IonicStorage,
     public file: File,
     private toastController: ToastController,
     private nativeHTTP: HTTP,
     public platform: Platform,
     //private fileOpener: FileOpener,
     public alertController: AlertController
-    ) {
+  ) {
     this.storage.get('fontSize').then((val) => {
       if (val == null || val < 15) {
         this.fontSize = 20;
@@ -31,15 +31,15 @@ export class SobrePage implements OnInit {
         this.fontSize = val;
       }
     });
-   }
+  }
 
-  
+
 
   ngOnInit() {
-    if (this.platform.is("android")){
+    if (this.platform.is("android")) {
       this.pathDiviceIosAndroid = this.file.externalRootDirectory + 'Download/'
       console.log("***ANDROID***")
-    }else if (this.platform.is("ios")){
+    } else if (this.platform.is("ios")) {
       this.pathDiviceIosAndroid = this.file.dataDirectory
       console.log("***IOS***")
     }
@@ -49,16 +49,16 @@ export class SobrePage implements OnInit {
 
   }
 
-  
-  descargarLibro(formato){
+
+  descargarLibro(formato) {
     let url
     let nombre
-    if(formato == 'epub'){
-      window.open('http://sionlecheymiel.com/file/ESCLAVOS-DE-REBELION-A-SUBDITOS-DEL-REINO-DE-LOS-CIELOS-Pedro-Rangel.epub', '_self','location=yes');
+    if (formato == 'epub') {
+      window.open('http://sionlecheymiel.com/file/ESCLAVOS-DE-REBELION-A-SUBDITOS-DEL-REINO-DE-LOS-CIELOS-Pedro-Rangel.epub', '_self', 'location=yes');
       //url ='https://sionlecheymiel.com/file/ESCLAVOS-DE-REBELION-A-SUBDITOS-DEL-REINO-DE-LOS-CIELOS-Pedro-Rangel.epub';
       //nombre = 'ESCLAVOS-DE-REBELION-A-SUBDITOS-DEL-REINO-DE-LOS-CIELOS-Pedro-Rangel.epub'
-    }else{ //pdf
-      window.open('http://sionlecheymiel.com/file/ESCLAVOS-DE-REBELION-A-SUBDITOS-DEL-REINO-DE-LOS-CIELOS-Pedro-Rangel.pdf', '_self','location=yes');
+    } else { //pdf
+      window.open('http://sionlecheymiel.com/file/ESCLAVOS-DE-REBELION-A-SUBDITOS-DEL-REINO-DE-LOS-CIELOS-Pedro-Rangel.pdf', '_self', 'location=yes');
       //url = 'https://sionlecheymiel.com/file/ESCLAVOS-DE-REBELION-A-SUBDITOS-DEL-REINO-DE-LOS-CIELOS-Pedro-Rangel.pdf';
       //nombre = 'ESCLAVOS-DE-REBELION-A-SUBDITOS-DEL-REINO-DE-LOS-CIELOS-Pedro-Rangel.pdf'
     }
@@ -86,24 +86,24 @@ export class SobrePage implements OnInit {
     });
   }*/
 
-  downloadLibro(url: string,extencion) {
-    console.log(url )
+  downloadLibro(url: string, extencion) {
+    console.log(url)
     this.presentToast('bottom');
     //documentsDirectory
-    const filePath = this.pathDiviceIosAndroid + "ESCLAVOS-DE-REBELION-A-SUBDITOS-DEL-REINO-DE-LOS-CIELOS-Pedro-Rangel." + extencion; 
+    const filePath = this.pathDiviceIosAndroid + "ESCLAVOS-DE-REBELION-A-SUBDITOS-DEL-REINO-DE-LOS-CIELOS-Pedro-Rangel." + extencion;
     // for iOS use this.file.documentsDirectory
     this.nativeHTTP.downloadFile(url, {}, {}, filePath).then(response => {
-      console.log('Archivo descargado...', response);   
+      console.log('Archivo descargado...', response);
       this.abrirArchivo(filePath)
       //this.alertDownloadAudio('Archivo descargado', "Archivo descargado, en directorio Descargas")
     }).catch(err => {
       console.log('error block file ... ', err.status);
-      this.alertDownloadAudio('Error de descarga', err.status +" " + err.error)
+      this.alertDownloadAudio('Error de descarga', err.status + " " + err.error)
     })
   }
 
-  
-  abrirArchivo(filePath){
+
+  abrirArchivo(filePath) {
     /* 
     this.fileOpener.open(filePath, 'application/pdf')
         .then(() => console.log('File is opened'))
@@ -112,10 +112,10 @@ export class SobrePage implements OnInit {
         .then(() => console.log('File is opened'))
         .catch(e => console.log('Error opening file', e));
   */
-    }
+  }
 
 
-  async alertDownloadAudio(header: string, statusTextError: string,  ) {
+  async alertDownloadAudio(header: string, statusTextError: string,) {
     const alert = await this.alertController.create({
       cssClass: 'my-custom-class',
       header: header,

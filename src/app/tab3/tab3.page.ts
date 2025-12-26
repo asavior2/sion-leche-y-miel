@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Storage } from '@ionic/storage';
+import { Storage as IonicStorage } from '@ionic/storage-angular';
 
 @Component({
   selector: 'app-tab3',
@@ -10,7 +10,7 @@ export class Tab3Page {
 
   fontSize;
 
-  constructor(private storage: Storage) {
+  constructor(private storage: IonicStorage) {
     this.storage.get('fontSize').then((val) => {
       if (val == null) {
         this.fontSize = 22;
@@ -20,5 +20,5 @@ export class Tab3Page {
     });
   }
 
-  
+
 }

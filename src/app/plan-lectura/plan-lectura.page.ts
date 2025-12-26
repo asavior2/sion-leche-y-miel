@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import planesFile from '../../assets/planesLectura.json';
 import { HttpClient } from '@angular/common/http';
 import { NavController } from '@ionic/angular';
-import { Storage } from '@ionic/storage';
+import { Storage as IonicStorage } from '@ionic/storage-angular';
 import { Console } from 'console';
 
 
@@ -17,7 +17,7 @@ export class PlanLecturaPage implements OnInit, OnDestroy {
   //root = RegistroPage;
 
   capitulos: any[] = new Array;
-  maestro:any[] = new Array;
+  maestro: any[] = new Array;
   contadorCapitulo;
   tipoOrdenName;
   tipoOrdenMiPlan;
@@ -30,13 +30,13 @@ export class PlanLecturaPage implements OnInit, OnDestroy {
   planesActivos;
 
   constructor(private httpClient: HttpClient,
-              private navCtrl: NavController,
-              private storage: Storage
-    ) {
+    private navCtrl: NavController,
+    private storage: IonicStorage
+  ) {
     console.log(planesFile);
     this.ngOnInit();
   }
-  
+
 
   ionViewCanEnter() {
     this.ngOnInit();
@@ -45,28 +45,28 @@ export class PlanLecturaPage implements OnInit, OnDestroy {
     this.ngOnInit();
     this.recargar();
     console.log('ionViewWillEnter');
-    
+
   }
   ionViewDidLoad() {
     this.ngOnInit();
     console.log('ionViewDidLoad');
   }
 
-  
+
   pushPlanDetalleNav(nombre) {
     this.navCtrl.navigateForward(`/plan-detalle/${nombre}`);
 
   }
 
-async ngOnInit() {
-  console.log ('Validar si se carga al hacer atras');
+  async ngOnInit() {
+    console.log('Validar si se carga al hacer atras');
     await this.storage.get('planesActivos').then((val) => {
-    if (val != null) {
-      this.planesActivos = val;
-      this.tipoOrdenLibro('miPlanes');
-    } else {
-      this.tipoOrdenLibro('bucarPlanes');
-      
+      if (val != null) {
+        this.planesActivos = val;
+        this.tipoOrdenLibro('miPlanes');
+      } else {
+        this.tipoOrdenLibro('bucarPlanes');
+
       }
     });
   }
@@ -82,7 +82,7 @@ async ngOnInit() {
         this.tipoOrdenLibro('miPlanes');
       } else {
         this.tipoOrdenLibro('bucarPlanes');
-        
+
       }
     });
   }
@@ -118,13 +118,13 @@ async ngOnInit() {
   }
 
   getCleanedString(cadena) {
-    cadena = cadena.replace(/á/gi,"a");
-    cadena = cadena.replace(/Éxodo/gi,"Exodo");
-    cadena = cadena.replace(/é/gi,"e");
-    cadena = cadena.replace(/í/gi,"i");
-    cadena = cadena.replace(/ó/gi,"o");
-    cadena = cadena.replace(/ú/gi,"u");
-    cadena = cadena.replace(/ñ/gi,"n");
+    cadena = cadena.replace(/á/gi, "a");
+    cadena = cadena.replace(/Éxodo/gi, "Exodo");
+    cadena = cadena.replace(/é/gi, "e");
+    cadena = cadena.replace(/í/gi, "i");
+    cadena = cadena.replace(/ó/gi, "o");
+    cadena = cadena.replace(/ú/gi, "u");
+    cadena = cadena.replace(/ñ/gi, "n");
     return cadena;
   }
 
@@ -140,6 +140,6 @@ async ngOnInit() {
       {dia:"1", capitulos}
       capitulos = {capitulo:"1", capitulo:"2, capitulo:"3"}
   */
-  
+
 
 }

@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ActionSheetController } from '@ionic/angular';
-import {Zip} from '@ionic-native/zip/ngx';
-import {File} from '@ionic-native/file/ngx';
-import { Storage } from '@ionic/storage';
-//import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer/ngx';
+import { Zip } from '@awesome-cordova-plugins/zip/ngx';
+import { File } from '@awesome-cordova-plugins/file/ngx';
+import { Storage as IonicStorage } from '@ionic/storage-angular';
+//import { FileTransfer, FileTransferObject } from '@awesome-cordova-plugins/file-transfer/ngx';
 import { HttpClient } from '@angular/common/http';
-import { HTTP } from '@ionic-native/http/ngx';
+import { HTTP } from '@awesome-cordova-plugins/http/ngx';
 import { JsonPipe } from '@angular/common';
 import { Platform } from '@ionic/angular';
 
@@ -29,65 +29,65 @@ export class TabsPage implements OnInit {
   hash;
   darkMode: boolean = true;
   estadoDark;
-  pathDiviceIosAndroid:string;
+  pathDiviceIosAndroid: string;
 
   constructor(private router: Router,
-              private zip: Zip,
-              public file: File,
-              private storage: Storage,
-              //private transfer: FileTransfer,
-              private httpClient: HttpClient,
-              private nativeHTTP: HTTP,
-              public alertController: AlertController,
-              public platform: Platform,
-              public actionSheetController: ActionSheetController) {
-                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-                this.darkMode = prefersDark.matches;
-      
-    }
-    
-    async ngOnInit() {
-      this.validaUri();
-      /*    Calculo de hach
-      async function digestMessage(message) {
-        const msgUint8 = new TextEncoder().encode(message);                           // encode as (utf-8) Uint8Array
-        const hashBuffer = await crypto.subtle.digest('SHA-1', msgUint8);             // hash the message
-        const hashArray = Array.from(new Uint8Array(hashBuffer));                     // convert buffer to byte array
-        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join(''); // convert bytes to hex string
-        return hashHex;
-      }
-      const digestBuffer = await digestMessage('Asavior2');
-      console.log(digestBuffer);
-      */
-      await this.storage.get('update').then((val) => {
-        if (val != null) {
-          this.update = val;
-        } else {
-          this.update = '0';
-        }
-      });
+    private zip: Zip,
+    public file: File,
+    private storage: IonicStorage,
+    //private transfer: FileTransfer,
+    private httpClient: HttpClient,
+    private nativeHTTP: HTTP,
+    public alertController: AlertController,
+    public platform: Platform,
+    public actionSheetController: ActionSheetController) {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+    this.darkMode = prefersDark.matches;
 
-      if (this.darkMode){
-        this.estadoDark = 'Desactivar ';
+  }
+
+  async ngOnInit() {
+    this.validaUri();
+    /*    Calculo de hach
+    async function digestMessage(message) {
+      const msgUint8 = new TextEncoder().encode(message);                           // encode as (utf-8) Uint8Array
+      const hashBuffer = await crypto.subtle.digest('SHA-1', msgUint8);             // hash the message
+      const hashArray = Array.from(new Uint8Array(hashBuffer));                     // convert buffer to byte array
+      const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join(''); // convert bytes to hex string
+      return hashHex;
+    }
+    const digestBuffer = await digestMessage('Asavior2');
+    console.log(digestBuffer);
+    */
+    await this.storage.get('update').then((val) => {
+      if (val != null) {
+        this.update = val;
       } else {
-        this.estadoDark = 'Activar ';
+        this.update = '0';
       }
-      //this.unZip('audio-SLM-calidad-baja.zip','audio')
-      //this.download('https://sionlecheymiel.com/file/audios/1/1.mp3','audioD.mp3')
+    });
 
-      if (this.platform.is("android")){
-        this.pathDiviceIosAndroid = "/files/Documents/"
-        console.log("***ANDROID***")
-      }else if (this.platform.is("ios")){
-        this.pathDiviceIosAndroid = "/Documents/"
-        console.log("***IOS***")
-      }
+    if (this.darkMode) {
+      this.estadoDark = 'Desactivar ';
+    } else {
+      this.estadoDark = 'Activar ';
+    }
+    //this.unZip('audio-SLM-calidad-baja.zip','audio')
+    //this.download('https://sionlecheymiel.com/file/audios/1/1.mp3','audioD.mp3')
 
-
+    if (this.platform.is("android")) {
+      this.pathDiviceIosAndroid = "/files/Documents/"
+      console.log("***ANDROID***")
+    } else if (this.platform.is("ios")) {
+      this.pathDiviceIosAndroid = "/Documents/"
+      console.log("***IOS***")
     }
 
-   validaUri() {
-    if (this.router.url =="/tabs/login" ){
+
+  }
+
+  validaUri() {
+    if (this.router.url == "/tabs/login") {
       this.esLogin = true;
       console.log(this.esLogin);
     } else {
@@ -115,78 +115,78 @@ export class TabsPage implements OnInit {
       if (this.version !== undefined && this.version !== this.update) {                 // Si es diferente descargar
         console.log('Descargar unZip');
         this.download(this.url, this.version); // Descargar
-        this.unZip(this.version + '.zip','update');
+        this.unZip(this.version + '.zip', 'update');
       } else {                                                                          // De lo contrario no hay actualizaciones.
         this.alertNoUpdate();
       }
     },
-    (err) => {
-      // console.log('Error en la descarga' + err.status );
-      // console.log(err);
-      this.alertError(err.status, err.statusText);
+      (err) => {
+        // console.log('Error en la descarga' + err.status );
+        // console.log(err);
+        this.alertError(err.status, err.statusText);
 
-    });
+      });
   }
 
   async downloadAudio(calidad) {
-    this.alertDownloadAudio('Descarga en proceso','La descarga quedará en segundo plano, puede seguir utilizando la aplicación')
+    this.alertDownloadAudio('Descarga en proceso', 'La descarga quedará en segundo plano, puede seguir utilizando la aplicación')
 
     // tslint:disable-next-line: no-trailing-whitespace
     let url = ''
     let nombre = ''
-    if(calidad == 'alta'){
+    if (calidad == 'alta') {
       url = 'https://sionlecheymiel.com/file/audio-SLM-calidad-alta.zip'
-      nombre = "audio-SLM-calidad-alta.zip" 
-    }else if (calidad == 'media'){
+      nombre = "audio-SLM-calidad-alta.zip"
+    } else if (calidad == 'media') {
       url = 'https://sionlecheymiel.com/file/audio-SLM-calidad-media.zip'
-      nombre = "audio-SLM-calidad-media.zip" 
-    }else{
+      nombre = "audio-SLM-calidad-media.zip"
+    } else {
       url = 'https://sionlecheymiel.com/file/audio-SLM-calidad-baja.zip'
-      nombre = "audio-SLM-calidad-baja.zip" 
+      nombre = "audio-SLM-calidad-baja.zip"
     }
-     
+
     console.log('Descargar un Zip');
     await this.download(url, nombre); // Descargar
-       
+
   }
 
 
   async unZip(nombre: string, deQuien: string) {
-  /*externalRootDirectory file:///storage/emulated/0/
-    dataDirectorio file:///data/user/0/io.slm.starter/files/
-    externalDataDirectory file:///storage/emulated/0/Android/data/io.slm.starter/files/*/
+    /*externalRootDirectory file:///storage/emulated/0/
+      dataDirectorio file:///data/user/0/io.slm.starter/files/
+      externalDataDirectory file:///storage/emulated/0/Android/data/io.slm.starter/files/*/
     this.zipPath = this.file.applicationStorageDirectory + this.pathDiviceIosAndroid + nombre;
     console.log(this.zipPath);
 
     this.file.checkFile(this.zipPath, '').then(_ => {
-      this.zip.unzip (this.zipPath,
-                      this.file.applicationStorageDirectory + this.pathDiviceIosAndroid,
-                      (progress) =>
-                      console.log('Unzipping, ' + Math.round((progress.loaded / progress.total) * 100) + '%')).then((result) => {
-                        if (result === 0) {
-                          console.log('SUCCESS');
-                          if(deQuien == 'audio'){
-                            this.alertDownloadAudio('Descarga Completada','Biblia Sion Leche y Miel en audio')
-                            this.file.removeFile(this.file.applicationStorageDirectory + this.pathDiviceIosAndroid, nombre).then(_=> {
-                              console.log("Archivo zip eliminado")
-                            }).catch((err) => {
-                              console.log("Como que no se pudo eliminar el archivo zip")
-                              console.log(err)
-                            });
+      this.zip.unzip(this.zipPath,
+        this.file.applicationStorageDirectory + this.pathDiviceIosAndroid,
+        (progress) =>
+          console.log('Unzipping, ' + Math.round((progress.loaded / progress.total) * 100) + '%')).then((result) => {
+            if (result === 0) {
+              console.log('SUCCESS');
+              if (deQuien == 'audio') {
+                this.alertDownloadAudio('Descarga Completada', 'Biblia Sion Leche y Miel en audio')
+                this.file.removeFile(this.file.applicationStorageDirectory + this.pathDiviceIosAndroid, nombre).then(_ => {
+                  console.log("Archivo zip eliminado")
+                }).catch((err) => {
+                  console.log("Como que no se pudo eliminar el archivo zip")
+                  console.log(err)
+                });
 
-                          }else {
-                            this.alertUpdate(nombre);
-                          }
-                      }
-                        if (result === -1) { 
-                          console.log('FAILED'); 
-                          if(deQuien == 'audio'){
-                            this.alertErrorDownloadAudio('Ocuarrio un error', ' :( ')
-                          }else {
-                            this.alertUpdate(nombre); //aler error descarga
-                          }
-                        }
-      });
+              } else {
+                this.alertUpdate(nombre);
+              }
+            }
+            if (result === -1) {
+              console.log('FAILED');
+              if (deQuien == 'audio') {
+                this.alertErrorDownloadAudio('Ocuarrio un error', ' :( ')
+              } else {
+                this.alertUpdate(nombre); //aler error descarga
+              }
+            }
+          });
     }).catch((err) => {
       this.alertErrorDownloadAudio(err.status, err.statusText)
     });
@@ -196,29 +196,29 @@ export class TabsPage implements OnInit {
   async download(url: string, nombre: string) {
     console.log(url + " " + nombre)
     //documentsDirectory
-    const filePath = this.file.applicationStorageDirectory + this.pathDiviceIosAndroid + nombre; 
+    const filePath = this.file.applicationStorageDirectory + this.pathDiviceIosAndroid + nombre;
     // for iOS use this.file.documentsDirectory
     this.nativeHTTP.downloadFile(url, {}, {}, filePath).then(response => {
       // prints 200
       console.log('Archivo descargado...', response);
-      
+
       this.file.checkDir(this.file.applicationStorageDirectory + this.pathDiviceIosAndroid, 'por-Capitulos').then(_ => {
-        this.file.removeRecursively(this.file.applicationStorageDirectory + this.pathDiviceIosAndroid, 'por-Capitulos').then(_=> {
+        this.file.removeRecursively(this.file.applicationStorageDirectory + this.pathDiviceIosAndroid, 'por-Capitulos').then(_ => {
           console.log("Carpeta por-Capitulos eliminado")
-          this.unZip(nombre,'audio'); 
+          this.unZip(nombre, 'audio');
         }).catch((err) => {
           console.log("Como que no se pudo eliminar la carpeta por-Capitulos")
           console.log(err)
         });
       }).catch((err) => {
         console.log("Carpeta por-Capitulo no existe")
-        this.unZip(nombre,'audio'); 
+        this.unZip(nombre, 'audio');
       });
-      
+
     }).catch(err => {
       // prints 403
       console.log('error block file ... ', err.status);
-      this.alertErrorDownloadAudio("Ocurrio un problema", err.status +" " + err.error)
+      this.alertErrorDownloadAudio("Ocurrio un problema", err.status + " " + err.error)
     })
 
     /* 
@@ -239,7 +239,7 @@ export class TabsPage implements OnInit {
   }
 
 
-  async alertError(statusError: string, statusTextError: string,  ) {
+  async alertError(statusError: string, statusTextError: string,) {
     const alert = await this.alertController.create({
       cssClass: 'my-custom-class',
       header: 'Error',
@@ -251,15 +251,15 @@ export class TabsPage implements OnInit {
     await alert.present();
   }
   async alertNoUpdate() {
-      const alert = await this.alertController.create({
-        cssClass: 'my-custom-class',
-        header: 'Resultado de Busqueda',
-        subHeader: 'No hay actulizaciones Disponibles para la version SLM',
-        message: '',
-        buttons: ['OK'],
-        mode: 'ios'
-      });
-      await alert.present();
+    const alert = await this.alertController.create({
+      cssClass: 'my-custom-class',
+      header: 'Resultado de Busqueda',
+      subHeader: 'No hay actulizaciones Disponibles para la version SLM',
+      message: '',
+      buttons: ['OK'],
+      mode: 'ios'
+    });
+    await alert.present();
   }
   async alertUpdate(version: string) {
     const alert = await this.alertController.create({
@@ -271,36 +271,36 @@ export class TabsPage implements OnInit {
       mode: 'ios'
     });
     await alert.present();
-}
+  }
 
-async alertDownloadAudio(header: string, subHeader:string) {
-  const alert = await this.alertController.create({
-    cssClass: 'my-custom-class',
-    header: header,
-    subHeader: subHeader,
-    message: '',
-    buttons: ['OK'],
-    mode: 'ios'
-  });
-  await alert.present();
-}
+  async alertDownloadAudio(header: string, subHeader: string) {
+    const alert = await this.alertController.create({
+      cssClass: 'my-custom-class',
+      header: header,
+      subHeader: subHeader,
+      message: '',
+      buttons: ['OK'],
+      mode: 'ios'
+    });
+    await alert.present();
+  }
 
-async alertErrorDownloadAudio(statusError: string, statusTextError: string,  ) {
-  const alert = await this.alertController.create({
-    cssClass: 'my-custom-class',
-    header: 'Error de descarga',
-    subHeader: statusError + ' ' + statusTextError,
-    message: '',
-    buttons: ['OK'],
-    mode: 'ios'
-  });
-  await alert.present();
-}
+  async alertErrorDownloadAudio(statusError: string, statusTextError: string,) {
+    const alert = await this.alertController.create({
+      cssClass: 'my-custom-class',
+      header: 'Error de descarga',
+      subHeader: statusError + ' ' + statusTextError,
+      message: '',
+      buttons: ['OK'],
+      mode: 'ios'
+    });
+    await alert.present();
+  }
 
   changeDark() {
     this.darkMode = !this.darkMode;
     document.body.classList.toggle('dark');
-    if (this.darkMode){
+    if (this.darkMode) {
       this.estadoDark = 'Desactivar ';
     } else {
       this.estadoDark = 'Activar ';
@@ -385,9 +385,9 @@ async alertErrorDownloadAudio(statusError: string, statusTextError: string,  ) {
             }
           }*/
         ]
-        });
-        await actionSheet.present();
-      }
+      });
+      await actionSheet.present();
     }
+  }
 
 }

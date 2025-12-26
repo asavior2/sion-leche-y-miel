@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
 //import { auth } from "firebase/app";
 import {Router} from '@angular/router';
-//import { FirebaseAuthentication } from "@ionic-native/firebase-authentication/ngx";
+//import { FirebaseAuthentication } from "@awesome-cordova-plugins/firebase-authentication/ngx";
 
 
-//import { GooglePlus } from '@ionic-native/google-plus';
+//import { GooglePlus } from '@awesome-cordova-plugins/google-plus';
 
 //import { Platform } from 'ionic-angular';
 

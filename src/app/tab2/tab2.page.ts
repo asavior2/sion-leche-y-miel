@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import {BibliaService} from '../services/biblia.service';
-import { Storage } from '@ionic/storage';
+import { BibliaService } from '../services/biblia.service';
+import { Storage as IonicStorage } from '@ionic/storage-angular';
 import { HttpClient } from '@angular/common/http';
-import {FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, UntypedFormControl, Validators } from '@angular/forms';
 import { LoadingController } from '@ionic/angular';
 import Libros from '../../assets/libros.json';
 import SLM from '../../assets/SLM.json';
@@ -14,14 +14,14 @@ import SLM from '../../assets/SLM.json';
 })
 export class Tab2Page {
 
-  versiculos:Array<any> = new Array();
+  versiculos: Array<any> = new Array();
   palabra;
   libros;
   librot: string;
   textoJson;
-  result:string;
-  name:string;
-  concordanciaForm: FormGroup;
+  result: string;
+  name: string;
+  concordanciaForm: UntypedFormGroup;
   showText = false;
   posicionPalabra: number;
   mayuscula = false;
@@ -35,14 +35,14 @@ export class Tab2Page {
 
   // Documentacion de formulario login https://www.youtube.com/watch?v=2vVxieW-yyE
 
-  constructor(private  bibliaService: BibliaService,
-              private storage: Storage,
-              public formBuilder: FormBuilder,
-              public loadingController: LoadingController,
-              public http: HttpClient) {
+  constructor(private bibliaService: BibliaService,
+    private storage: IonicStorage,
+    public formBuilder: UntypedFormBuilder,
+    public loadingController: LoadingController,
+    public http: HttpClient) {
 
     this.concordanciaForm = this.formBuilder.group({
-      palablaBuscar: new FormControl('', Validators.compose([
+      palablaBuscar: new UntypedFormControl('', Validators.compose([
         Validators.required,
         Validators.minLength(4),
         Validators.maxLength(30)
@@ -67,7 +67,7 @@ export class Tab2Page {
     if (this.contVersiculos !== 0) {
       this.buferVersiculos += 100;
       this.contVersiculos = 0;
-      if (this.palabra !== this.concordanciaForm.value.palablaBuscar ) {
+      if (this.palabra !== this.concordanciaForm.value.palablaBuscar) {
         this.buferVersiculos = 99;
       }
     }
@@ -81,8 +81,8 @@ export class Tab2Page {
 
         this.posicionPalabra = this.getCleanedString(entry.texto).search(re2);
         if (this.posicionPalabra !== -1) {
-          if (this.contVersiculos < this.buferVersiculos){
-            entry['palabra'] = entry.texto.substring(this.posicionPalabra,(this.posicionPalabra + this.palabra.length));
+          if (this.contVersiculos < this.buferVersiculos) {
+            entry['palabra'] = entry.texto.substring(this.posicionPalabra, (this.posicionPalabra + this.palabra.length));
             entry['posicionPalabra'] = this.posicionPalabra;
             this.librot = this.getlibroId(entry.id_libro);
             entry['nombreLibro'] = this.librot;
@@ -92,7 +92,7 @@ export class Tab2Page {
         }
       }
       console.log(this.versiculos)
-      if (this.versiculos.length == 0){
+      if (this.versiculos.length == 0) {
         this.presentLoadingWithOptions();
       } else {
         this.showText = true;
@@ -105,21 +105,21 @@ export class Tab2Page {
 
 
   getCleanedString(cadena) {
-    cadena = cadena.replace(/á/gi,"a");
-    cadena = cadena.replace(/Éxodo/gi,"Exodo");
-    cadena = cadena.replace(/é/gi,"e");
-    cadena = cadena.replace(/í/gi,"i");
-    cadena = cadena.replace(/ó/gi,"o");
-    cadena = cadena.replace(/ú/gi,"u");
+    cadena = cadena.replace(/á/gi, "a");
+    cadena = cadena.replace(/Éxodo/gi, "Exodo");
+    cadena = cadena.replace(/é/gi, "e");
+    cadena = cadena.replace(/í/gi, "i");
+    cadena = cadena.replace(/ó/gi, "o");
+    cadena = cadena.replace(/ú/gi, "u");
     //cadena = cadena.replace(/\s/g, "");
     //this.partesArray = cadena.split(" ");
     //console.log(this.partesArray[0]);
     return cadena;
   }
-  getlibroId(id){
+  getlibroId(id) {
     for (let entry of Libros) {
       if (id === entry.id) {
-        return(entry.libro);
+        return (entry.libro);
       }
     }
   }

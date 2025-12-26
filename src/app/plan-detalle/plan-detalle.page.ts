@@ -1,14 +1,15 @@
-import { Component, OnInit } from '@angular/core';
-import { ViewChild } from '@angular/core'
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 // import bibleOneYear from '../../assets/bibleOneYear.json';
 import planesFile from '../../assets/planesLectura.json';
 import { ActivatedRoute } from '@angular/router';
 import Libros from '../../assets/libros.json';
 import { NavController } from '@ionic/angular';
-import { Storage } from '@ionic/storage';
+import { Storage as IonicStorage } from '@ionic/storage-angular';
 import { Console } from 'console';
 import { Router } from "@angular/router";
-import {IonSlides} from '@ionic/angular';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
+
 
 @Component({
   selector: 'app-plan-detalle',
@@ -16,9 +17,9 @@ import {IonSlides} from '@ionic/angular';
   styleUrls: ['./plan-detalle.page.scss'],
 })
 export class PlanDetallePage implements OnInit {
-  @ViewChild(IonSlides) slides: IonSlides;  
-  
-  bibleOneYear;  
+  @ViewChild('swiper') swiperRef: ElementRef | undefined;
+
+  bibleOneYear;
   planOfStora;
   temporalPlan;
   planes = planesFile;
@@ -38,8 +39,8 @@ export class PlanDetallePage implements OnInit {
   libroT;
   verCapitulos = false;
   marcarSlite = false;
-  planesActivos:Array<any> = new Array();
-  btnIniciarPlan =  true;
+  planesActivos: Array<any> = new Array();
+  btnIniciarPlan = true;
   yearValues = 2020;
   fecha = new Date();
   dd; mm; yyyy;
@@ -48,37 +49,38 @@ export class PlanDetallePage implements OnInit {
   fechaHoy;
   diaLecturaV;
   meses = [
-    {numero:1,mes:"ENE", cantidad:31},
-    {numero:2,mes:"FEB", cantidad:28},
-    {numero:3,mes:"MAR", cantidad:31},
-    {numero:4,mes:"ABR", cantidad:30},
-    {numero:5,mes:"MAY", cantidad:31},
-    {numero:6,mes:"JUN", cantidad:30},
-    {numero:7,mes:"JUL", cantidad:31},
-    {numero:8,mes:"AGO", cantidad:31},
-    {numero:9,mes:"SEP", cantidad:30},
-    {numero:10,mes:"OCT", cantidad:31},
-    {numero:11,mes:"NOV", cantidad:30},
-    {numero:12,mes:"DIC", cantidad:31}
-   ];
-   verBadge = false;
-   diaAtraso;
-   verDiaAtraso;
-   planArrayTemp: Array<any> = new Array();
-   diaFinPlan;
-   posicionSlide:number;
-   el;
-   activarDia;
+    { numero: 1, mes: "ENE", cantidad: 31 },
+    { numero: 2, mes: "FEB", cantidad: 28 },
+    { numero: 3, mes: "MAR", cantidad: 31 },
+    { numero: 4, mes: "ABR", cantidad: 30 },
+    { numero: 5, mes: "MAY", cantidad: 31 },
+    { numero: 6, mes: "JUN", cantidad: 30 },
+    { numero: 7, mes: "JUL", cantidad: 31 },
+    { numero: 8, mes: "AGO", cantidad: 31 },
+    { numero: 9, mes: "SEP", cantidad: 30 },
+    { numero: 10, mes: "OCT", cantidad: 31 },
+    { numero: 11, mes: "NOV", cantidad: 30 },
+    { numero: 12, mes: "DIC", cantidad: 31 }
+  ];
+  verBadge = false;
+  diaAtraso;
+  verDiaAtraso;
+  planArrayTemp: Array<any> = new Array();
+  diaFinPlan;
+  posicionSlide: number;
+  el;
+  activarDia;
 
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private navCtrl: NavController,
-    private storage: Storage,
-    private router: Router
+    private storage: IonicStorage,
+    private router: Router,
+    private httpClient: HttpClient
   ) {
-    
-   }
+
+  }
   ionViewWillEnter() {                           // Este es para que refresque las variables del storag
     this.ngOnInit();
   }
@@ -105,7 +107,8 @@ export class PlanDetallePage implements OnInit {
         this.titulo = entry.titulo;
         this.imagen = entry.imagen;
         this.descripcion = entry.descripcion;
-        this.temporalPlan = require(`../../assets/planes/${entry.nombre}.json`);
+        // this.temporalPlan = require(`../../assets/planes/${entry.nombre}.json`);
+        this.temporalPlan = await firstValueFrom(this.httpClient.get<any>(`/assets/planes/${entry.nombre}.json`));
         // console.log(this.bibleOneYear);
 
       }
@@ -119,9 +122,9 @@ export class PlanDetallePage implements OnInit {
           this.planesActivos = [];
           this.planesActivos.push(entry);
           if (entry.nombre === this.nombrePlan) {
-            console.log ('Desde  if dentre del planes activo ');
+            console.log('Desde  if dentre del planes activo ');
             this.btnIniciarPlan = false;
-            console.log ('this.btnIniciarPlan ' + this.btnIniciarPlan);
+            console.log('this.btnIniciarPlan ' + this.btnIniciarPlan);
             this.ddStora = entry.diaInicio;
             this.mmStora = entry.mesInicio;
             this.yyyyStora = entry.anoInicio;
@@ -184,29 +187,29 @@ export class PlanDetallePage implements OnInit {
         this.verBadge = true;
         break;
       }
-     
+
     }
     if (parseInt(this.diaLecturaV) >= parseInt(diaT)) {
-     
-      if(parseInt(this.diaLecturaV) > this.diaFinPlan){
-        this.diaAtraso = this.diaFinPlan -parseInt(diaT);
-      }else{
+
+      if (parseInt(this.diaLecturaV) > this.diaFinPlan) {
+        this.diaAtraso = this.diaFinPlan - parseInt(diaT);
+      } else {
         this.diaAtraso = parseInt(this.diaLecturaV) - parseInt(diaT);
       }
       if (this.diaAtraso === 0) {
         this.verDiaAtraso = false;
-      } else  {
+      } else {
         this.verDiaAtraso = true;
       }
-      console.log ("dias de atraso " + this.diaAtraso);
+      console.log("dias de atraso " + this.diaAtraso);
     }
 
     this.posicionSlide = await parseInt(this.diaLecturaV) - parseInt(this.diaAtraso)
     console.log("posicionSlide " + this.posicionSlide)
-    this.slideOpts.initialSlide = this.posicionSlide -4 ;
-    console.log(this.slideOpts) 
+    this.slideOpts.initialSlide = this.posicionSlide - 4;
+    console.log(this.slideOpts)
 
-    this.slides.slideTo(this.posicionSlide -4)
+    this.swiperRef?.nativeElement.swiper?.slideTo(this.posicionSlide - 4);
     /*this.slides.slideTo(this.imageIndex, 0).then(() => {
       setTimeout(() => {
       this.loading = false;
@@ -217,10 +220,10 @@ export class PlanDetallePage implements OnInit {
 
 
   atras() {
-  // this.navCtrl.pop();
+    // this.navCtrl.pop();
     this.navCtrl.navigateRoot(['/tabs/plan-lectura']);
-   // this.navCtrl.navigateForward('/tabs/plan-lectura');
-   this.router.navigate(["/tabs/plan-lectura"]);
+    // this.navCtrl.navigateForward('/tabs/plan-lectura');
+    this.router.navigate(["/tabs/plan-lectura"]);
   }
 
 
@@ -242,7 +245,7 @@ export class PlanDetallePage implements OnInit {
         await this.updatePlanActual(diaT);
         break;
         break;
-      }else{
+      } else {
         console.log("alñ")
         await this.updatePlanActual(entry.dia);
       }
@@ -251,35 +254,36 @@ export class PlanDetallePage implements OnInit {
       this.diaAtraso = parseInt(this.diaLecturaV) - parseInt(diaT);
       if (this.diaAtraso === 0) {
         this.verDiaAtraso = false;
-      } else  {
+      } else {
         this.verDiaAtraso = true;
       }
-      console.log ("dias de atraso " + this.diaAtraso);
+      console.log("dias de atraso " + this.diaAtraso);
     }
   }
 
   async updatePlanActual(dia) {
     await this.storage.get('planesActivos').then((val) => {
       if (val !== null) {
-          this.planesActivos = val;
-        }
+        this.planesActivos = val;
+      }
     });
-    
+
     this.planArrayTemp = [];
     let progresoUpdate;
     // console.log('ver  planArrayTemp 00000************');
     // console.log(this.planArrayTemp);
     if (this.planesActivos.length !== 0) {
-      
+
       // console.log ('ver************');
       // console.log(this.planesActivos);
-      for (let planActivo of  this.planesActivos) {
+      for (let planActivo of this.planesActivos) {
         if (planActivo.nombre === this.nombrePlan) {
           progresoUpdate = ((100 * parseInt(dia)) / this.diaFinPlan) / 100;
-          console.log("dia parseINT " + parseInt(dia) ) 
-          console.log("dia diaFinPlan " + this.diaFinPlan) 
+          console.log("dia parseINT " + parseInt(dia))
+          console.log("dia diaFinPlan " + this.diaFinPlan)
           this.planArrayTemp.push(
-            {titulo: planActivo.titulo,
+            {
+              titulo: planActivo.titulo,
               nombre: planActivo.nombre,
               imagen: planActivo.imagen,
               descripcion: planActivo.descripcion,
@@ -287,11 +291,13 @@ export class PlanDetallePage implements OnInit {
               diaInicio: planActivo.diaInicio,
               mesInicio: planActivo.mesInicio,                   //this.mm,
               anoInicio: planActivo.anoInicio,
-              progreso: progresoUpdate});
+              progreso: progresoUpdate
+            });
         } else {
           // this.planArrayTemp.push(planActivo);
           this.planArrayTemp.push(
-            {titulo: planActivo.titulo,
+            {
+              titulo: planActivo.titulo,
               nombre: planActivo.nombre,
               imagen: planActivo.imagen,
               descripcion: planActivo.descripcion,
@@ -299,7 +305,8 @@ export class PlanDetallePage implements OnInit {
               diaInicio: planActivo.diaInicio,
               mesInicio: planActivo.mesInicio,                   //this.mm,
               anoInicio: planActivo.anoInicio,
-              progreso: planActivo.progreso});
+              progreso: planActivo.progreso
+            });
 
         }
       }
@@ -311,8 +318,8 @@ export class PlanDetallePage implements OnInit {
       // console.log(this.planArrayTemp);
       // console.log ('ver 2  planesActivos ************');
       // console.log(this.planesActivos);
-      
-      
+
+
     }
   }
 
@@ -320,15 +327,17 @@ export class PlanDetallePage implements OnInit {
     for (let plan of this.planes) {
       if (plan.nombre === this.nombrePlan) {
         this.planesActivos.push(
-          {titulo: plan.titulo,
+          {
+            titulo: plan.titulo,
             nombre: plan.nombre,
             imagen: plan.imagen,
             descripcion: plan.descripcion,
-            URI:plan.URI,
+            URI: plan.URI,
             diaInicio: this.dd,  // 
             mesInicio: this.mm,                   //this.mm
             anoInicio: this.yyyy,
-            progreso: 0});
+            progreso: 0
+          });
         // this.planesActivos.push(plan);
       }
     }
@@ -350,10 +359,10 @@ export class PlanDetallePage implements OnInit {
       return true;
     } else {
       return false;
-    } 
-  
+    }
+
   }
- 
+
 
 
 
@@ -366,9 +375,9 @@ export class PlanDetallePage implements OnInit {
     }
   }
 
-  pushLeerPlan(libro, capitulo, versiculo,versiculoFinal) {
+  pushLeerPlan(libro, capitulo, versiculo, versiculoFinal) {
     //this.navCtrl.navigateForward(`/leer-plan/${libro}/${capitulo}/${versiculo}/${versiculoFinal}`);
-    this.router.navigate([`/leer-plan/${libro}/${capitulo}/${versiculo}/${versiculoFinal}`]);    
+    this.router.navigate([`/leer-plan/${libro}/${capitulo}/${versiculo}/${versiculoFinal}`]);
 
   }
 
@@ -391,7 +400,7 @@ export class PlanDetallePage implements OnInit {
     this.verCapitulos = true;
   }
 
-  obtenerNombreLibro(idLibro){
+  obtenerNombreLibro(idLibro) {
     //return "El principio";
     for (let entry of Libros) {
       if (idLibro === entry.id) {
@@ -402,19 +411,19 @@ export class PlanDetallePage implements OnInit {
   }
   statusCheckbox(dia, libro, capitulo) {                // CONTROLA la marca de capitulos leidos
     console.log("dia " + dia + libro, capitulo);
-    let tempoDia:Array<any> = new Array();
-    let tempoDetalle:Array<any> = new Array();
-    let statusDia:Array<any> = new Array();          // Se creo para identifical algun check desmarcado
+    let tempoDia: Array<any> = new Array();
+    let tempoDetalle: Array<any> = new Array();
+    let statusDia: Array<any> = new Array();          // Se creo para identifical algun check desmarcado
     let statusDiaBoleano = true;
     for (let dias of this.planOfStora) {
       if (dias.dia === dia && dias.libro === libro) {
         for (let detalle of dias.detalles) {
           if (detalle.capitulo === capitulo) {
             if (detalle.status === true) {
-              tempoDetalle.push({libro: detalle.libro, capitulo: detalle.capitulo, status: false, versiculo: detalle.versiculo, versiculoFinal: detalle.versiculoFinal});
+              tempoDetalle.push({ libro: detalle.libro, capitulo: detalle.capitulo, status: false, versiculo: detalle.versiculo, versiculoFinal: detalle.versiculoFinal });
               statusDia.push(false);
             } else {
-              tempoDetalle.push({libro: detalle.libro, capitulo: detalle.capitulo, status: true,versiculo: detalle.versiculo, versiculoFinal: detalle.versiculoFinal});
+              tempoDetalle.push({ libro: detalle.libro, capitulo: detalle.capitulo, status: true, versiculo: detalle.versiculo, versiculoFinal: detalle.versiculoFinal });
               statusDia.push(true);
             }
             // tempoDetalle.push({libro: detalle.libro, capitulo: detalle.capitulo, status: true});
@@ -433,9 +442,9 @@ export class PlanDetallePage implements OnInit {
           }
         }
         if (statusDiaBoleano) {
-          tempoDia.push({ dia: dias.dia, statusDia: true, libro: dias.libro, detalles: tempoDetalle});
+          tempoDia.push({ dia: dias.dia, statusDia: true, libro: dias.libro, detalles: tempoDetalle });
         } else {
-          tempoDia.push({ dia: dias.dia, statusDia: false, libro: dias.libro, detalles: tempoDetalle});
+          tempoDia.push({ dia: dias.dia, statusDia: false, libro: dias.libro, detalles: tempoDetalle });
         }
       } else {
         //  this.primerP.push({ id: entry.id, capitulos: entry.capitulos, libro: this.getCleanedString(entry.libro), estado : 'listo'});
@@ -447,11 +456,11 @@ export class PlanDetallePage implements OnInit {
     this.estadoPlan();
   }
 
-  marcarDiasFaltantes(dia){
+  marcarDiasFaltantes(dia) {
     let diasListos = parseInt(this.diaLecturaV) - parseInt(this.diaAtraso)
-    if(parseInt(dia) >= diasListos && parseInt(dia) < parseInt(this.diaLecturaV)){
+    if (parseInt(dia) >= diasListos && parseInt(dia) < parseInt(this.diaLecturaV)) {
       return true
-    }else{
+    } else {
       return false
     }
   }

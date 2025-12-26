@@ -1,19 +1,20 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
-import {BibliaService} from '../services/biblia.service';
+import { BibliaService } from '../services/biblia.service';
 import Libros from '../../assets/libros.json';
 import LibrosHebreo from '../../assets/librosHebreo.json';
-import { IonContent, AlertController} from '@ionic/angular';
-import { Storage } from '@ionic/storage';
+import { IonContent, AlertController } from '@ionic/angular';
+import { Storage as IonicStorage } from '@ionic/storage-angular';
 import { HttpClient } from '@angular/common/http';
-import { HTTP } from '@ionic-native/http/ngx';
+import { HTTP } from '@awesome-cordova-plugins/http/ngx';
 import { TabsPage } from "../tabs/tabs.page";
-import {DomSanitizer} from '@angular/platform-browser';
+import { DomSanitizer } from '@angular/platform-browser';
 import { ActionSheetController } from '@ionic/angular';
 import { Platform } from '@ionic/angular';
-import { Clipboard } from '@ionic-native/clipboard/ngx';
-import {Zip} from '@ionic-native/zip/ngx';
-import {File} from '@ionic-native/file/ngx';
+import { Clipboard } from '@awesome-cordova-plugins/clipboard/ngx';
+import { Zip } from '@awesome-cordova-plugins/zip/ngx';
+import { File } from '@awesome-cordova-plugins/file/ngx';
 import { NavController } from '@ionic/angular';
 import planesFile from '../../assets/planesLectura.json';
 //import { ConsoleReporter } from 'jasmine';
@@ -48,10 +49,10 @@ export class LeerPlanPage implements OnInit {
   posicion;
 
   citaIcon;
-  prueba ;
+  prueba;
   contadorCitas = 1;
   versiculoCompleto = {
-    'datos':[]
+    'datos': []
   };
   hayCitas = false;
   mapCita = [];
@@ -69,7 +70,7 @@ export class LeerPlanPage implements OnInit {
   marcadorLibro: any[] = new Array;
   marcarV;
   zipPath;
-  progrss: any="";
+  progrss: any = "";
   stadoDir: boolean;
   public update: boolean;
   librosTodos;
@@ -85,13 +86,13 @@ export class LeerPlanPage implements OnInit {
   dia;
   planes = planesFile;
   nombrePlan;
-  planesActivos:Array<any> = new Array();
+  planesActivos: Array<any> = new Array();
   cantDetalleDia;
   contParteDia;
   detalleTemp;
   private fragment: string;
   private sub: Subscription;
-  audioMP3:string;
+  audioMP3: string;
   private win: any = window;
   tiempoAudio;
   colorVar = "blue"
@@ -101,46 +102,46 @@ export class LeerPlanPage implements OnInit {
   idPlay = 0;
   tiempoRecorrido = 0;
   ultimoTiempo = 0;
-  playPausa:string ="play";
-  share:boolean = false;
+  playPausa: string = "play";
+  share: boolean = false;
   copiaCondensado = [];
-  botonPlay:boolean=false;
-  pathDiviceIosAndroid:string;
-  darkMode:boolean= true;
-  estadoDark:string = "moon";
+  botonPlay: boolean = false;
+  pathDiviceIosAndroid: string;
+  darkMode: boolean = true;
+  estadoDark: string = "moon";
 
   @ViewChild(IonContent, { static: true }) ionContent: IonContent;
   constructor(private activatedRoute: ActivatedRoute,
-              private bibliaService: BibliaService,
-              public actionSheetController: ActionSheetController,
-              private http: HTTP,
-              private httpClient: HttpClient,
-              private storage: Storage,
-              private sanitizer: DomSanitizer,
-              public alertController: AlertController,
-              private platform: Platform,
-              private clipboard: Clipboard,
-              private zip:Zip,
-              public file:File,
-              private navCtrl: NavController,
-              public router:Router
-              ) { 
-                this.platform.backButton.observers.pop();
-                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-                this.darkMode = prefersDark.matches;
-                if (this.darkMode){
-                  this.estadoDark = 'sunny';
-                } else {
-                  this.estadoDark = 'moon';
-                }
-              }
+    private bibliaService: BibliaService,
+    public actionSheetController: ActionSheetController,
+    private http: HTTP,
+    private httpClient: HttpClient,
+    private storage: IonicStorage,
+    private sanitizer: DomSanitizer,
+    public alertController: AlertController,
+    private platform: Platform,
+    private clipboard: Clipboard,
+    private zip: Zip,
+    public file: File,
+    private navCtrl: NavController,
+    public router: Router
+  ) {
+    this.platform.backButton.observers.pop();
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+    this.darkMode = prefersDark.matches;
+    if (this.darkMode) {
+      this.estadoDark = 'sunny';
+    } else {
+      this.estadoDark = 'moon';
+    }
+  }
 
   async ngOnInit() {
 
-    if (this.platform.is("android")){
+    if (this.platform.is("android")) {
       this.pathDiviceIosAndroid = "/files/Documents/"
       console.log("***ANDROID***")
-    }else if (this.platform.is("ios")){
+    } else if (this.platform.is("ios")) {
       this.pathDiviceIosAndroid = "/Documents/"
       console.log("***IOS***")
     }
@@ -165,13 +166,13 @@ export class LeerPlanPage implements OnInit {
       if (val !== null) {
         this.nombrePlan = val;
       }
-      if (this.nombrePlan == 'bibleOneYear'){
+      if (this.nombrePlan == 'bibleOneYear') {
         this.botonPlay = true
       }
     });
 
-    
-    
+
+
     this.mostrarTextoMetodo(this.libro, this.capitulo, this.versiculo, this.versiculoFinal);
 
     /*
@@ -203,38 +204,38 @@ export class LeerPlanPage implements OnInit {
           this.capituloMayor = parseInt(entry.capitulo);
         }
         this.detalleDia = val;
-        this.cantDetalleDia = this.detalleDia.length -1; // el -1 es porque el array comienza en 0 y 
+        this.cantDetalleDia = this.detalleDia.length - 1; // el -1 es porque el array comienza en 0 y 
         // this.contParteDia = 0;                           // el .length cuanta a partir de 1
         console.log('capitulo ' + this.capitulo + ' versiculo ' + this.versiculo)
-        if (this.capitulo && isNaN(this.versiculo)){
-          console.log ('dentor de if capitulo')
+        if (this.capitulo && isNaN(this.versiculo)) {
+          console.log('dentor de if capitulo')
           let cont = 0;
-          for (let entry of this.detalleDia){
-            if (entry.libro == this.libro && entry.capitulo == this.capitulo){
-              this.contParteDia = cont; 
-              console.log ('contParteDia '+ this.contParteDia)
+          for (let entry of this.detalleDia) {
+            if (entry.libro == this.libro && entry.capitulo == this.capitulo) {
+              this.contParteDia = cont;
+              console.log('contParteDia ' + this.contParteDia)
             }
             cont++;
           }
-        } else if (this.versiculo && isNaN(this.versiculoFinal)){
-          console.log ('dentor de if versiculo')
+        } else if (this.versiculo && isNaN(this.versiculoFinal)) {
+          console.log('dentor de if versiculo')
           let cont = 0;
-          for (let entry of this.detalleDia){
-            if (entry.libro == this.libro && entry.capitulo == this.capitulo && entry.versiculo == this.versiculo){
-              this.contParteDia = cont; 
+          for (let entry of this.detalleDia) {
+            if (entry.libro == this.libro && entry.capitulo == this.capitulo && entry.versiculo == this.versiculo) {
+              this.contParteDia = cont;
             }
             cont++;
           }
-        } else if (this.versiculoFinal){      // Estos if anidados son para saber cual detalle dia abrio 
-          console.log ('dentor de if versiculo final')
+        } else if (this.versiculoFinal) {      // Estos if anidados son para saber cual detalle dia abrio 
+          console.log('dentor de if versiculo final')
           let cont = 0;
-          for (let entry of this.detalleDia){
-            if (entry.libro == this.libro && entry.capitulo == this.capitulo && entry.versiculo == this.versiculo && entry.versiculoFinal == this. versiculoFinal){
-              this.contParteDia = cont; 
+          for (let entry of this.detalleDia) {
+            if (entry.libro == this.libro && entry.capitulo == this.capitulo && entry.versiculo == this.versiculo && entry.versiculoFinal == this.versiculoFinal) {
+              this.contParteDia = cont;
             }
             cont++;
           }
-        } 
+        }
 
 
       }
@@ -245,13 +246,14 @@ export class LeerPlanPage implements OnInit {
         this.dia = val;
       }
     });
-    
 
-    await this.storage.get(this.nombrePlan).then((val) => {
+
+    await this.storage.get(this.nombrePlan).then(async (val) => {
       if (val !== null) {
         this.planOfStora = val;
       } else {    // Si no existe el plan usa el inportado
-        this.planOfStora = require(`../../assets/planes/${this.nombrePlan}.json`);
+        //this.planOfStora = require(`../../assets/planes/${this.nombrePlan}.json`);
+        this.planOfStora = await firstValueFrom(this.httpClient.get(`/assets/planes/${this.nombrePlan}.json`));
       }
       console.log('Desde el storage');
       console.log(this.planOfStora);
@@ -261,23 +263,23 @@ export class LeerPlanPage implements OnInit {
     //this.dataTemp = await this.textoJsonFinal 
     //console.log("***dataTemp");
     //console.log(this.dataTemp);
-    
+
   } // fin ngOnInit
 
-  async playAudio(){
+  async playAudio() {
     //this.ionContent.scrollToTop(300); //subir scroll al inicio
-    
+
     let tiempo
-  
+
     console.log("this.isPlaying playAudio " + this.isPlaying)
-    if (this.isPlaying){
+    if (this.isPlaying) {
       //this.isPlaying = false;
       this.audio.pause();
       //await this.storage.set('playAuto', false);
       this.playPausa = "play"
       console.log("pause")
       this.marcarVersiculoAudioRemove("all")
-    }else {
+    } else {
       //this.isPlaying = true;
       this.audio.src = this.audioMP3;
       this.audio.load();
@@ -286,16 +288,16 @@ export class LeerPlanPage implements OnInit {
       this.audio.play();
       //await this.storage.set('playAuto', false);
       this.playPausa = "pause"
-        console.log("play")
-    
+      console.log("play")
+
       //this.audio.onplaying  =  async function() {
-        //console.log("Event onplaying **")
-     
-        
+      //console.log("Event onplaying **")
+
+
       //};
-      
+
     }
-    
+
   }
 
   marcarVersiculoAudioAdd(clase) {
@@ -307,10 +309,10 @@ export class LeerPlanPage implements OnInit {
     //console.log(clase)
     //this.readVersiculo = !this.readVersiculo;
     document.body.classList.remove(clase);
-    if (clase == "all"){
+    if (clase == "all") {
       this.share = false          //Ocultar boton de copia o marcado
       this.copiaCondensado = []   //baciar versiculos seleccionados
-      for (let i = 1; i < 177; i ++){
+      for (let i = 1; i < 177; i++) {
         document.body.classList.remove("readVersiculol" + i);
       }
     }
@@ -324,20 +326,20 @@ export class LeerPlanPage implements OnInit {
 
   }
 
-  async botonAtras(){
-    if (this.isPlaying){
+  async botonAtras() {
+    if (this.isPlaying) {
       this.audio.pause();//Stop
       this.audio.currentTime = 0;
       await this.delay2(900);
       this.idPlay = 0
-      this.tiempoRecorrido = 0  
+      this.tiempoRecorrido = 0
     }
   }
 
   changeDark() {
     this.darkMode = !this.darkMode;
     document.body.classList.toggle('dark');
-    if (this.darkMode){
+    if (this.darkMode) {
       this.estadoDark = 'sunny';
     } else {
       this.estadoDark = 'moon';
@@ -345,13 +347,13 @@ export class LeerPlanPage implements OnInit {
   }
 
   getCleanedString(cadena) {
-    cadena = cadena.replace(/á/gi,"a");
-    cadena = cadena.replace(/Éxodo/gi,"Exodo");
-    cadena = cadena.replace(/é/gi,"e");
-    cadena = cadena.replace(/í/gi,"i");
-    cadena = cadena.replace(/ó/gi,"o");
-    cadena = cadena.replace(/ú/gi,"u");
-    cadena = cadena.replace(/ñ/gi,"n");
+    cadena = cadena.replace(/á/gi, "a");
+    cadena = cadena.replace(/Éxodo/gi, "Exodo");
+    cadena = cadena.replace(/é/gi, "e");
+    cadena = cadena.replace(/í/gi, "i");
+    cadena = cadena.replace(/ó/gi, "o");
+    cadena = cadena.replace(/ú/gi, "u");
+    cadena = cadena.replace(/ñ/gi, "n");
     return cadena;
   }
 
@@ -370,9 +372,9 @@ export class LeerPlanPage implements OnInit {
     // this.storage.set('libro', libro);
     // this.storage.set('capitulo', capitulo);
     this.storage.get(libro.toString()).then((val) => {
-      if (val == null){
+      if (val == null) {
         this.marcador = [];
-      }else {
+      } else {
         // console.log("marcador "+val);
         this.marcador = val;
       }
@@ -382,13 +384,13 @@ export class LeerPlanPage implements OnInit {
     this.capitulo = capitulo;
     this.actualizarLibroTitulo(this.libro);
     // update es referente a si se actualizo los arquivos JSON que tienen el texto.
-    if (this.isPlaying){
+    if (this.isPlaying) {
       await this.delay2(900);
       this.idPlay = 0
       this.tiempoRecorrido = 0
       console.log("desde si *** audioReproductor")
       await this.audioReproductor()
-    }else{
+    } else {
       this.idPlay = 0
       this.tiempoRecorrido = 0
       console.log("desde no *** audioReproductor")
@@ -399,43 +401,45 @@ export class LeerPlanPage implements OnInit {
       await this.bibliaService.getTextoFile(this.libro, this.capitulo).then((data) => {
         // console.log(data);
         this.textoJsonFinal = JSON.parse(data);
-      }).catch(err => {
+      }).catch(async err => {
         this.storage.remove('update');
-        this.textoJsonFinal = this.bibliaService.getTextoImport(this.libro, this.capitulo);
+        this.textoJsonFinal = await this.bibliaService.getTextoImport(this.libro, this.capitulo);
       });
     } else {
       this.textoJsonFinal = await this.bibliaService.getTextoImport(this.libro, this.capitulo);
     }
 
-    if (!isNaN(versiculoFinal)){  //recopilar el rango de los versiclos 
+    if (!isNaN(versiculoFinal)) {  //recopilar el rango de los versiclos 
       console.log('dentrodel NAN')
       this.textoJsonFinal = [];
-      for (let cont = versiculo; cont <= parseInt(versiculoFinal); cont ++){
-        console.log('cont '+ cont + ' versiculoFinal' + versiculoFinal);
+      for (let cont = versiculo; cont <= parseInt(versiculoFinal); cont++) {
+        console.log('cont ' + cont + ' versiculoFinal' + versiculoFinal);
         console.log(typeof cont + '   ' + typeof versiculoFinal);
         await this.buscarVersiculo(libro.toString(), capitulo.toString(), cont.toString());
         this.textoJsonFinal.push(
-          { id_libro: libro, 
-            capitulo: capitulo, 
-            versiculo: cont, 
-            texto: this.textTemp});
+          {
+            id_libro: libro,
+            capitulo: capitulo,
+            versiculo: cont,
+            texto: this.textTemp
+          });
       }
-    }else if (!isNaN(versiculo)) {  //recopilar libro capitulo y versiculo
+    } else if (!isNaN(versiculo)) {  //recopilar libro capitulo y versiculo
       await this.buscarVersiculo(libro.toString(), capitulo.toString(), versiculo.toString());
       //{id_libro: "5", capitulo: "9", versiculo: "1", texto: "Oye,  Israel: Ha llegado el momento d, versiculo: "27"}
-      this.textoJsonFinal = [{id_libro: libro, capitulo: capitulo, versiculo: versiculo, texto: this.textTemp}];
+      this.textoJsonFinal = [{ id_libro: libro, capitulo: capitulo, versiculo: versiculo, texto: this.textTemp }];
       console.log("***********************");
       console.log(this.textoJsonFinal);
     }
     this.mostrarTexto = true;
   }
 
-  async audioReproductor(){
-    if(this.nombrePlan =='bibleOneYear'){
+  async audioReproductor() {
+    if (this.nombrePlan == 'bibleOneYear') {
       //Validar si el audio existe con readAsText
-      
+
       let promiseAudio = this.file.readAsText(this.file.applicationStorageDirectory + this.pathDiviceIosAndroid, "por-Capitulos/" + this.libro + "/" + this.capitulo + ".mp3");
-      if(promiseAudio != undefined){
+      if (promiseAudio != undefined) {
         await promiseAudio.then((value) => {
           console.log("ARCHIVO  existente ");
           let localAudioURL = this.file.applicationStorageDirectory + this.pathDiviceIosAndroid + "por-Capitulos/" + this.libro + "/" + this.capitulo + ".mp3";
@@ -445,16 +449,16 @@ export class LeerPlanPage implements OnInit {
           console.log("ARCHIVO AUDIO no  existente ir a internet ");
           this.audioMP3 = "https://sionlecheymiel.com/file/audios/" + this.libro + "/" + this.capitulo + ".mp3";
         });
-      }else{
+      } else {
         this.audioMP3 = "https://sionlecheymiel.com/file/audios/" + this.libro + "/" + this.capitulo + ".mp3";
       }
       //this.audioMP3 = "assets/audios/" + this.libro + "-" + libro + "/" + this.capitulo +".mp3"
-      this.tiempoAudio = this.bibliaService.getTextoAudio(this.libro, this.capitulo);
+      this.tiempoAudio = await this.bibliaService.getTextoAudio(this.libro, this.capitulo);
       console.log(this.tiempoAudio)
       console.log("***** " + this.audioMP3)
       this.audio = new Audio();
-      
-      
+
+
       await this.storage.get('playAuto').then((val) => {
         if (val != null && val == true) {
           this.playAudio()
@@ -462,7 +466,7 @@ export class LeerPlanPage implements OnInit {
         console.log("playAuto " + val);
       });
 
- 
+
       this.audio.addEventListener("playing", async () => {
         await this.storage.set('playAuto', false);
         console.log("Event playing");
@@ -470,51 +474,51 @@ export class LeerPlanPage implements OnInit {
         let tiempo
         //console.log("Event onplaying");
         //console.log(this.tiempoAudio)
-        if (this.tiempoAudio != null){
-          this.tiempoRecorrido = 0; 
-          for (const entry  of this.tiempoAudio){
+        if (this.tiempoAudio != null) {
+          this.tiempoRecorrido = 0;
+          for (const entry of this.tiempoAudio) {
             //console.log(entry)
             let versiculoAnterior = entry.versiculo - 1
-            if (!this.isPlaying){
-              this.idPlay = parseInt(entry.id) - 1 ;
+            if (!this.isPlaying) {
+              this.idPlay = parseInt(entry.id) - 1;
               //console.log("idPlay")
               //console.log(this.idPlay)            
               break;
             }
-            if (parseInt(entry.id) >= this.idPlay){
-              if (parseInt(entry.versiculo) > 1){
+            if (parseInt(entry.id) >= this.idPlay) {
+              if (parseInt(entry.versiculo) > 1) {
                 this.marcarVersiculoAudioRemove("readVersiculol" + versiculoAnterior)
                 this.marcarVersiculoAudioAdd("readVersiculol" + entry.versiculo)
-              }else {
+              } else {
                 this.marcarVersiculoAudioAdd("readVersiculol" + entry.versiculo)
               }
               ///tiempo = entry.seg*1000
               tiempo = parseInt(entry.seg)
-              let tiempoRestante = (entry.seg - tiempo)*1000
-              if (entry.versiculo != ""){
+              let tiempoRestante = (entry.seg - tiempo) * 1000
+              if (entry.versiculo != "") {
                 //this.router.navigate( ["/leer-plan/" + this.libro + "/" + this.capitulo + "/undefined/undefined"], {fragment: "l"+entry.versiculo});
                 //this.navCtrl.navigateForward([`/leer-plan/${this.libro}/${this.capitulo}/undefined/undefined`],{fragment: "l"+entry.versiculo});
               }
               //Siguiente linea es para hacer efecto el route frament [recordar debe existir el id en el html]
               this.sub = this.activatedRoute.fragment.pipe(filter(f => !!f)).subscribe(f => document.getElementById(f).scrollIntoView());
 
-              if (tiempo > 1){
-                for (let _i = 0; _i < tiempo*2; _i++) { //ms*2  y time 500 es para solucionar pause play rapido
-                  if (!this.isPlaying){
+              if (tiempo > 1) {
+                for (let _i = 0; _i < tiempo * 2; _i++) { //ms*2  y time 500 es para solucionar pause play rapido
+                  if (!this.isPlaying) {
                     break
                   }
-                  await new Promise( resolve => setTimeout(resolve, 500) );
+                  await new Promise(resolve => setTimeout(resolve, 500));
                 }
-                await new Promise( resolve => setTimeout(resolve, tiempoRestante) );
-              }else {
-                await new Promise( resolve => setTimeout(resolve, entry.seg*1000) );
+                await new Promise(resolve => setTimeout(resolve, tiempoRestante));
+              } else {
+                await new Promise(resolve => setTimeout(resolve, entry.seg * 1000));
               }
             }
             this.tiempoRecorrido = this.tiempoRecorrido + entry.seg;
-            this.ultimoTiempo = entry.seg; 
+            this.ultimoTiempo = entry.seg;
           }
         }
-        
+
       });
 
       this.audio.addEventListener("pause", async () => {
@@ -530,7 +534,7 @@ export class LeerPlanPage implements OnInit {
         this.marcarVersiculoAudioRemove("all")
         */
       });
-      
+
       this.audio.addEventListener("ended", async () => {
         await this.storage.set('playAuto', true);
         console.log("Event finalizo el audio reproducción");
@@ -572,10 +576,10 @@ export class LeerPlanPage implements OnInit {
        */
     }
   }
-  
+
   delay2(ms: number) {
     console.log("delay")
-    return new Promise( resolve => setTimeout(resolve, ms) );
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
   previousboton2() {
     if (this.capitulo > this.capituloMenor) {
@@ -589,25 +593,25 @@ export class LeerPlanPage implements OnInit {
     let detalleMarcar = this.detalleDia[this.contParteDia];
     let detalleMostrar = this.detalleDia[this.contParteDia - 1];  // Para plan q año this.detalleDia
     console.log(detalleMostrar);
-    if (this.contParteDia >= 1 && this.contParteDia <= this.cantDetalleDia) {  
+    if (this.contParteDia >= 1 && this.contParteDia <= this.cantDetalleDia) {
       this.contParteDia--;
       this.mostrarTextoMetodo(detalleMostrar.libro, detalleMostrar.capitulo, detalleMostrar.versiculo, detalleMostrar.versiculoFinal);
       this.detalleTemp = detalleMarcar;
     }
-      //this.navCtrl.navigateForward(`/plan-detalle/${this.nombrePlan}`);
-    
+    //this.navCtrl.navigateForward(`/plan-detalle/${this.nombrePlan}`);
+
     //this.router.navigate( ["/leer-plan" + this.libro + "/" + this.capitulo + "/undefined/undefined"], {fragment: ""});
     //this.navCtrl.navigateForward([`/leer-plan/${this.libro}/${this.capitulo}/undefined/undefined`],{fragment: ""});
     this.marcarVersiculoAudioRemove("all")
-    
-    if (this.isPlaying){
+
+    if (this.isPlaying) {
       this.audio.pause();//Stop
       this.audio.currentTime = 0;
       await this.delay2(900);
       this.idPlay = 0
       this.tiempoRecorrido = 0
-      
-    }else{
+
+    } else {
       this.idPlay = 0
       this.tiempoRecorrido = 0
     }
@@ -616,14 +620,14 @@ export class LeerPlanPage implements OnInit {
 
   async nextboton() {
     this.marcarVersiculoAudioRemove("all")
-    console.log("Desde Next this.isPlaying " + this.isPlaying )
-    if (this.isPlaying ){
+    console.log("Desde Next this.isPlaying " + this.isPlaying)
+    if (this.isPlaying) {
       console.log("Desde if next ")
       this.audio.pause() //Stop
       this.audio.currentTime = 0
       this.idPlay = 0
       await this.delay2(1500);
-    }else{
+    } else {
       console.log("Desde else next ")
       await this.delay2(1500);
       this.audio.currentTime = 0
@@ -631,11 +635,11 @@ export class LeerPlanPage implements OnInit {
     }
     let detalleMarcar = this.detalleDia[this.contParteDia];
     let detalleMostrar = this.detalleDia[this.contParteDia + 1];  // Para plan q año this.detalleDia[this.contParteDia]; 
-    console.log ("contadorParteDia " + this.contParteDia + " cantDetalleDia "+ this.cantDetalleDia);
+    console.log("contadorParteDia " + this.contParteDia + " cantDetalleDia " + this.cantDetalleDia);
     console.log('Detalle mostrar');
     console.log(detalleMostrar);
     this.detalleTemp = detalleMarcar;
-    if (this.contParteDia < this.cantDetalleDia) {  
+    if (this.contParteDia < this.cantDetalleDia) {
       console.log(this.contParteDia);
       console.log(this.cantDetalleDia);
       this.statusCheckbox(this.dia, this.libro.toString(), this.capitulo.toString(), detalleMarcar.versiculo, detalleMarcar.versiculoFinal);
@@ -644,39 +648,39 @@ export class LeerPlanPage implements OnInit {
       this.mostrarTextoMetodo(detalleMostrar.libro, detalleMostrar.capitulo, detalleMostrar.versiculo, detalleMostrar.versiculoFinal);
 
     } else {
-      if (this.detalleTemp.hasOwnProperty('versiculoFinal') ){
-        this.statusCheckbox(this.dia, this.libro.toString(), this.capitulo.toString(),this.detalleTemp.versiculo, this.detalleTemp.versiculoFinal);
-      }else if (this.detalleTemp.hasOwnProperty('versiculo')){
-        this.statusCheckbox(this.dia, this.libro.toString(), this.capitulo.toString(),this.detalleTemp.versiculo, null);
-      }else {
-        this.statusCheckbox(this.dia, this.libro.toString(), this.capitulo.toString(),null, null);
+      if (this.detalleTemp.hasOwnProperty('versiculoFinal')) {
+        this.statusCheckbox(this.dia, this.libro.toString(), this.capitulo.toString(), this.detalleTemp.versiculo, this.detalleTemp.versiculoFinal);
+      } else if (this.detalleTemp.hasOwnProperty('versiculo')) {
+        this.statusCheckbox(this.dia, this.libro.toString(), this.capitulo.toString(), this.detalleTemp.versiculo, null);
+      } else {
+        this.statusCheckbox(this.dia, this.libro.toString(), this.capitulo.toString(), null, null);
       }
       this.navCtrl.navigateForward(`/plan-detalle/${this.nombrePlan}`);
     }
-    
+
     //this.router.navigate( ["/leer-plan/" + this.libro + "/" + this.capitulo + "/undefined/undefined"], {fragment: ""});
     //this.navCtrl.navigateForward([`/leer-plan/${this.libro}/${this.capitulo}/undefined/undefined`],{fragment: ""});
-    
+
     this.ionContent.scrollToTop(300);
   }
 
   statusCheckbox(dia, libro, capitulo, versiculo, versiculoFinal) {                 // CONTROLA la marca de capitulos leidos
-    console.log("dia " + dia + "libro "+libro +" capitulo "+ capitulo + " Versiculo " + versiculo + "Versiculo final "+ versiculoFinal);
-    let tempoDia:Array<any> = new Array();
-    let tempoDetalle:Array<any> = new Array();
-    let statusDia:Array<any> = new Array();             // Se creo para identifical algun check desmarcado
+    console.log("dia " + dia + "libro " + libro + " capitulo " + capitulo + " Versiculo " + versiculo + "Versiculo final " + versiculoFinal);
+    let tempoDia: Array<any> = new Array();
+    let tempoDetalle: Array<any> = new Array();
+    let statusDia: Array<any> = new Array();             // Se creo para identifical algun check desmarcado
     let statusDiaBoleano = true;
     for (let dias of this.planOfStora) {
       if (dias.dia === dia) {
         for (let detalle of dias.detalles) {
           if (detalle.versiculoFinal === versiculoFinal && detalle.versiculo === versiculo && detalle.libro === libro && detalle.capitulo === capitulo) {
-            tempoDetalle.push({libro: detalle.libro, capitulo: detalle.capitulo, status: true,versiculo: detalle.versiculo, versiculoFinal: detalle.versiculoFinal});
+            tempoDetalle.push({ libro: detalle.libro, capitulo: detalle.capitulo, status: true, versiculo: detalle.versiculo, versiculoFinal: detalle.versiculoFinal });
             statusDia.push(true);
           } else if (detalle.versiculo === versiculo && detalle.libro === libro && detalle.capitulo === capitulo) {
-            tempoDetalle.push({libro: detalle.libro, capitulo: detalle.capitulo, status: true,versiculo: detalle.versiculo});
+            tempoDetalle.push({ libro: detalle.libro, capitulo: detalle.capitulo, status: true, versiculo: detalle.versiculo });
             statusDia.push(true);
           } else if (detalle.libro === libro && detalle.capitulo === capitulo) {
-            tempoDetalle.push({libro: detalle.libro, capitulo: detalle.capitulo, status: true});
+            tempoDetalle.push({ libro: detalle.libro, capitulo: detalle.capitulo, status: true });
             statusDia.push(true);
             // tempoDetalle.push({libro: detalle.libro, capitulo: detalle.capitulo, status: true});
           } else {
@@ -694,9 +698,9 @@ export class LeerPlanPage implements OnInit {
           }
         }
         if (statusDiaBoleano) {
-          tempoDia.push({ dia: dias.dia, statusDia: true, libro: dias.libro, detalles: tempoDetalle});
+          tempoDia.push({ dia: dias.dia, statusDia: true, libro: dias.libro, detalles: tempoDetalle });
         } else {
-          tempoDia.push({ dia: dias.dia, statusDia: false, libro: dias.libro, detalles: tempoDetalle});
+          tempoDia.push({ dia: dias.dia, statusDia: false, libro: dias.libro, detalles: tempoDetalle });
         }
       } else {
         //  this.primerP.push({ id: entry.id, capitulos: entry.capitulos, libro: this.getCleanedString(entry.libro), estado : 'listo'});
@@ -704,103 +708,126 @@ export class LeerPlanPage implements OnInit {
       }
     }
     this.planOfStora = tempoDia;
-    console.log (this.planOfStora);
+    console.log(this.planOfStora);
     this.storage.set(this.nombrePlan, this.planOfStora);
 
   }
   // ______________________________________________________________________________________________
-organizarCitas(textoJson){
-  this.textoJsonFinal = [];
-  for (let text of textoJson) {
-    this.mapText = [];
-    this.mapCita = [];
-    if (this.citas != null) {
-      for (let cita of this.citas) {
-        
-        if (cita.versiculo === text.versiculo) {
-          if (text.texto.toLowerCase().indexOf(cita.palabraAntes.toLowerCase(),0)=="-1") {
-            this.posicion = text.texto.length;
-          }else {
-            this.posicion = text.texto.toLowerCase().indexOf(cita.palabraAntes.toLowerCase(),0)+ cita.palabraAntes.length;
-          }
-          
-          this.mapCita.push({
-                            palabraAntes: cita.palabraAntes,
-                            versiculo: cita.versiculo,
-                            cita: cita.cita,
-                            libroCita: cita.libroCita,
-                            capituloCita : cita.capituloCita,
-                            versiculoCitaInicial : cita.versiculoCitaInicial,
-                            versiculoCitaFinal : cita.versiculoCitaFinal,
-                            posicion: this.posicion
-                          });
+  organizarCitas(textoJson) {
+    this.textoJsonFinal = [];
+    for (let text of textoJson) {
+      this.mapText = [];
+      this.mapCita = [];
+      if (this.citas != null) {
+        for (let cita of this.citas) {
 
-        }
-      }
-    } 
-    if (this.mapCita.length > 0) {
-      this.mapCita.sort((a,b) => a.posicion - b.posicion);
-      // console.log("mapCita");
-      console.log(this.mapCita);
+          if (cita.versiculo === text.versiculo) {
+            if (text.texto.toLowerCase().indexOf(cita.palabraAntes.toLowerCase(), 0) == "-1") {
+              this.posicion = text.texto.length;
+            } else {
+              this.posicion = text.texto.toLowerCase().indexOf(cita.palabraAntes.toLowerCase(), 0) + cita.palabraAntes.length;
+            }
 
-      var posicionInicial = 0;
-
-      let cont = 0;
-      for (let citaVersiculo of this.mapCita) {
-        this.versiculoTEMP = citaVersiculo.versiculo;
-        // este if es porque hay casos donde hay dos citas en el medio del versiculo y no se colocaba el resto del versiculo, 
-        // por esto se crea este if para ver si es el ultimo registro. relacionado al parteText
-        if (cont === (this.mapCita.length - 1)) {
-          // console.log(this.mapCita.length);
-          // console.log("ultimo");
-          this.mapText.push({
-            id_libro: text.id_libro,
-            capitulo: text.capitulo,
-            versiculo: citaVersiculo.versiculo,
-            cita: citaVersiculo.cita,
-            parteText: text.texto.substring(posicionInicial, citaVersiculo.posicion),
-            ibroCita: citaVersiculo.libroCita,
-            capituloCita : citaVersiculo.capituloCita,
-            versiculoCitaInicial : citaVersiculo.versiculoCitaInicial,
-            versiculoCitaFinal : citaVersiculo.versiculoCitaFinal,
-            posicion: citaVersiculo.posicion,
-            parteFinal: text.texto.substring(citaVersiculo.posicion, text.texto.length)
-          });
-        } else {
-          this.mapText.push({
-            id_libro: text.id_libro,
-            capitulo: text.capitulo,
-            versiculo: citaVersiculo.versiculo,
-            cita: citaVersiculo.cita,
-            parteText: text.texto.substring(posicionInicial,citaVersiculo.posicion),
-            ibroCita: citaVersiculo.libroCita,
-            capituloCita : citaVersiculo.capituloCita,
-            versiculoCitaInicial : citaVersiculo.versiculoCitaInicial,
-            versiculoCitaFinal : citaVersiculo.versiculoCitaFinal,
-            posicion: citaVersiculo.posicion
+            this.mapCita.push({
+              palabraAntes: cita.palabraAntes,
+              versiculo: cita.versiculo,
+              cita: cita.cita,
+              libroCita: cita.libroCita,
+              capituloCita: cita.capituloCita,
+              versiculoCitaInicial: cita.versiculoCitaInicial,
+              versiculoCitaFinal: cita.versiculoCitaFinal,
+              posicion: this.posicion
             });
+
+          }
         }
-        posicionInicial = citaVersiculo.posicion;
-        cont++;
       }
-      this.textoJsonFinal.push({versiculo: this.versiculoTEMP, comprimido: this.mapText});
-      // console.log("mapText");
-      // console.log(this.mapText);
-      // this.sanitizer.bypassSecurityTrustHtml(this.versiculoFinal);
-    } else { 
-      this.textoJsonFinal.push(text);
+      if (this.mapCita.length > 0) {
+        this.mapCita.sort((a, b) => a.posicion - b.posicion);
+        // console.log("mapCita");
+        console.log(this.mapCita);
+
+        var posicionInicial = 0;
+
+        let cont = 0;
+        for (let citaVersiculo of this.mapCita) {
+          this.versiculoTEMP = citaVersiculo.versiculo;
+          // este if es porque hay casos donde hay dos citas en el medio del versiculo y no se colocaba el resto del versiculo, 
+          // por esto se crea este if para ver si es el ultimo registro. relacionado al parteText
+          if (cont === (this.mapCita.length - 1)) {
+            // console.log(this.mapCita.length);
+            // console.log("ultimo");
+            this.mapText.push({
+              id_libro: text.id_libro,
+              capitulo: text.capitulo,
+              versiculo: citaVersiculo.versiculo,
+              cita: citaVersiculo.cita,
+              parteText: text.texto.substring(posicionInicial, citaVersiculo.posicion),
+              ibroCita: citaVersiculo.libroCita,
+              capituloCita: citaVersiculo.capituloCita,
+              versiculoCitaInicial: citaVersiculo.versiculoCitaInicial,
+              versiculoCitaFinal: citaVersiculo.versiculoCitaFinal,
+              posicion: citaVersiculo.posicion,
+              parteFinal: text.texto.substring(citaVersiculo.posicion, text.texto.length)
+            });
+          } else {
+            this.mapText.push({
+              id_libro: text.id_libro,
+              capitulo: text.capitulo,
+              versiculo: citaVersiculo.versiculo,
+              cita: citaVersiculo.cita,
+              parteText: text.texto.substring(posicionInicial, citaVersiculo.posicion),
+              ibroCita: citaVersiculo.libroCita,
+              capituloCita: citaVersiculo.capituloCita,
+              versiculoCitaInicial: citaVersiculo.versiculoCitaInicial,
+              versiculoCitaFinal: citaVersiculo.versiculoCitaFinal,
+              posicion: citaVersiculo.posicion
+            });
+          }
+          posicionInicial = citaVersiculo.posicion;
+          cont++;
+        }
+        this.textoJsonFinal.push({ versiculo: this.versiculoTEMP, comprimido: this.mapText });
+        // console.log("mapText");
+        // console.log(this.mapText);
+        // this.sanitizer.bypassSecurityTrustHtml(this.versiculoFinal);
+      } else {
+        this.textoJsonFinal.push(text);
+      }
     }
+    // console.log(this.textoJsonFinal);
   }
-  // console.log(this.textoJsonFinal);
-}
 
-// ________________________________________________________________________________________________
+  // ________________________________________________________________________________________________
 
-async citaAlert(cita, idLibroCita, capituloC, verInicial) {
-  if (this.update) {
-    await this.bibliaService.getTextoFile(idLibroCita, capituloC).then((data) => {
-      // console.log(data);
-      this.arregloTextoCita = JSON.parse(data);
+  async citaAlert(cita, idLibroCita, capituloC, verInicial) {
+    if (this.update) {
+      await this.bibliaService.getTextoFile(idLibroCita, capituloC).then((data) => {
+        // console.log(data);
+        this.arregloTextoCita = JSON.parse(data);
+        // console.log ("Texto cita" + this.arregloTextoCita);
+        // console.log(this.textoCita);
+        for (let citaText of this.arregloTextoCita) {
+          if (verInicial === citaText.versiculo) {
+            if (citaText.hasOwnProperty('comprimido')) {
+              this.textoCita = '';
+              for (let texto of citaText.comprimido) {
+                this.textoCita = this.textoCita + ' ' + texto.parteText;
+                if (texto.hasOwnProperty('parteFinal')) {
+                  this.textoCita = this.textoCita + ' ' + texto.parteFinal;
+                }
+              }
+            } else {
+              this.textoCita = citaText.texto;
+            }
+          }
+        }
+        this.mostrarCitaAlert(cita, this.textoCita, idLibroCita, capituloC);
+        // console.log(this.textoCita);
+        this.textoCita = '';
+      });
+    } else {
+      this.arregloTextoCita = await this.bibliaService.getTextoImport(idLibroCita, capituloC);
       // console.log ("Texto cita" + this.arregloTextoCita);
       // console.log(this.textoCita);
       for (let citaText of this.arregloTextoCita) {
@@ -821,61 +848,58 @@ async citaAlert(cita, idLibroCita, capituloC, verInicial) {
       this.mostrarCitaAlert(cita, this.textoCita, idLibroCita, capituloC);
       // console.log(this.textoCita);
       this.textoCita = '';
-    });
-  } else {
-    this.arregloTextoCita = await this.bibliaService.getTextoImport(idLibroCita, capituloC);
-    // console.log ("Texto cita" + this.arregloTextoCita);
-    // console.log(this.textoCita);
-    for (let citaText of this.arregloTextoCita) {
-      if (verInicial === citaText.versiculo) {
-        if (citaText.hasOwnProperty('comprimido')) {
-          this.textoCita = '';
-          for (let texto of citaText.comprimido) {
-            this.textoCita = this.textoCita + ' ' + texto.parteText;
-            if (texto.hasOwnProperty('parteFinal')) {
-              this.textoCita = this.textoCita + ' ' + texto.parteFinal;
-            }
-          }
-        } else {
-          this.textoCita = citaText.texto;
-        }
-      }
     }
-    this.mostrarCitaAlert(cita, this.textoCita, idLibroCita, capituloC);
-    // console.log(this.textoCita);
-    this.textoCita = '';
+
+  }
+  async mostrarCitaAlert(cita, textoVersiculo, idLibro, capituloC) {
+    const alert = await this.alertController.create({
+      header: cita,
+      message: "<h6 align=\"center\">" + textoVersiculo + "</h6>",
+      buttons: [
+        { text: 'OK' },
+        {
+          text: 'Ir al Capitulo',
+          handler: () => {
+            this.mostrarTextoMetodo(idLibro, capituloC, null, null);
+            this.ionContent.scrollToTop(300);
+          }
+        }
+      ],
+      mode: 'ios'
+    });
+    await alert.present();
   }
 
-}
-async mostrarCitaAlert(cita, textoVersiculo,idLibro, capituloC) {
-  const alert = await this.alertController.create({
-    header: cita,
-    message: "<h6 align=\"center\">" + textoVersiculo + "</h6>",
-    buttons: [
-              {text:'OK'},
-              {
-                text: 'Ir al Capitulo',
-                handler: () => {
-                  this.mostrarTextoMetodo(idLibro, capituloC,null,null);
-                  this.ionContent.scrollToTop(300);
+  async buscarVersiculo(idLibro, capitulo, versiculo) {
+    if (this.update) {
+      await this.bibliaService.getTextoFile(idLibro, capitulo).then((data) => {
+        this.dataTemp = JSON.parse(data);
+        // console.log ("Texto cita" + this.arregloTextoCita);
+        for (let text of this.dataTemp) {
+          if (versiculo === text.versiculo) {
+            if (text.hasOwnProperty('comprimido')) {
+              this.textTemp = '';
+              for (let texto of text.comprimido) {
+                this.textTemp = this.textTemp + ' ' + texto.parteText;
+                if (texto.hasOwnProperty('parteFinal')) {
+                  this.textTemp = this.textTemp + ' ' + texto.parteFinal;
                 }
               }
-            ],
-    mode: 'ios'
-  });
-  await alert.present();
-}
-
-async buscarVersiculo(idLibro, capitulo, versiculo) {
-  if (this.update) {
-    await this.bibliaService.getTextoFile(idLibro, capitulo).then((data) => {
-      this.dataTemp = JSON.parse(data);
+            } else {
+              this.textTemp = text.texto;
+            }
+          }
+        }
+      });
+    } else {
+      //Siguiente linea la movi para ngOnInit, aqui daba peo.
+      this.dataTemp = await this.bibliaService.getTextoImport(idLibro, capitulo);
       // console.log ("Texto cita" + this.arregloTextoCita);
       for (let text of this.dataTemp) {
         if (versiculo === text.versiculo) {
           if (text.hasOwnProperty('comprimido')) {
             this.textTemp = '';
-            for (let texto of text.comprimido){
+            for (let texto of text.comprimido) {
               this.textTemp = this.textTemp + ' ' + texto.parteText;
               if (texto.hasOwnProperty('parteFinal')) {
                 this.textTemp = this.textTemp + ' ' + texto.parteFinal;
@@ -886,91 +910,71 @@ async buscarVersiculo(idLibro, capitulo, versiculo) {
           }
         }
       }
-    });
-  } else {
-    //Siguiente linea la movi para ngOnInit, aqui daba peo.
-    this.dataTemp = await this.bibliaService.getTextoImport(idLibro, capitulo);
-    // console.log ("Texto cita" + this.arregloTextoCita);
-    for (let text of this.dataTemp) {
-      if (versiculo === text.versiculo) {
-        if (text.hasOwnProperty('comprimido')) {
-          this.textTemp = '';
-          for (let texto of text.comprimido){
-            this.textTemp = this.textTemp + ' ' + texto.parteText;
-            if (texto.hasOwnProperty('parteFinal')) {
-              this.textTemp = this.textTemp + ' ' + texto.parteFinal;
-            }
-          }
-        } else {
-          this.textTemp = text.texto;
-        }
-      }
+
+
     }
-          
-    
-  }
-}
-
-seleccionarVersiculo(texto, idLibro, capitulo, versiculo) {
-  document.body.classList.toggle("readVersiculol" + versiculo); 
-  this.buscarVersiculo(idLibro, capitulo, versiculo);
-  let arreglo = [idLibro, capitulo, versiculo, this.textTemp]
-  if (this.copiaCondensado[versiculo] == null){
-    this.copiaCondensado[versiculo] = arreglo
-    console.log(this.copiaCondensado.length)
-  }else{
-    this.copiaCondensado.splice(versiculo,1);
-    //delete this.copiaCondensado[versiculo]
-  }
-  let contador = 0 
-  for (let clave in this.copiaCondensado){
-    contador ++
-  }
-  //console.log("contador "+ contador);
-  if (contador > 0 ){
-    this.share = true
-  }else{
-    this.share = false
-  }
-  //this.marcarVersiculoAudioRemove("readVersiculol" + versiculoAnterior)
-  //this.marcarVersiculoAudioAdd("readVersiculol" + versiculo)
-  /* 
-  const actionSheet = await this.actionSheetController.create({
-    mode: 'ios',
-    buttons: [{
-        text: 'Copiar',
-        role: 'destructive',
-        icon: 'copy',
-        handler: () => {
-          this.clipboard.copy("\"" + this.textTemp + "\" " + this.librot + " " + capitulo + ":" + versiculo + ' Biblia SLM http://sionlecheymiel.org.ve/index.php?libro='+idLibro+'&capitulo='+capitulo);
-        }
-      },
-      {
-        text: "Marcar versículo o Eliminar Marca",
-        icon: 'heart',
-        handler: () => {
-          // llamar funcion 
-          this.guardarMarcador(idLibro, capitulo, versiculo);
-        }
-      }
-    ]
-    });
-    await actionSheet.present();
-    */
   }
 
-  copiarVersiculo(){
+  seleccionarVersiculo(texto, idLibro, capitulo, versiculo) {
+    document.body.classList.toggle("readVersiculol" + versiculo);
+    this.buscarVersiculo(idLibro, capitulo, versiculo);
+    let arreglo = [idLibro, capitulo, versiculo, this.textTemp]
+    if (this.copiaCondensado[versiculo] == null) {
+      this.copiaCondensado[versiculo] = arreglo
+      console.log(this.copiaCondensado.length)
+    } else {
+      this.copiaCondensado.splice(versiculo, 1);
+      //delete this.copiaCondensado[versiculo]
+    }
+    let contador = 0
+    for (let clave in this.copiaCondensado) {
+      contador++
+    }
+    //console.log("contador "+ contador);
+    if (contador > 0) {
+      this.share = true
+    } else {
+      this.share = false
+    }
+    //this.marcarVersiculoAudioRemove("readVersiculol" + versiculoAnterior)
+    //this.marcarVersiculoAudioAdd("readVersiculol" + versiculo)
+    /* 
+    const actionSheet = await this.actionSheetController.create({
+      mode: 'ios',
+      buttons: [{
+          text: 'Copiar',
+          role: 'destructive',
+          icon: 'copy',
+          handler: () => {
+            this.clipboard.copy("\"" + this.textTemp + "\" " + this.librot + " " + capitulo + ":" + versiculo + ' Biblia SLM http://sionlecheymiel.org.ve/index.php?libro='+idLibro+'&capitulo='+capitulo);
+          }
+        },
+        {
+          text: "Marcar versículo o Eliminar Marca",
+          icon: 'heart',
+          handler: () => {
+            // llamar funcion 
+            this.guardarMarcador(idLibro, capitulo, versiculo);
+          }
+        }
+      ]
+      });
+      await actionSheet.present();
+      */
+  }
+
+  copiarVersiculo() {
     let textTemp = "";
-    for (let clave in this.copiaCondensado){
-      textTemp = textTemp + " " + this.copiaCondensado[clave][2] +this.copiaCondensado[clave][3]  
+    for (let clave in this.copiaCondensado) {
+      textTemp = textTemp + " " + this.copiaCondensado[clave][2] + this.copiaCondensado[clave][3]
       //console.log(this.copiaCondensado[clave])
     }
     //console.log(textTemp + " " + this.librot + " " + this.capitulo + ":"  + ' Biblia SLM http://sionlecheymiel.com')
-    this.clipboard.copy('*Biblia "Sion: Leche y Miel" '+ this.librot + " " + this.capitulo  + '*' + textTemp + ' https://sionlecheymiel.com');
+    this.clipboard.copy('*Biblia "Sion: Leche y Miel" ' + this.librot + " " + this.capitulo + '*' + textTemp + ' https://sionlecheymiel.com');
     this.marcarVersiculoAudioRemove("all")
   }
-  async marcarVersiculo(){
-    for (let clave in this.copiaCondensado){
+  async marcarVersiculo() {
+    for (let clave in this.copiaCondensado) {
       //this.guardarMarcador(idLibro, capitulo, versiculo);
       await this.guardarMarcador(this.copiaCondensado[clave][0], this.copiaCondensado[clave][1], this.copiaCondensado[clave][2]);
     }
@@ -978,47 +982,49 @@ seleccionarVersiculo(texto, idLibro, capitulo, versiculo) {
   }
 
   aumentarSize() {
-    if(this.fontSize < 28){
+    if (this.fontSize < 28) {
       this.fontSize = this.fontSize + 1;
       this.storage.set("fontSize", this.fontSize);
     }
   }
   disminuirSize() {
-    if (this.fontSize >16){
+    if (this.fontSize > 16) {
       this.fontSize--
       this.storage.set('fontSize', this.fontSize);
     }
   }
 
-  guardarMarcador(libro, capitulo, versiculo){
+  guardarMarcador(libro, capitulo, versiculo) {
     //console.log(this.marcador);
-    const resultadoMarcador = this.marcador.find( marcador => marcador.capitulo === capitulo && marcador.versiculo === versiculo);
+    const resultadoMarcador = this.marcador.find(marcador => marcador.capitulo === capitulo && marcador.versiculo === versiculo);
     //console.log(resultadoMarcador);
     let indiceMarcador = this.marcador.findIndex(marcador => marcador.capitulo === capitulo && marcador.versiculo === versiculo);
-    if (resultadoMarcador === undefined){
-      this.marcador.push({capitulo: capitulo,
-                          versiculo: versiculo});
+    if (resultadoMarcador === undefined) {
+      this.marcador.push({
+        capitulo: capitulo,
+        versiculo: versiculo
+      });
       this.storage.set(libro, this.marcador);
     } else {
-      this.marcador.splice(indiceMarcador,1);
+      this.marcador.splice(indiceMarcador, 1);
       this.storage.set(libro, this.marcador);
     }
 
     //Esto es para futuro sincronizar los marcadores
     if (this.marcadorLibro == null) {
-      this.marcadorLibro.push({libro});
+      this.marcadorLibro.push({ libro });
       this.storage.set('marcadorLibro', this.marcadorLibro);
     } else {
-      const resultadoMarcadorLibro = this.marcadorLibro.find( marcador => marcador.libro === libro );
-      if (resultadoMarcadorLibro === undefined){
-        this.marcadorLibro.push({libro});
+      const resultadoMarcadorLibro = this.marcadorLibro.find(marcador => marcador.libro === libro);
+      if (resultadoMarcadorLibro === undefined) {
+        this.marcadorLibro.push({ libro });
         this.storage.set('marcadorLibro', this.marcadorLibro);
       }
     }
   }
-  marcar(capitulo, versiculo){
-    const resultadoMarcador = this.marcador.find( marcador => marcador.capitulo === capitulo && marcador.versiculo === versiculo);
-    if(resultadoMarcador != undefined){
+  marcar(capitulo, versiculo) {
+    const resultadoMarcador = this.marcador.find(marcador => marcador.capitulo === capitulo && marcador.versiculo === versiculo);
+    if (resultadoMarcador != undefined) {
       this.marcarV = 'highlight';
       //return('highlight');
     } else {
