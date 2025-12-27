@@ -57,6 +57,9 @@ export class LeerPlanPage implements OnInit {
   hayCitas = false;
   mapCita = [];
   mapText = [];
+  idTituloTemp: any;
+  tituloTemp: any;
+  comprimidoTemp: any;
   textoJsonFinal: any;
   imprimirVersiculo;
   arregloTextoCita;
@@ -294,21 +297,21 @@ export class LeerPlanPage implements OnInit {
 
   }
 
-  marcarVersiculoAudioAdd(clase) {
-    //console.log(clase)
-    //this.readVersiculo = !this.readVersiculo;
-    document.body.classList.add(clase);   //toggle
+  marcarVersiculoAudioAdd(versiculo) {
+    const id = 'lp' + versiculo;
+    const el = document.getElementById(id);
+    if (el) el.classList.add('versiculo-highlight');
   }
-  marcarVersiculoAudioRemove(clase) {
-    //console.log(clase)
-    //this.readVersiculo = !this.readVersiculo;
-    document.body.classList.remove(clase);
-    if (clase == "all") {
-      this.share = false          //Ocultar boton de copia o marcado
-      this.copiaCondensado = []   //baciar versiculos seleccionados
-      for (let i = 1; i < 177; i++) {
-        document.body.classList.remove("readVersiculol" + i);
-      }
+  marcarVersiculoAudioRemove(versiculo) {
+    if (versiculo === "all") {
+      this.share = false;
+      this.copiaCondensado = [];
+      const els = document.querySelectorAll('.versiculo-highlight');
+      els.forEach(el => el.classList.remove('versiculo-highlight'));
+    } else {
+      const id = 'lp' + versiculo;
+      const el = document.getElementById(id);
+      if (el) el.classList.remove('versiculo-highlight');
     }
   }
 
@@ -413,17 +416,33 @@ export class LeerPlanPage implements OnInit {
       this.textoJsonFinal = [];
       for (let cont = vInicio; cont <= vFin; cont++) {
         await this.buscarVersiculo(libro.toString(), capitulo.toString(), cont.toString());
-        this.textoJsonFinal.push(
-          {
-            id_libro: libro,
-            capitulo: capitulo,
-            versiculo: cont,
-            texto: this.textTemp
-          });
+        // Push object with all potential metadata
+        let pushObj: any = {
+          id_libro: libro,
+          capitulo: capitulo,
+          versiculo: cont,
+          texto: this.textTemp
+        };
+        if (this.idTituloTemp) pushObj.idTitulo = this.idTituloTemp;
+        if (this.tituloTemp) pushObj.titulo = this.tituloTemp;
+        if (this.comprimidoTemp) pushObj.comprimido = this.comprimidoTemp;
+
+        this.textoJsonFinal.push(pushObj);
       }
     } else if (!isNaN(vInicio)) {  // Solo un versículo
       await this.buscarVersiculo(libro.toString(), capitulo.toString(), vInicio.toString());
-      this.textoJsonFinal = [{ id_libro: libro, capitulo: capitulo, versiculo: vInicio, texto: this.textTemp }];
+
+      let pushObj: any = {
+        id_libro: libro,
+        capitulo: capitulo,
+        versiculo: vInicio,
+        texto: this.textTemp
+      };
+      if (this.idTituloTemp) pushObj.idTitulo = this.idTituloTemp;
+      if (this.tituloTemp) pushObj.titulo = this.tituloTemp;
+      if (this.comprimidoTemp) pushObj.comprimido = this.comprimidoTemp;
+
+      this.textoJsonFinal = [pushObj];
       console.log("***********************");
       console.log(this.textoJsonFinal);
     }
@@ -488,17 +507,20 @@ export class LeerPlanPage implements OnInit {
         // Find the verse corresponding to the current time
         const currentVerseEntry = this.timeMap.find(entry => currentTime >= entry.start && currentTime < entry.end);
 
+        // console.log('DEBUG: currentTime:', currentTime, 'currentVerseEntry:', currentVerseEntry);
+
         if (currentVerseEntry) {
           // Only update if the verse has changed
           if (this.currentHighlightedVerse !== currentVerseEntry.versiculo) {
+            console.log('DEBUG: Change Highlight to:', currentVerseEntry.versiculo);
 
             // Remove highlight from previous verse
             if (this.currentHighlightedVerse) {
-              this.marcarVersiculoAudioRemove("readVersiculol" + this.currentHighlightedVerse);
+              this.marcarVersiculoAudioRemove(this.currentHighlightedVerse);
             }
 
             // Add highlight to new verse
-            this.marcarVersiculoAudioAdd("readVersiculol" + currentVerseEntry.versiculo);
+            this.marcarVersiculoAudioAdd(currentVerseEntry.versiculo);
             this.currentHighlightedVerse = currentVerseEntry.versiculo;
 
             // Scroll logic
@@ -506,7 +528,7 @@ export class LeerPlanPage implements OnInit {
             // Previous code used fragment and scrollIntoView.
             // Let's use clean scrollIntoView.
 
-            const id = 'l' + currentVerseEntry.versiculo;
+            const id = 'lp' + currentVerseEntry.versiculo;
             const el = document.getElementById(id);
             if (el) {
               el.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -893,9 +915,23 @@ export class LeerPlanPage implements OnInit {
       //Siguiente linea la movi para ngOnInit, aqui daba peo.
       this.dataTemp = await this.bibliaService.getTextoImport(idLibro, capitulo);
       // console.log ("Texto cita" + this.arregloTextoCita);
+      this.textTemp = '';
+      this.tituloTemp = null;
+      this.idTituloTemp = null;
+      this.comprimidoTemp = null;
+
+      // console.log("DEBUG: DataTemp Length:", this.dataTemp?.length);
       for (let text of this.dataTemp) {
-        if (versiculo === text.versiculo) {
+        // console.log("DEBUG: Comparision:", versiculo, text.versiculo, versiculo == text.versiculo);
+        if (versiculo == text.versiculo) {
+          // Capture metadata
+          if (text.hasOwnProperty('idTitulo')) {
+            this.idTituloTemp = text.idTitulo;
+            this.tituloTemp = text.titulo;
+          }
+
           if (text.hasOwnProperty('comprimido')) {
+            this.comprimidoTemp = text.comprimido; // Save full compressed structure
             this.textTemp = '';
             for (let texto of text.comprimido) {
               this.textTemp = this.textTemp + ' ' + texto.parteText;
@@ -904,24 +940,47 @@ export class LeerPlanPage implements OnInit {
               }
             }
           } else {
-            this.textTemp = text.texto;
+            if (text.texto) {
+              this.textTemp = text.texto;
+            }
           }
+          // Break once found to avoid redundant loops? No, keep logic
         }
       }
-
-
     }
+
+
   }
 
-  seleccionarVersiculo(texto, idLibro, capitulo, versiculo) {
-    document.body.classList.toggle("readVersiculol" + versiculo);
-    this.buscarVersiculo(idLibro, capitulo, versiculo);
+
+  async seleccionarVersiculo(texto, idLibro, capitulo, versiculo) {
+    console.log('DEBUG: Manual Click on Verse:', versiculo);
+
+    // document.body.classList.toggle("readVersiculol" + versiculo);
+    // Use new highlighting logic
+    // Check if already highlighted (logic inferred from toggle behavior)
+    const id = 'lp' + versiculo;
+    const el = document.getElementById(id);
+    console.log('DEBUG: Manual Click Element:', el);
+
+    if (el && el.classList.contains('versiculo-highlight')) {
+      console.log('DEBUG: Removing manual highlight');
+      this.marcarVersiculoAudioRemove(versiculo);
+    } else {
+      console.log('DEBUG: Adding manual highlight');
+      this.marcarVersiculoAudioAdd(versiculo);
+    }
+
+    await this.buscarVersiculo(idLibro, capitulo, versiculo);
+    console.log('DEBUG: Text captured:', this.textTemp);
+
     let arreglo = [idLibro, capitulo, versiculo, this.textTemp]
     if (this.copiaCondensado[versiculo] == null) {
       this.copiaCondensado[versiculo] = arreglo
-      console.log(this.copiaCondensado.length)
+      console.log("DEBUG: Added to copy set. Count:", this.copiaCondensado.length)
     } else {
       this.copiaCondensado.splice(versiculo, 1);
+      console.log("DEBUG: Removed from copy set");
       //delete this.copiaCondensado[versiculo]
     }
     let contador = 0

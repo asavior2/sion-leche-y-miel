@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-buttons slot="start"  >
+    <ion-buttons slot="start">
       <!-- <ion-back-button defauldHref="/"></ion-back-button>-->
       <ion-button (click)="atras()">
         <ion-icon name="arrow-back"></ion-icon>
@@ -12,128 +12,129 @@
 
 <ion-content fullscreen>
 
-  <ion-grid  class="ion-no-padding">
-    <ion-row  class="ion-no-padding">
-      <ion-col size-md="2"  size-lg="3" >     </ion-col>
-      <ion-col  size-xs="12"  size-md="8"  size-lg="6">
+  <ion-grid class="ion-no-padding">
+    <ion-row class="ion-no-padding">
+      <ion-col size-md="2" size-lg="3"> </ion-col>
+      <ion-col size-xs="12" size-md="8" size-lg="6">
 
-            
-      <ion-img src="{{this.imagen}}"></ion-img>
-      
-        <swiper-container #swiper slides-per-view="6" initial-slide="6" speed="500">
-          
-            <swiper-slide *ngFor="let dia of planOfStora"  
-                        (click)="obtenerLibroCapitulos(dia.dia, dia.libro, dia.detalles)"
-                        [ngClass]="{'bordeSlide' : statusSlide(dia.dia),
-                                    'slide' : false}"  
-                        class="ion-text-center">
-              
-                  <ion-item lines="none" *ngIf="!statusBadge(dia.dia)" class="ion-text-center">
-                    <ion-label class="">
-                      {{ dia.dia }}
-                      <sup>  
-                        <ion-icon color="primary" class="ion-text-end" *ngIf="dia.statusDia" name="checkmark" ></ion-icon>
-                        <ion-icon color="danger" class="ion-text-end" *ngIf="marcarDiasFaltantes(dia.dia)"  name="close" ></ion-icon>
-                        <ion-icon name=""></ion-icon>
-                      </sup>
-                    </ion-label>
-                  </ion-item>
-                  <div  *ngIf="statusBadge(dia.dia)">
-                    <ion-label  class="ion-text-center">
-                      {{ dia.dia }}
-                      <sup>  
-                        <strong>
-                        <ion-icon color="primary" class="ion-text-end" *ngIf="dia.statusDia" name="checkmark" ></ion-icon>
-                      </strong>
-                      </sup> <br>
-                      <ion-badge color="primary" mode="ios" >
-                        {{this.dd}}{{this.mmS}}
-                      </ion-badge> 
-                    </ion-label>
-                  </div>
-            </swiper-slide>
+
+        <ion-img src="{{this.imagen}}"></ion-img>
+
+        <swiper-container #swiper slides-per-view="6" speed="500">
+
+          <swiper-slide *ngFor="let dia of planOfStora"
+            (click)="obtenerLibroCapitulos(dia.dia, dia.libro, dia.detalles)" [ngClass]="{'bordeSlide' : statusSlide(dia.dia),
+                                    'slide' : false}" class="ion-text-center">
+
+            <ion-item lines="none" *ngIf="!statusBadge(dia.dia)" class="ion-text-center">
+              <ion-label class="">
+                {{ dia.dia }}
+                <sup>
+                  <ion-icon color="primary" class="ion-text-end" *ngIf="dia.statusDia" name="checkmark"></ion-icon>
+                  <ion-icon color="danger" class="ion-text-end" *ngIf="marcarDiasFaltantes(dia.dia)"
+                    name="close"></ion-icon>
+                  <ion-icon name=""></ion-icon>
+                </sup>
+              </ion-label>
+            </ion-item>
+            <div *ngIf="statusBadge(dia.dia)">
+              <ion-label class="ion-text-center">
+                {{ dia.dia }}
+                <sup>
+                  <strong>
+                    <ion-icon color="primary" class="ion-text-end" *ngIf="dia.statusDia" name="checkmark"></ion-icon>
+                  </strong>
+                </sup> <br>
+                <ion-badge color="primary" mode="ios">
+                  {{this.dd}}{{this.mmS}}
+                </ion-badge>
+              </ion-label>
+            </div>
+          </swiper-slide>
         </swiper-container>
 
-        <ion-item color="light" lines="none" class="ion-text-right" *ngIf="!this.verDiaAtraso" class="itemPersonalizado">
-          
+        <ion-item color="light" lines="none" class="ion-text-right" *ngIf="!this.verDiaAtraso"
+          class="itemPersonalizado">
+
           <ion-label class="ion-text-right" *ngIf="!this.btnIniciarPlan">
-            <FONT size="2" class="ion-text-right">Felicidades estas al dia.  </FONT>
-            
+            <FONT size="2" class="ion-text-right">Felicidades estas al dia. </FONT>
+
           </ion-label>
-        </ion-item >
+        </ion-item>
         <ion-item color="light" lines="none" *ngIf="this.verDiaAtraso" class="itemPersonalizado">
-          <ion-label  >
+          <ion-label>
             <FONT size="2" slot="end">
               &nbsp;&nbsp;DIA
             </FONT>
-            <FONT size="2"  style="color:rgba(41, 194, 3, 0.887)">
+            <FONT size="2" style="color:rgba(41, 194, 3, 0.887)">
               <strong>
-                {{this.diaLecturaV}} 
+                {{this.diaLecturaV}}
               </strong>
             </FONT>
             <FONT size="2" slot="end">
-               de {{this.diaFinPlan}}
+              de {{this.diaFinPlan}}
             </FONT>
           </ion-label>
 
-            <ion-badge slot="end"  color="undefined">
-              
-              <FONT size="2" class="ion-text-right">
-                Tienes          
-              </FONT>
+          <ion-badge slot="end" color="undefined">
 
-              <FONT size="2"  style="color:rgba(255, 26, 26, 0.696)">
-                <strong>
-                  {{this.diaAtraso}} 
-                </strong>
-              </FONT>
-            
-              <FONT size="2" >
-                días de atraso 
-              </FONT>
-            
-    </ion-badge>
+            <FONT size="2" class="ion-text-right">
+              Tienes
+            </FONT>
+
+            <FONT size="2" style="color:rgba(255, 26, 26, 0.696)">
+              <strong>
+                {{this.diaAtraso}}
+              </strong>
+            </FONT>
+
+            <FONT size="2">
+              días de atraso
+            </FONT>
+
+          </ion-badge>
 
 
-          
+
         </ion-item>
 
-      
-        <ion-item >
-        <ion-text class="ion-margin-bottom ion-margin-horizontal" >
-          {{this.descripcion}}
-        </ion-text>
+
+        <ion-item>
+          <ion-text class="ion-margin-bottom ion-margin-horizontal">
+            {{this.descripcion}}
+          </ion-text>
         </ion-item>
 
 
         <ion-list *ngIf="verCapitulos">
-          <ion-item *ngFor="let item of detallesDia" >
+          <ion-item *ngFor="let item of detallesDia">
             <ion-item size="small" lines="none">
-              <ion-checkbox (click)="statusCheckbox(this.dia, item.libro, item.capitulo)" 
-                            size="small" slot="end" color="primary" mode="ios"  [(ngModel)]="item.status">
+              <ion-checkbox (click)="statusCheckbox(this.dia, item.libro, item.capitulo)" size="small" slot="end"
+                color="primary" mode="ios" [(ngModel)]="item.status">
 
               </ion-checkbox>
             </ion-item>
-            <ion-label (click)="pushLeerPlan(item.libro, item.capitulo, item.versiculo,item.versiculoFinal)"> 
-              {{obtenerNombreLibro(item.libro)}}  {{item.capitulo}}<span *ngIf=item.versiculo>{{":" + item.versiculo}}</span><span *ngIf=item.versiculoFinal>{{"-" + item.versiculoFinal}}</span>
-              
+            <ion-label (click)="pushLeerPlan(item.libro, item.capitulo, item.versiculo,item.versiculoFinal)">
+              {{obtenerNombreLibro(item.libro)}} {{item.capitulo}}<span *ngIf=item.versiculo>{{":" +
+                item.versiculo}}</span><span *ngIf=item.versiculoFinal>{{"-" + item.versiculoFinal}}</span>
+
             </ion-label>
-            
+
           </ion-item>
-          
-        
+
+
         </ion-list>
-        
+
 
         <ion-button *ngIf="this.btnIniciarPlan" expand="full" color="primary" (click)="iniciarPlan()">
           Iniciar el plan
         </ion-button>
       </ion-col>
-      <ion-col size-md="2" size-lg="3" >           </ion-col>
+      <ion-col size-md="2" size-lg="3"> </ion-col>
     </ion-row>
-  </ion-grid>   
+  </ion-grid>
 
 
 
-  
+
 </ion-content>

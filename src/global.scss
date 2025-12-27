@@ -25,6 +25,10 @@
     margin-bottom: 8px
 }
 
-.ion-margin2 {
-    margin-bottom: 16px
+
+.versiculo-highlight {
+    background-color: rgba(0, 162, 255, 0.3) !important;
+    border-left: 4px solid #000000a8 !important;
+    padding-left: 2px !important;
+    transition: background-color 0.3s ease;
 }

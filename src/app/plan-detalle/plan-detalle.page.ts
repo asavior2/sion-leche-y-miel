@@ -25,7 +25,7 @@ export class PlanDetallePage implements OnInit {
   planes = planesFile;
   slideOpts = {
     slidesPerView: 6,
-    initialSlide: 6,
+    initialSlide: 0,
     speed: 500
   };
   nombrePlan = null;
@@ -206,10 +206,17 @@ export class PlanDetallePage implements OnInit {
 
     this.posicionSlide = await parseInt(this.diaLecturaV) - parseInt(this.diaAtraso)
     console.log("posicionSlide " + this.posicionSlide)
-    this.slideOpts.initialSlide = this.posicionSlide - 4;
+
+    // Calculate 0-based index. Ensure it's not negative.
+    // If we want the active day centered, we might offset.
+    // But for now, let's just ensure the active day is visible.
+    // Day 1 => Index 0. 
+    let targetIndex = Math.max(0, this.posicionSlide - 1);
+
+    this.slideOpts.initialSlide = targetIndex;
     console.log(this.slideOpts)
 
-    this.swiperRef?.nativeElement.swiper?.slideTo(this.posicionSlide - 4);
+    this.swiperRef?.nativeElement.swiper?.slideTo(targetIndex);
     /*this.slides.slideTo(this.imageIndex, 0).then(() => {
       setTimeout(() => {
       this.loading = false;

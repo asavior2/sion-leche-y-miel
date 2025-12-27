@@ -4,32 +4,31 @@
     <ion-buttons size="small" slot="start" class="ion-no-padding">
       <ion-back-button size="small" defaultHref="/" (click)="botonAtras()"></ion-back-button>
     </ion-buttons>
-    
-    <ion-button clear small class="ion-no-padding"
-      size ="small" fill="clear" color="dark" >
-      <FONT face="Segoe UI" [style.font-size.px]=this.fontSize-3 >
-      {{librot}}
+
+    <ion-button clear small class="ion-no-padding" size="small" fill="clear" color="dark">
+      <FONT face="Segoe UI" [style.font-size.px]=this.fontSize-3>
+        {{librot}}
       </FONT>
-    </ion-button>  
-    <ion-button color="dark" clear small  fill="clear" >
-      <FONT face="Segoe UI" [style.font-size.px]=this.fontSize-3 >
-        {{capitulo}} 
-        </FONT>
-    </ion-button> 
-    <ion-button color="dark" clear small  fill="clear" (click)="aumentarSize()" size="small" class="ion-no-padding">
-      <FONT face="Segoe UI" [style.font-size.px]=this.fontSize-3 >
-        A+
-        </FONT>
     </ion-button>
-    <ion-button color="dark" clear small  fill="clear" (click)="disminuirSize()" size="small">
-      <FONT face="Segoe UI" [style.font-size.px]=this.fontSize-8 >
+    <ion-button color="dark" clear small fill="clear">
+      <FONT face="Segoe UI" [style.font-size.px]=this.fontSize-3>
+        {{capitulo}}
+      </FONT>
+    </ion-button>
+    <ion-button color="dark" clear small fill="clear" (click)="aumentarSize()" size="small" class="ion-no-padding">
+      <FONT face="Segoe UI" [style.font-size.px]=this.fontSize-3>
+        A+
+      </FONT>
+    </ion-button>
+    <ion-button color="dark" clear small fill="clear" (click)="disminuirSize()" size="small">
+      <FONT face="Segoe UI" [style.font-size.px]=this.fontSize-8>
         a-
-        </FONT>
-    </ion-button> 
+      </FONT>
+    </ion-button>
     <ion-button color="dark" clear fill="clear" (click)="changeDark()" size="small">
-        <ion-icon name="{{estadoDark}}"></ion-icon>
-    </ion-button>       
-   
+      <ion-icon name="{{estadoDark}}"></ion-icon>
+    </ion-button>
+
   </ion-toolbar>
 </ion-header>
 
@@ -40,7 +39,7 @@
       <ion-icon name="share-social"></ion-icon>
     </ion-fab-button>
     <ion-fab-list side="end">
-      <ion-fab-button color="light" (click)="copiarVersiculo()" >
+      <ion-fab-button color="light" (click)="copiarVersiculo()">
         <ion-icon color="primary" name="copy"></ion-icon>
       </ion-fab-button>
       <ion-fab-button color="light" (click)="marcarVersiculo()">
@@ -49,88 +48,94 @@
     </ion-fab-list>
   </ion-fab>
 
-  <ion-grid >
-    <ion-row >
-      <ion-col size-md="2"  size-lg="3" >
+  <ion-grid>
+    <ion-row>
+      <ion-col size-md="2" size-lg="3">
       </ion-col>
-      <ion-col  size-xs="12"  size-md="8"  size-lg="6">
+      <ion-col size-xs="12" size-md="8" size-lg="6">
 
-      <div *ngIf = "mostrarTexto" align="justify"> 
-        <ion-label text-wrap   *ngFor="let text of textoJsonFinal" >
+        <div *ngIf="mostrarTexto" align="justify">
+          <ion-label text-wrap *ngFor="let text of textoJsonFinal">
 
-          <div *ngIf="text.hasOwnProperty('idTitulo')">
-            <h4 align="center" class="ion-margin-bottom" >
-              <FONT face="Segoe UI" [style.font-size.px]=this.fontSize+6 >
-                <strong>{{text.titulo}}</strong>
-              </FONT>
-            </h4> 
-          </div>
-        
-          <div *ngIf="text.hasOwnProperty('comprimido')" class="ion-margin-horizontal ion-margin-bottom" >
-            <div id=l{{text.versiculo}}  class=l{{text.versiculo}} >
-              <FONT  [style.font-size.px]=this.fontSize-7 face="Segoe UI">
-                <ion-text  color="medium">
-                  {{text.versiculo}} 
-                </ion-text>
-              </FONT>
-              <font *ngFor="let construirVersiculo of text.comprimido" [style.font-size.px]=this.fontSize>
+            <div *ngIf="text.hasOwnProperty('idTitulo')">
+              <h4 align="center" class="ion-margin-bottom">
+                <FONT face="Segoe UI" [style.font-size.px]=this.fontSize+6>
+                  <strong>{{text.titulo}}</strong>
+                </FONT>
+              </h4>
+            </div>
+
+            <div *ngIf="text.hasOwnProperty('comprimido')" class="ion-margin-horizontal ion-margin-bottom">
+              <div id=lp{{text.versiculo}} class=l{{text.versiculo}}>
+                <FONT [style.font-size.px]=this.fontSize-7 face="Segoe UI">
+                  <ion-text color="medium">
+                    {{text.versiculo}}
+                  </ion-text>
+                </FONT>
+                <font *ngFor="let construirVersiculo of text.comprimido" [style.font-size.px]=this.fontSize>
                   <ion-text class={{marcar(construirVersiculo.capitulo,construirVersiculo.versiculo)}}>
-                    <span (click)="seleccionarVersiculo('noText', construirVersiculo.id_libro, construirVersiculo.capitulo, construirVersiculo.versiculo)" class={{this.marcarV}}>
-                      {{construirVersiculo.parteText}} 
+                    <span
+                      (click)="seleccionarVersiculo('noText', construirVersiculo.id_libro, construirVersiculo.capitulo, construirVersiculo.versiculo)"
+                      class={{this.marcarV}}>
+                      {{construirVersiculo.parteText}}
                     </span>
-                    <span (click)="citaAlert(construirVersiculo.cita, construirVersiculo.ibroCita, construirVersiculo.capituloCita, construirVersiculo.versiculoCitaInicial)">
+                    <span
+                      (click)="citaAlert(construirVersiculo.cita, construirVersiculo.ibroCita, construirVersiculo.capituloCita, construirVersiculo.versiculoCitaInicial)">
                       <sup>
                         <!--<ion-icon class='ico-cita' color='medium' ios='ios-quote' md='md-quote'></ion-icon>-->
-                        <ion-icon name='medical' class='ico-cita' color='medium' ></ion-icon>
+                        <ion-icon name='medical' class='ico-cita' color='medium'></ion-icon>
                         <!--<ion-icon name="bookmark" class='ico-cita' color='medium'></ion-icon>-->
                       </sup>
                     </span>
-                    <span (click)="seleccionarVersiculo('noText', construirVersiculo.id_libro, construirVersiculo.capitulo, construirVersiculo.versiculo)" class={{this.marcarV}}>
-                      {{construirVersiculo.parteFinal}} 
+                    <span
+                      (click)="seleccionarVersiculo('noText', construirVersiculo.id_libro, construirVersiculo.capitulo, construirVersiculo.versiculo)"
+                      class={{this.marcarV}}>
+                      {{construirVersiculo.parteFinal}}
                     </span>
                   </ion-text>
-                
-              </font>
-            </div>     
-          </div>
-        
-          <div *ngIf ="!text.hasOwnProperty('comprimido')" class="ion-margin-horizontal ion-margin-bottom" >
-            <div  id=l{{text.versiculo}}  outline="true" class=l{{text.versiculo}} #myButton >
-              <FONT [style.font-size.px]=this.fontSize-7  face="Segoe UI">
-                <ion-text *ngIf="!text.hasOwnProperty('idTitulo')" color="medium">
-                  {{text.versiculo}} 
-                </ion-text>
-              </FONT>
-              <font  [style.font-size.px]=this.fontSize>
-                <ion-text  class={{marcar(text.capitulo,text.versiculo)}}>
-                  <span > 
-                    <a (click)="seleccionarVersiculo(text.texto,text.id_libro, text.capitulo, text.versiculo)" class={{this.marcarV}}>
-                      {{text.texto}} 
-                    </a>
-                  </span>
-                </ion-text>
-              </font>
-            </div>
-          </div>
-          
-        
-        </ion-label>
-        <div align="center">
-            <FONT face="Segoe UI" size="3"><strong>*(SLM) Sion: Leche y Miel</strong></FONT>    
-            <br><br>
-        </div>
-      </div>
 
-    </ion-col>
-    <ion-col size-md="2" size-lg="3" >
-    </ion-col>
+                </font>
+              </div>
+            </div>
+
+            <div *ngIf="!text.hasOwnProperty('comprimido')" class="ion-margin-horizontal ion-margin-bottom">
+              <div id=lp{{text.versiculo}} outline="true" class=l{{text.versiculo}} #myButton>
+                <FONT [style.font-size.px]=this.fontSize-7 face="Segoe UI">
+                  <ion-text *ngIf="!text.hasOwnProperty('idTitulo')" color="medium">
+                    {{text.versiculo}}
+                  </ion-text>
+                </FONT>
+                <font [style.font-size.px]=this.fontSize>
+                  <ion-text class={{marcar(text.capitulo,text.versiculo)}}>
+                    <span>
+                      <a (click)="seleccionarVersiculo(text.texto,text.id_libro, text.capitulo, text.versiculo)"
+                        class={{this.marcarV}}>
+                        {{text.texto}}
+                      </a>
+                    </span>
+                  </ion-text>
+                </font>
+              </div>
+            </div>
+
+
+          </ion-label>
+          <div align="center">
+            <FONT face="Segoe UI" size="3"><strong>*(SLM) Sion: Leche y Miel</strong></FONT>
+            <br><br>
+          </div>
+        </div>
+
+      </ion-col>
+      <ion-col size-md="2" size-lg="3">
+      </ion-col>
 
     </ion-row>
   </ion-grid>
 
   <!--Botones flotantes para la version de escritorio middle y middle right-->
-  <ion-fab vertical="bottom" horizontal="start" slot="fixed" >
-    <ion-fab-button (click)="previousboton()" size="small" >
+  <ion-fab vertical="bottom" horizontal="start" slot="fixed">
+    <ion-fab-button (click)="previousboton()" size="small">
       <ion-icon name="chevron-back-outline"></ion-icon>
     </ion-fab-button>
   </ion-fab>
@@ -140,14 +145,14 @@
       <ion-icon name="{{playPausa}}" color="primary"></ion-icon>
     </ion-fab-button>
   </ion-fab>
-  
+
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" size="small">
-      <ion-fab-button (click)="nextboton()" size="small">
-        <ion-icon name="chevron-forward-outline" ></ion-icon>
-      </ion-fab-button>
-    </ion-fab>
+    <ion-fab-button (click)="nextboton()" size="small">
+      <ion-icon name="chevron-forward-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 
-      
-    <br>
+
+  <br>
 </ion-content>
