@@ -1,0 +1,26 @@
+.center-avatar {
+    margin: 0 auto;
+    width: 100px;
+    height: 100px;
+}
+
+.profile-header {
+    background: var(--ion-color-light);
+    padding-bottom: 2rem;
+}
+
+.status-text {
+    color: var(--ion-color-medium);
+    font-size: 0.9rem;
+}
+
+.spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}

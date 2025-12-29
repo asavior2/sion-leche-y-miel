@@ -5,6 +5,7 @@ import { RouteReuseStrategy } from '@angular/router';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { SplashScreen } from '@awesome-cordova-plugins/splash-screen/ngx';
 import { StatusBar } from '@awesome-cordova-plugins/status-bar/ngx';
+import { SQLite } from '@awesome-cordova-plugins/sqlite/ngx';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -15,6 +16,7 @@ import { IonicStorageModule } from '@ionic/storage-angular';
 import { Drivers } from '@ionic/storage';
 // Services
 import { BibliaService } from './services/biblia.service';
+import { SyncService } from './core/services/sync.service'; // Added import
 
 //import { FileOpener } from '@awesome-cordova-plugins/file-opener/ngx';
 
@@ -29,8 +31,12 @@ import { Zip } from '@awesome-cordova-plugins/zip/ngx';
 import { File } from '@awesome-cordova-plugins/file/ngx';
 //import { Httpd, HttpdOptions } from '@awesome-cordova-plugins/httpd/ngx';
 //import { FileTransfer, FileTransferObject } from '@awesome-cordova-plugins/file-transfer/ngx';
+import { AngularFireModule } from '@angular/fire/compat';
+import { AngularFireAuthModule } from '@angular/fire/compat/auth';
+import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+import { AngularFireAnalyticsModule } from '@angular/fire/compat/analytics';
 import { ServiceWorkerModule } from '@angular/service-worker';
-import { environment } from '../environments/environment';
+import { environment, firebaseConfig } from '../environments/environment'; // Modified import
 import { RouterModule } from '@angular/router';
 
 
@@ -42,6 +48,12 @@ import { RouterModule } from '@angular/router';
             name: '_myDb'
         }),
         AppRoutingModule,
+        // Firebase Configuration
+        AngularFireModule.initializeApp(firebaseConfig), // Use directly
+        AngularFireAuthModule,
+        AngularFireAuthModule,
+        AngularFirestoreModule,
+        AngularFireAnalyticsModule,
         RouterModule.forRoot([], {
             // Tell the router to use the hash instead of HTML5 pushstate.
             useHash: true,
@@ -74,6 +86,8 @@ import { RouterModule } from '@angular/router';
             //FileOpener,
             //Httpd,
             HTTP,
+            SQLite,
+            SyncService, // Explicitly provide SyncService
             provideHttpClient(withInterceptorsFromDi()),
         ]
 })

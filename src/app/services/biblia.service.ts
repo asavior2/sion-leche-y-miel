@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { HTTP } from '@awesome-cordova-plugins/http/ngx';
 import { File } from '@awesome-cordova-plugins/file/ngx';
+import { LocalBibleRepository } from '../core/repositories/local-bible.repository';
+import { Bookmark } from '../core/repositories/bible.repository';
 import { from, Observable } from 'rxjs';
 //import { Observable } from "rxjs/Observable";
 import { defer } from 'rxjs';
@@ -22,7 +24,8 @@ export class BibliaService {
 
   constructor(public http: HTTP,
     private httpClient: HttpClient,
-    public file: File) {
+    public file: File,
+    private bibleRepo: LocalBibleRepository) {
     //this.genesis = require('../../assets/libros/1/1-2.json');
     //  console.log(this.genesis);
   }
@@ -102,7 +105,77 @@ export class BibliaService {
           console.log (res);
           resolve(res);
         }).catch (err => reject(err))
-      })
+      
     }*/
+
+  // --- REPOSITORY ACCESS (Centralized Data) ---
+
+  async getBookmarks(bookId: number): Promise<Bookmark[]> {
+    const all = await this.bibleRepo.getBookmarks();
+    return all.filter(b => b.book_id === bookId);
+  }
+
+  async getBookmark(bookId: number, chapter: number, verse: number): Promise<Bookmark | undefined> {
+    return this.bibleRepo.getBookmark(bookId, chapter, verse);
+  }
+
+  async saveBookmark(bookId: number, chapter: number, verse: number): Promise<void> {
+    const bookmark: Bookmark = {
+      id: this.generateUUID(),
+      book_id: bookId,
+      chapter: chapter,
+      verse: verse,
+      color: 'default',
+      created_at: Date.now(),
+      updated_at: Date.now(),
+      is_synced: 0
+    };
+    await this.bibleRepo.saveBookmark(bookmark);
+  }
+
+  async deleteBookmark(id: string): Promise<void> {
+    await this.bibleRepo.deleteBookmark(id);
+  }
+
+  async deleteBookmarkByRef(bookId: number, chapter: number, verse: number): Promise<void> {
+    const existing = await this.bibleRepo.getBookmark(bookId, chapter, verse);
+    if (existing) {
+      await this.bibleRepo.deleteBookmark(existing.id);
+    }
+  }
+
+  // --- READING PROGRESS ---
+  async getReadingProgress(planId: string): Promise<any[]> {
+    return this.bibleRepo.getReadingProgress(planId);
+  }
+
+  async saveReadingProgress(planId: string, dayId: number, status: number): Promise<void> {
+    // Find existing to update or create new? Schema has ID. 
+    // Ideally we want upsert logic handled by ID or unique constraint on (plan_id, day_id).
+    // Repo implementation: saveReadingProgress does INSERT OR REPLACE.
+    // But we need an ID.
+    // Let's check if it exists or use deterministic ID? 
+    // Using deterministic ID (md5 of plan+day) or just querying first is strictly better to avoid duplicates if ID is random.
+    // For now, let's query.
+    const existing = (await this.bibleRepo.getReadingProgress(planId)).find(p => p.day_id === dayId);
+
+    const progress = {
+      id: existing ? existing.id : this.generateUUID(),
+      plan_id: planId,
+      day_id: dayId,
+      status: status, // 1 for complete, 0 for incomplete
+      completed_at: Date.now(),
+      is_synced: 0
+    };
+    await this.bibleRepo.saveReadingProgress(progress);
+  }
+
+  private generateUUID() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
+
 
 }

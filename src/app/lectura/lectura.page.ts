@@ -204,22 +204,25 @@ export class LecturaPage implements OnInit {
 
 
 
-    this.storage.get(this.libro.toString()).then((val) => {
-      if (val == null) {
-        this.marcador = [];
-      } else {
-        this.marcador = val;
-      }
+    // this.storage.get(this.libro.toString()).then((val) => {
+    //   if (val == null) {
+    //     this.marcador = [];
+    //   } else {
+    //     this.marcador = val;
+    //   }
+    // });
+    this.bibliaService.getBookmarks(this.libro).then(bookmarks => {
+      this.marcador = bookmarks.map(b => ({ capitulo: b.chapter, versiculo: b.verse }));
     });
 
     // this.storage.remove('marcadorLibro');
-    this.storage.get('marcadorLibro').then((val) => {
-      if (val == null) {
-        this.marcadorLibro = [];
-      } else {
-        this.marcadorLibro = val;
-      }
-    });
+    // this.storage.get('marcadorLibro').then((val) => {
+    //   if (val == null) {
+    //     this.marcadorLibro = [];
+    //   } else {
+    //     this.marcadorLibro = val;
+    //   }
+    // });
 
     this.getcapitulos(this.libro);
     // GetTitulo trae titulos de libro y capitulo en especifico
@@ -1080,33 +1083,34 @@ export class LecturaPage implements OnInit {
     }
   }
 
+
+
+  // ...
+
   async guardarMarcador(libro, capitulo, versiculo) {
     //console.log(this.marcador);
     const resultadoMarcador = this.marcador.find(marcador => marcador.capitulo === capitulo && marcador.versiculo === versiculo);
     //console.log(resultadoMarcador);
     let indiceMarcador = this.marcador.findIndex(marcador => marcador.capitulo === capitulo && marcador.versiculo === versiculo);
+
     if (resultadoMarcador === undefined) {
+      // Add to local UI array
       this.marcador.push({
         capitulo: capitulo,
         versiculo: versiculo
       });
-      await this.storage.set(libro, this.marcador);
+      // Save to SQLite via Repo
+      await this.bibliaService.saveBookmark(libro, capitulo, versiculo);
     } else {
+      // Remove from local UI array
       this.marcador.splice(indiceMarcador, 1);
-      await this.storage.set(libro, this.marcador);
+      // Remove from SQLite via Repo
+      await this.bibliaService.deleteBookmarkByRef(libro, capitulo, versiculo);
     }
 
-    //Esto es para futuro sincronizar los marcadores
-    if (this.marcadorLibro == null) {
-      this.marcadorLibro.push({ libro });
-      this.storage.set('marcadorLibro', this.marcadorLibro);
-    } else {
-      const resultadoMarcadorLibro = this.marcadorLibro.find(marcador => marcador.libro === libro);
-      if (resultadoMarcadorLibro === undefined) {
-        this.marcadorLibro.push({ libro });
-        this.storage.set('marcadorLibro', this.marcadorLibro);
-      }
-    }
+    // Legacy Storage Fallback removed/commented out as per Offline-First architecture
+    // await this.storage.set(libro, this.marcador);
+    // Logic for marcadorLibro is handled by SQL queries now.
   }
   marcar(capitulo, versiculo) {
     const resultadoMarcador = this.marcador.find(marcador => marcador.capitulo === capitulo && marcador.versiculo === versiculo);

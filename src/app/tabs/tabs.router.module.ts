@@ -80,6 +80,16 @@ const routes: Routes = [
         ]
       },
       {
+        path: 'profile',
+        children: [
+          {
+            path: '',
+            loadChildren: () => import('../pages/profile/profile.module').then(m => m.ProfilePageModule),
+            canActivate: []
+          }
+        ]
+      },
+      {
         path: '',
         redirectTo: '/tabs/lectura',
         pathMatch: 'full'
@@ -89,8 +99,7 @@ const routes: Routes = [
   {
     path: '',
     redirectTo: '/tabs/lectura',
-    pathMatch: 'full',
-    canActivate: []
+    pathMatch: 'full'
   }
 ];
 /*

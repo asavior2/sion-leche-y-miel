@@ -21,6 +21,8 @@ import planesFile from '../../assets/planesLectura.json';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { AnalyticsService } from '../core/services/analytics.service';
+import { SyncService } from '../core/services/sync.service';
 
 @Component({
   selector: 'app-leer-plan',
@@ -129,7 +131,9 @@ export class LeerPlanPage implements OnInit {
     private zip: Zip,
     public file: File,
     private navCtrl: NavController,
-    public router: Router
+    public router: Router,
+    private analytics: AnalyticsService,
+    private syncService: SyncService
   ) {
     this.platform.backButton.observers.pop();
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
@@ -446,6 +450,10 @@ export class LeerPlanPage implements OnInit {
       console.log("***********************");
       console.log(this.textoJsonFinal);
     }
+
+    // Analytics
+    this.analytics.logReading(this.librot || libro.toString(), capitulo);
+
     this.mostrarTexto = true;
   }
 
@@ -719,6 +727,7 @@ export class LeerPlanPage implements OnInit {
         }
         if (statusDiaBoleano) {
           tempoDia.push({ dia: dias.dia, statusDia: true, libro: dias.libro, detalles: tempoDetalle });
+          this.analytics.logEvent('complete_plan_day', { plan_name: this.nombrePlan, dia: dias.dia });
         } else {
           tempoDia.push({ dia: dias.dia, statusDia: false, libro: dias.libro, detalles: tempoDetalle });
         }
@@ -1078,6 +1087,8 @@ export class LeerPlanPage implements OnInit {
         this.storage.set('marcadorLibro', this.marcadorLibro);
       }
     }
+    this.analytics.logBookmark(libro, capitulo, versiculo);
+    this.syncService.syncAll(); // Trigger smart sync (will push immediately)
   }
   marcar(capitulo, versiculo) {
     const resultadoMarcador = this.marcador.find(marcador => marcador.capitulo === capitulo && marcador.versiculo === versiculo);

@@ -1,0 +1,98 @@
+<ion-header [translucent]="true" mode="md">
+  <ion-toolbar align="center">
+    <ion-title>Mi Perfil</ion-title>
+    <ion-buttons slot="end">
+      <!-- Sync status indicator only, no click -->
+      <ion-button *ngIf="(isSyncing$ | async)">
+        <ion-icon name="sync" class="spin"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+  <!-- Header / Avatar Area -->
+  <div class="profile-header ion-text-center ion-padding">
+    <ion-avatar class="center-avatar">
+      <img src="assets/icon/icon-small.png" alt="Avatar" />
+    </ion-avatar>
+    <h2 *ngIf="user$ | async as user; else guestTemplate">
+      {{ user.displayName || 'Usuario Anónimo' }}
+    </h2>
+    <ng-template #guestTemplate>
+      <h2>Invitado</h2>
+    </ng-template>
+    <p class="status-text">
+      {{ (isSyncing$ | async) ? 'Sincronizando...' : 'Sincronizado' }}
+    </p>
+  </div>
+
+  <!-- Stats Cards -->
+  <ion-grid>
+    <ion-row>
+      <ion-col size="6">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-subtitle>Marcadores</ion-card-subtitle>
+            <ion-card-title>{{ versesMarked }}</ion-card-title>
+          </ion-card-header>
+        </ion-card>
+      </ion-col>
+      <ion-col size="6">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-subtitle>Racha Actual</ion-card-subtitle>
+            <!-- We need a variable for streak. Let's assume badges might show it or compute it -->
+            <!-- Actually I didn't add a public variable for streak in TS, I should have. -->
+            <!-- Displaying computed stats from badges rules or adding 'currentStreak' var -->
+            <ion-card-title>{{ currentStreak }} Días</ion-card-title>
+          </ion-card-header>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-subtitle>Progreso Plan</ion-card-subtitle>
+            <ion-card-title>0 %</ion-card-title>
+          </ion-card-header>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- Badges Section -->
+  <app-badges-card [badges]="badges"></app-badges-card>
+
+  <!-- Actions -->
+  <ion-list inset="true">
+    <ion-item button *ngIf="!(user$ | async)" (click)="loginGoogle()">
+      <ion-icon slot="start" name="logo-google"></ion-icon>
+      <ion-label>Iniciar Sesión / Registrarse</ion-label>
+    </ion-item>
+
+
+    <ion-item button lines="none" *ngIf="user$ | async" (click)="logout()">
+      <ion-icon slot="start" name="log-out" color="danger"></ion-icon>
+      <ion-label color="danger">Cerrar Sesión</ion-label>
+    </ion-item>
+
+    <ion-item button lines="none" (click)="toggleDebug()">
+      <ion-icon slot="start" name="bug" color="medium"></ion-icon>
+      <ion-label>Modo Desarrollador</ion-label>
+    </ion-item>
+  </ion-list>
+
+  <!-- Debug Area -->
+  <div *ngIf="showDebug" class="ion-padding">
+    <ion-button expand="block" color="dark" (click)="dumpDebugData()">Ver Datos Internos</ion-button>
+    <ion-card *ngIf="debugData" color="light">
+      <ion-card-content>
+        <pre>{{ debugData | json }}</pre>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+</ion-content>

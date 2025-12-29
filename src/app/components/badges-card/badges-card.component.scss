@@ -1,0 +1,46 @@
+.scroll-container {
+    display: flex;
+    overflow-x: auto;
+    padding: 10px 0;
+    gap: 15px;
+
+    // Hide Scrollbar
+    scrollbar-width: none;
+
+    /* Firefox */
+    &::-webkit-scrollbar {
+        display: none;
+        /* Safari and Chrome */
+    }
+}
+
+.badge-item {
+    text-align: center;
+    min-width: 80px;
+    opacity: 1;
+    transition: opacity 0.3s;
+
+    &.locked {
+        opacity: 0.5;
+        // Grayscale filter for locked?
+        filter: grayscale(100%);
+    }
+}
+
+.badge-icon-wrapper {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 5px auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.badge-name {
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin: 0;
+    line-height: 1.2;
+}

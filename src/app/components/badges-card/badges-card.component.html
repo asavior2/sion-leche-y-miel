@@ -1,0 +1,17 @@
+<ion-card>
+  <ion-card-header>
+    <ion-card-subtitle>Logros</ion-card-subtitle>
+    <ion-card-title>Medallas</ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    <div class="scroll-container">
+      <div class="badge-item" *ngFor="let badge of badges" [class.locked]="!badge.unlocked">
+        <div class="badge-icon-wrapper"
+          [style.background-color]="badge.unlocked ? 'var(--ion-color-'+badge.color+')' : '#ccc'">
+          <ion-icon [name]="badge.icon" color="light" size="large"></ion-icon>
+        </div>
+        <p class="badge-name">{{ badge.name }}</p>
+      </div>
+    </div>
+  </ion-card-content>
+</ion-card>

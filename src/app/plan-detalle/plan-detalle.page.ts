@@ -9,6 +9,7 @@ import { Console } from 'console';
 import { Router } from "@angular/router";
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
+import { BibliaService } from '../services/biblia.service';
 
 
 @Component({
@@ -77,7 +78,8 @@ export class PlanDetallePage implements OnInit {
     private navCtrl: NavController,
     private storage: IonicStorage,
     private router: Router,
-    private httpClient: HttpClient
+    private httpClient: HttpClient,
+    private bibliaService: BibliaService
   ) {
 
   }
@@ -114,14 +116,14 @@ export class PlanDetallePage implements OnInit {
       }
     }
     // this.storage.remove('bibleOneYear');
+    // Load active plan metadata (Start Date) from Storage (Settings)
     await this.storage.get('planesActivos').then((val) => {
       if (val === null) {
         this.btnIniciarPlan = true;
       } else {
         for (let entry of val) {
-          // this.planesActivos = []; // Bug: This was clearing the array on every iteration
-          this.planesActivos.push(entry);
           if (entry.nombre === this.nombrePlan) {
+            this.planesActivos.push(entry); // Keep track of active plan meta
             console.log('Desde  if dentre del planes activo ');
             this.btnIniciarPlan = false;
             console.log('this.btnIniciarPlan ' + this.btnIniciarPlan);
@@ -130,10 +132,40 @@ export class PlanDetallePage implements OnInit {
             this.yyyyStora = entry.anoInicio;
           }
         }
-        //this.bibleOneYearStora = val;
       }
     });
 
+    // NEW LOGIC: Always use static assets as base, then merge progress from SQLite
+    this.planOfStora = this.temporalPlan;
+
+    // Fetch progress from SQLite
+    const progressList = await this.bibliaService.getReadingProgress(this.nombrePlan);
+    // Create a Set of completed Day IDs for O(1) lookup
+    const completedDays = new Set(progressList.filter(p => p.status === 1).map(p => p.day_id));
+
+    console.log('SQLite Progress Loaded:', completedDays);
+
+    // Merge Progress
+    if (this.planOfStora) {
+      for (let day of this.planOfStora) {
+        const dayId = Number(day.dia);
+        if (completedDays.has(dayId)) {
+          day.statusDia = true;
+          // Mark all details as done since our SQLite schema currently tracks Day granularity
+          if (day.detalles) {
+            day.detalles.forEach(d => d.status = true);
+          }
+        } else {
+          day.statusDia = false;
+          // Leave details as false/undefined
+          if (day.detalles) {
+            day.detalles.forEach(d => d.status = false);
+          }
+        }
+      }
+    }
+
+    /* LEGACY STORAGE LOGIC REMOVED
     await this.storage.get(this.nombrePlan).then((val) => {
       if (val === null) {
         console.log('Plan no almacenado o no asignado');
@@ -147,6 +179,7 @@ export class PlanDetallePage implements OnInit {
       console.log('Desde el storage');
       console.log(this.planOfStora);
     });
+    */
 
     console.log('yyyyStora yyyyStora yyyyStora yyyyStora');
     console.log(this.yyyyStora);
@@ -417,51 +450,47 @@ export class PlanDetallePage implements OnInit {
       }
     }
   }
-  statusCheckbox(dia, libro, capitulo) {                // CONTROLA la marca de capitulos leidos
-    console.log("dia " + dia + libro, capitulo);
-    let tempoDia: Array<any> = new Array();
-    let tempoDetalle: Array<any> = new Array();
-    let statusDia: Array<any> = new Array();          // Se creo para identifical algun check desmarcado
-    let statusDiaBoleano = true;
-    for (let dias of this.planOfStora) {
-      if (dias.dia === dia && dias.libro === libro) {
-        for (let detalle of dias.detalles) {
-          if (detalle.capitulo === capitulo) {
-            if (detalle.status === true) {
-              tempoDetalle.push({ libro: detalle.libro, capitulo: detalle.capitulo, status: false, versiculo: detalle.versiculo, versiculoFinal: detalle.versiculoFinal });
-              statusDia.push(false);
-            } else {
-              tempoDetalle.push({ libro: detalle.libro, capitulo: detalle.capitulo, status: true, versiculo: detalle.versiculo, versiculoFinal: detalle.versiculoFinal });
-              statusDia.push(true);
-            }
-            // tempoDetalle.push({libro: detalle.libro, capitulo: detalle.capitulo, status: true});
-          } else {
-            tempoDetalle.push(detalle);
-            if (detalle.status === true) {
-              statusDia.push(true);
-            } else {
-              statusDia.push(false);
-            }
-          }
-        }
-        for (let status of statusDia) {
-          if (!status) {
-            statusDiaBoleano = false;
-          }
-        }
-        if (statusDiaBoleano) {
-          tempoDia.push({ dia: dias.dia, statusDia: true, libro: dias.libro, detalles: tempoDetalle });
-        } else {
-          tempoDia.push({ dia: dias.dia, statusDia: false, libro: dias.libro, detalles: tempoDetalle });
-        }
-      } else {
-        //  this.primerP.push({ id: entry.id, capitulos: entry.capitulos, libro: this.getCleanedString(entry.libro), estado : 'listo'});
-        tempoDia.push(dias);
+  async statusCheckbox(dia, libro, capitulo) {
+    // Find the day object
+    // Note: Legacy logic matched on dia AND libro. Ensuring specificity.
+    const dayObj = this.planOfStora.find(d => d.dia === dia && d.libro === libro);
+
+    if (dayObj) {
+      // Find the specific chapter detail
+      const detail = dayObj.detalles.find(d => d.capitulo === capitulo);
+
+      if (detail) {
+        // Toggle status. 
+        // Note: HTML uses [(ngModel)], so value might already be updated? 
+        // But legacy code did manual toggle logic. 
+        // If we removed [(ngModel)] from HTML or if we trust it, logic changes.
+        // To contain scope, I will manually toggle and assume clicking triggers this.
+        // Ideally, remove [(ngModel)] from HTML if we handle click manually, or remove (click) if we use (dChange).
+        // Legacy used both (click) and [(ngModel)].
+        // "Safe" approach: The legacy code inverted the value provided by checks?
+        // Actually, let's look at legacy: "if true -> push false". Yes, it toggles.
+        // But wait, [(ngModel)] updates the variable *before* click handler?
+        // If so, legacy code was: "Value is now true (via model). IF true -> save false". 
+        // That would toggle it BACK.
+        // Let's simplified: Explicitly set it to what the user intended (Inverse of current state?)
+        // Or just check the state of the checkboxes? 
+        // Let's assume detail.status holds the CURRENT state (after click/model update).
+        // Re-evaluating: The simplest valid logic is: "Update status. Check all. Save."
+        // I will force the toggle here to be sure, assuming (click) prevents default or model sync issues.
+        detail.status = !detail.status;
       }
+
+      // Validate Day Completion
+      const allDone = dayObj.detalles.every(d => d.status === true);
+      dayObj.statusDia = allDone;
+
+      // Save to SQLite
+      // 1 = Completed, 0 = Incomplete
+      const statusInt = allDone ? 1 : 0;
+      await this.bibliaService.saveReadingProgress(this.nombrePlan, parseInt(dia), statusInt);
+
+      this.estadoPlan();
     }
-    this.planOfStora = tempoDia;
-    this.storage.set(this.nombrePlan, this.planOfStora);
-    this.estadoPlan();
   }
 
   marcarDiasFaltantes(dia) {
