@@ -51,7 +51,7 @@ export class SyncService {
         try {
             await this.syncBookmarks();
             await this.syncReadingProgress();
-            // await this.syncNotes(); // Future
+            await this.syncNotes(); // Enabled
             // await this.syncStats(); // Future
             this.lastSyncTime = Date.now();
             console.log('Sync completed successfully.');
@@ -64,7 +64,7 @@ export class SyncService {
 
     // --- BOOKMARKS SYNC ---
     private async syncBookmarks(push: boolean = true, pull: boolean = true) {
-        // 1. PUSH: Local -> Cloud
+        // ... (existing logic) ...
         if (push) {
             const unsyncedLocal = await this.localRepo.getUnsyncedBookmarks();
             if (unsyncedLocal.length > 0) {
@@ -72,20 +72,35 @@ export class SyncService {
                 for (const item of unsyncedLocal) {
                     await this.cloudRepo.saveBookmark(item);
                 }
-                // Mark as synced locally
                 const ids = unsyncedLocal.map(b => b.id);
                 await this.localRepo.markBookmarksSynced(ids);
             }
         }
-
-        // 2. PULL: Cloud -> Local
         if (pull) {
-            // Optimization: In real world, we'd query "updated_at > last_sync".
-            // For now, we get ALL from cloud and upsert.
             const cloudItems = await this.cloudRepo.getBookmarks();
             for (const item of cloudItems) {
-                // Save to local as "Synced" (true)
                 await this.localRepo.saveBookmark(item, true);
+            }
+        }
+    }
+
+    // --- NOTES SYNC ---
+    private async syncNotes(push: boolean = true, pull: boolean = true) {
+        if (push) {
+            const unsyncedLocal = await this.localRepo.getUnsyncedNotes();
+            if (unsyncedLocal.length > 0) {
+                console.log(`Pushing ${unsyncedLocal.length} notes...`);
+                for (const item of unsyncedLocal) {
+                    await this.cloudRepo.saveNote(item);
+                }
+                const ids = unsyncedLocal.map(n => n.id);
+                await this.localRepo.markNotesSynced(ids);
+            }
+        }
+        if (pull) {
+            const cloudItems = await this.cloudRepo.getNotes();
+            for (const item of cloudItems) {
+                await this.localRepo.saveNote(item, true);
             }
         }
     }

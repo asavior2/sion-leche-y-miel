@@ -8,7 +8,7 @@ if (environment.production) {
   enableProdMode();
 }
 
-console.log('Firebase Config:', firebaseConfig); // DEBUG LINE
+//console.log('Firebase Config:', firebaseConfig); // DEBUG LINE
 
 platformBrowserDynamic().bootstrapModule(AppModule)
   .catch(err => console.log(err));

@@ -61,3 +61,18 @@ Wrapper sobre `AngularFireAnalytics`.
 En `ProfilePage` existe un **"Modo Desarrollador"**.
 - Muestra un botón "Ver Datos Internos".
 - Imprime en consola y pantalla un JSON con el estado actual de `user`, `stats`, y `unsyncedBookmarks` de la base de datos local. Utilísimo para verificar si SQLite está guardando datos.
+
+## 7. Sistema de Audio (AudioPlayerService)
+Ubicación: `src/app/core/services/audio-player.service.ts`
+
+Centraliza toda la lógica de reproducción de audio, eliminando la duplicidad de código que existía entre `LeerPlanPage` y `LecturaPage`.
+
+- **Responsabilidades:**
+    - Gestión del objeto `HTMLAudioElement`.
+    - Control de estado (`isPlaying$`, `currentVerse$`).
+    - Mapeo de tiempos (`calculateTimeMap`): Sincroniza el tiempo de reproducción con los versículos para el resaltado automático.
+    - **Robustez:** Implementa lógica de respaldo (*fallback*). Si el archivo de audio local no existe, reproduce automáticamente desde la URL remota.
+
+- **Integración en Vistas:**
+    - Las páginas (`LecturaPage`, `LeerPlanPage`) solo inyectan este servicio y se suscriben a sus Observables para actualizar la UI (resaltado de versículos, scroll automático).
+    - Se ha eliminado la lógica deprecated de "reproductor" local de los componentes.

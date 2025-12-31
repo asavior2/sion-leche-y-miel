@@ -22,7 +22,7 @@
 
         <swiper-container #swiper slides-per-view="6" speed="500">
 
-          <swiper-slide *ngFor="let dia of planOfStora"
+          <swiper-slide *ngFor="let dia of renderedDays"
             (click)="obtenerLibroCapitulos(dia.dia, dia.libro, dia.detalles)" [ngClass]="{'bordeSlide' : statusSlide(dia.dia),
                                     'slide' : false}" class="ion-text-center">
 

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { LoadingController, ToastController } from '@ionic/angular';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { SyncService } from 'src/app/core/services/sync.service';
 import { GamificationService, Badge } from 'src/app/core/services/gamification.service';
@@ -26,7 +27,9 @@ export class ProfilePage implements OnInit {
     private auth: AuthService,
     private sync: SyncService,
     private gamification: GamificationService,
-    private localRepo: LocalBibleRepository
+    private localRepo: LocalBibleRepository,
+    private loadingCtrl: LoadingController,
+    private toastCtrl: ToastController
   ) { }
 
   ngOnInit() {
@@ -58,57 +61,15 @@ export class ProfilePage implements OnInit {
     // BUT we need to POPULATE 'UserStats' table first for Gamification to work!
     // Current Issue: Nothing is writing to 'UserStats'. 
 
-    // Quick Fix for Gamification:
-    // We will manually construct a stats array based on the table counts to pass to GamificationService.
+    // 4. Calculate Stats via Worker
+    const statsResult = await this.gamification.calculateStatsAsync(bookmarks);
+    this.currentStreak = statsResult.streak;
 
-    // Streak Integration
-    const streak = await this.calculateStreak();
-    this.currentStreak = streak;
+    // 2. Get Badges using the Map returned by worker
+    this.badges = this.gamification.getBadges(statsResult.raw);
 
-    const computedStats = [
-      { id: '1', metric_key: 'verses_marked', value: bookmarks.length, updated_at: Date.now(), is_synced: 0 },
-      { id: '2', metric_key: 'current_streak', value: streak, updated_at: Date.now(), is_synced: 0 }
-    ] as any[];
-
-    // 2. Get Badges (processed rules)
-    this.badges = this.gamification.getBadges(computedStats);
   }
 
-  // Calculate Streak Logic
-  async calculateStreak(): Promise<number> {
-    const bookmarks = await this.localRepo.getBookmarks();
-    const activityDates = new Set<string>();
-
-    bookmarks.forEach(b => {
-      const d = new Date(b.created_at || Date.now());
-      d.setHours(0, 0, 0, 0);
-      activityDates.add(d.toISOString());
-    });
-
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    let streak = 0;
-    let currentCheck = new Date(today);
-
-    // Check today or yesterday to keep streak alive
-    if (!activityDates.has(currentCheck.toISOString())) {
-      currentCheck.setDate(currentCheck.getDate() - 1);
-      if (!activityDates.has(currentCheck.toISOString())) {
-        return 0;
-      }
-    }
-
-    while (true) {
-      if (activityDates.has(currentCheck.toISOString())) {
-        streak++;
-        currentCheck.setDate(currentCheck.getDate() - 1);
-      } else {
-        break;
-      }
-    }
-    return streak;
-  }
 
 
 
@@ -120,7 +81,34 @@ export class ProfilePage implements OnInit {
   }
 
   async loginGoogle() {
-    console.log('Login with Google - Pending Implementation');
+    console.log('Login with Google logic starting...');
+    const loading = await this.loadingCtrl.create({
+      message: 'Iniciando sesión con Google...',
+    });
+    await loading.present();
+
+    try {
+      await this.auth.loginWithGoogle();
+      this.presentToast('Bienvenido. Sincronizando tus datos locales...', 'success');
+
+      // Trigger forced sync to merge local guest data with cloud
+      this.sync.syncAll(true);
+    } catch (error) {
+      console.error('Google Login UI Error', error);
+      this.presentToast('Error al iniciar sesión: ' + (error.message || JSON.stringify(error)), 'danger');
+    } finally {
+      loading.dismiss();
+    }
+  }
+
+  async presentToast(message: string, color: string) {
+    const toast = await this.toastCtrl.create({
+      message,
+      duration: 3000,
+      color,
+      position: 'bottom'
+    });
+    toast.present();
   }
 
   // --- DEBUGGING ---

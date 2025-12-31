@@ -79,16 +79,26 @@ export class FirebaseBibleRepository implements BibleRepository {
 
   // --- NOTES ---
   async getNotes(): Promise<Note[]> {
-    // Pending Implementation
-    return [];
+    const uid = await this.getUserId();
+    if (!uid) return [];
+
+    const snapshot = await firstValueFrom(
+      this.afs.collection<Note>(`users/${uid}/notes`).valueChanges()
+    );
+    return snapshot || [];
   }
 
   async saveNote(note: Note): Promise<void> {
-    // Pending
+    const uid = await this.getUserId();
+    if (!uid) return;
+
+    await this.afs.doc(`users/${uid}/notes/${note.id}`).set(note, { merge: true });
   }
 
   async deleteNote(id: string): Promise<void> {
-    // Pending
+    const uid = await this.getUserId();
+    if (!uid) return;
+    await this.afs.doc(`users/${uid}/notes/${id}`).delete();
   }
 
   // --- READING PROGRESS ---

@@ -17,13 +17,14 @@ import { Drivers } from '@ionic/storage';
 // Services
 import { BibliaService } from './services/biblia.service';
 import { SyncService } from './core/services/sync.service'; // Added import
+import { SocialSharing } from '@awesome-cordova-plugins/social-sharing/ngx';
 
 //import { FileOpener } from '@awesome-cordova-plugins/file-opener/ngx';
 
 //import { AngularFireModule} from "@angular/fire";
 
 //import { FirebaseAuthentication } from "@awesome-cordova-plugins/firebase-authentication/ngx";
-//import { GooglePlus } from '@awesome-cordova-plugins/google-plus/ngx';
+import { GooglePlus } from '@awesome-cordova-plugins/google-plus/ngx';
 
 import { Clipboard } from '@awesome-cordova-plugins/clipboard/ngx';
 
@@ -87,8 +88,11 @@ import { RouterModule } from '@angular/router';
             //Httpd,
             HTTP,
             SQLite,
+            SQLite,
             SyncService, // Explicitly provide SyncService
+            SocialSharing,
             provideHttpClient(withInterceptorsFromDi()),
+            GooglePlus
         ]
 })
 export class AppModule { }

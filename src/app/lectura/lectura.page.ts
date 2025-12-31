@@ -19,6 +19,10 @@ import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
+import { SyncService } from '../core/services/sync.service';
+import { Note, Bookmark } from '../core/repositories/bible.repository';
+import { SocialSharing } from '@awesome-cordova-plugins/social-sharing/ngx';
+import { AudioPlayerService } from '../core/services/audio-player.service';
 
 
 @Component({
@@ -78,24 +82,19 @@ export class LecturaPage implements OnInit {
   tipoOrdenName;
   private fragment: string;
   private sub: Subscription;
-  audioMP3: string;
-  private win: any = window;
-  tiempoAudio;
-  colorVar = "blue"
-  readVersiculo: boolean = true;
+  // Audio State from Service
   isPlaying: boolean = false;
-  audio;
-  idPlay = 0;
-  tiempoRecorrido = 0;
-  ultimoTiempo = 0;
   playPausa: string = "play";
   share: boolean = false;
   copiaCondensado = [];
   pathDiviceIosAndroid: string;
   darkMode: boolean = true;
   estadoDark: string = "moon";
-  timeMap: any[] = [];
   currentHighlightedVerse: any = null;
+  // Selection Menu State
+  isMenuOpen = false;
+  selectedVerseForMenu: any = null;
+  notas: Note[] = [];
 
   @ViewChild(IonContent) ionContent: IonContent;
   constructor(private bibliaService: BibliaService,
@@ -113,7 +112,9 @@ export class LecturaPage implements OnInit {
     private activeRoute: ActivatedRoute,
     public tabs: TabsPage,
     private elementRef: ElementRef,
-    private renderer: Renderer2) {
+    private syncService: SyncService,
+    private socialSharing: SocialSharing,
+    private audioService: AudioPlayerService) {
 
     this.tabs.validaUri();
     //this.guardarMarcador();
@@ -132,6 +133,7 @@ export class LecturaPage implements OnInit {
 
 
   async ngOnInit() {
+    this.setupAudioSubscriptions();
     console.log("Update 1")
     console.log(this.platform.platforms())
 
@@ -281,6 +283,32 @@ export class LecturaPage implements OnInit {
 
   } // ngOnInit
 
+  setupAudioSubscriptions() {
+    this.audioService.isPlaying$.subscribe(playing => {
+      this.isPlaying = playing;
+      this.playPausa = playing ? 'pause' : 'play';
+    });
+
+    this.audioService.currentVerse$.subscribe(verse => {
+      if (verse !== null && verse !== this.currentHighlightedVerse) {
+        if (this.currentHighlightedVerse) {
+          this.marcarVersiculoAudioRemove(this.currentHighlightedVerse);
+        }
+        this.currentHighlightedVerse = verse;
+        this.marcarVersiculoAudioAdd(verse);
+
+        const id = 'l' + verse;
+        const el = document.getElementById(id);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      } else if (verse === null && this.currentHighlightedVerse) {
+        this.marcarVersiculoAudioRemove(this.currentHighlightedVerse);
+        this.currentHighlightedVerse = null;
+      }
+    });
+  }
+
   botonclick(link) {
     //this.router.navigate(["/tabs/tab1",'#parte1']);
     let n = "10"
@@ -289,34 +317,40 @@ export class LecturaPage implements OnInit {
 
 
   async playAudio() {
-    //this.ionContent.scrollToTop(300); //subir scroll al inicio
-    let tiempo
-    console.log("this.isPlaying " + this.isPlaying)
-
     if (this.isPlaying) {
-      //this.isPlaying = false; se pasa al evento
-      //if (!this.audio.paused){
-      this.audio.pause();
-      //}
-      await this.storage.set('playAuto', false);
-      console.log("pause")
-      this.marcarVersiculoAudioRemove("all")
+      this.audioService.pauseAudio();
     } else {
+      // Logic to resolve path
+      // Default to remote URL so it works if local fails
+      let audioSrc = "https://sionlecheymiel.com/file/audios/" + this.libro + "/" + this.capitulo + ".mp3";
 
+      if (this.platform.is("android")) {
+        this.pathDiviceIosAndroid = "/files/Documents/";
+      } else if (this.platform.is("ios")) {
+        this.pathDiviceIosAndroid = "/Documents/";
+      }
 
-      this.audio.src = this.audioMP3;
-      this.audio.load();
-      this.audio.currentTime = this.tiempoRecorrido - this.ultimoTiempo;
-      //this.audio.currentTime = 244
-      //let listoPlay = true
-      //while( listoPlay){     
-      //} 
-      this.audio.play();
-      await this.storage.set('playAuto', false);
-      console.log("play")
+      const localPath = "por-Capitulos/" + this.libro + "/" + this.capitulo + ".mp3";
+      const fullPath = this.file.applicationStorageDirectory + this.pathDiviceIosAndroid + localPath;
 
+      // Check File Exists
+      try {
+        const exists = await this.file.checkFile(this.file.applicationStorageDirectory + this.pathDiviceIosAndroid, localPath);
+        if (exists) {
+          audioSrc = (window as any).Ionic.WebView.convertFileSrc(fullPath);
+        }
+      } catch (e) {
+        console.log("Local audio retrieval failed, using remote.");
+      }
+
+      try {
+        const timeMapData = await this.bibliaService.getTextoAudio(this.libro, this.capitulo);
+        this.audioService.playAudio(audioSrc, timeMapData as any[]);
+      } catch (e) {
+        console.warn("Audio map not found, playing without sync.", e);
+        this.audioService.playAudio(audioSrc);
+      }
     }
-
   }
 
   changeDark() {
@@ -337,6 +371,7 @@ export class LecturaPage implements OnInit {
   marcarVersiculoAudioRemove(versiculo) {
     if (versiculo === "all") {
       this.share = false;
+      this.isMenuOpen = false;
       this.copiaCondensado = [];
       const els = document.querySelectorAll('.versiculo-highlight');
       els.forEach(el => el.classList.remove('versiculo-highlight'));
@@ -354,25 +389,6 @@ export class LecturaPage implements OnInit {
   }
 
 
-  async delay(ms: number, tiempo2) {
-    if (ms > 1) {
-      for (let _i = 0; _i < ms * 2; _i++) { //ms*2  y time 500 es para solucionar pause play rapido
-        if (!this.isPlaying) {
-          return
-        }
-        await this.delay2(500);
-      }
-      await this.delay2(tiempo2);
-    } else {
-      await this.delay2(tiempo2);
-    }
-    return
-    //return new Promise( resolve => setTimeout(resolve, ms) );
-  }
-  delay2(ms: number) {
-    console.log("delay")
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
 
   // funcion para cambiar el modo desde el toggle modo dark
 
@@ -529,22 +545,17 @@ export class LecturaPage implements OnInit {
         this.marcador = val;
       }
     });
+
+    // Load Notes
+    this.notas = await this.bibliaService.getNotes();
+
     this.mostrarCapitulos = false;
     this.libro = libro;
     this.capitulo = capitulo;
     this.actualizarLibroTitulo(this.libro);
 
     if (this.isPlaying) {
-      this.playAudio()
-      await this.delay2(900);
-      this.idPlay = 0
-      this.tiempoRecorrido = 0
-      await this.audioReproductor()
-    } else {
-      this.idPlay = 0
-      this.tiempoRecorrido = 0
-      console.log("desde no *** audioReproductor")
-      await this.audioReproductor()
+      this.audioService.stopAudio();
     }
     // update es referente a si se actualizo los arquivos JSON que tienen el texto.
 
@@ -573,141 +584,7 @@ export class LecturaPage implements OnInit {
     this.mostrarTexto = true;
   }
 
-  calculateTimeMap(audioData) {
-    this.timeMap = [];
-    let currentTime = 0;
-    for (const entry of audioData) {
-      if (entry.versiculo) {
-        this.timeMap.push({
-          versiculo: entry.versiculo,
-          start: currentTime,
-          end: currentTime + entry.seg
-        });
-      }
-      currentTime += entry.seg;
-    }
-  }
-
-  async audioReproductor() {
-    //Validar si el audio existe con readAsText
-    let promiseAudio = this.file.readAsText(this.file.applicationStorageDirectory + this.pathDiviceIosAndroid, "por-Capitulos/" + this.libro + "/" + this.capitulo + ".mp3");
-    if (promiseAudio != undefined) {
-      await promiseAudio.then((value) => {
-        console.log("ARCHIVO  existente ");
-        let localAudioURL = this.file.applicationStorageDirectory + this.pathDiviceIosAndroid + "por-Capitulos/" + this.libro + "/" + this.capitulo + ".mp3";
-        this.audioMP3 = this.win.Ionic.WebView.convertFileSrc(localAudioURL);
-      }).catch(err => {
-        console.error(err);
-        console.log("ARCHIVO AUDIO no  existente ir a internet ");
-        this.audioMP3 = "https://sionlecheymiel.com/file/audios/" + this.libro + "/" + this.capitulo + ".mp3";
-      });
-    } else {
-      this.audioMP3 = "https://sionlecheymiel.com/file/audios/" + this.libro + "/" + this.capitulo + ".mp3";
-    }
-
-    this.tiempoAudio = await this.bibliaService.getTextoAudio(this.libro, this.capitulo);
-    if (this.tiempoAudio) {
-      this.calculateTimeMap(this.tiempoAudio);
-    }
-
-    console.log(this.tiempoAudio)
-    console.log("***** " + this.audioMP3)
-
-
-    this.storage.get('playAuto').then((val) => {
-      if (val != null && val == true) {
-
-        this.playAudio()
-      }
-      console.log("playAuto reproductor " + val);
-    });
-
-    this.audio = new Audio();
-
-    this.audio.addEventListener("timeupdate", () => {
-      if (!this.isPlaying) return;
-
-      const currentTime = this.audio.currentTime;
-      // Find the verse corresponding to the current time
-      const currentVerseEntry = this.timeMap.find(entry => currentTime >= entry.start && currentTime < entry.end);
-
-      if (currentVerseEntry) {
-        // Only update if the verse has changed
-        if (this.currentHighlightedVerse !== currentVerseEntry.versiculo) {
-
-          // Remove highlight from previous verse
-          if (this.currentHighlightedVerse) {
-            this.marcarVersiculoAudioRemove(this.currentHighlightedVerse);
-          }
-
-          // Add highlight to new verse
-          this.marcarVersiculoAudioAdd(currentVerseEntry.versiculo);
-          this.currentHighlightedVerse = currentVerseEntry.versiculo;
-
-          // Scroll logic
-          const id = 'l' + currentVerseEntry.versiculo;
-          const el = document.getElementById(id);
-          if (el) {
-            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          }
-        }
-      }
-    });
-
-    this.audio.addEventListener("playing", async () => {
-      this.playPausa = "pause"
-      this.isPlaying = true;
-    });
-
-    this.audio.addEventListener("pause", async () => {
-      console.log("Event Pause");
-      this.isPlaying = false;
-      await this.storage.set('playAuto', false);
-      this.playPausa = "play"
-
-      // Clear highlight on pause if preferred, or keep it. Keeping it is usually better for UX.
-      // this.marcarVersiculoAudioRemove("all") 
-    });
-
-    this.audio.addEventListener("ended", async () => {
-      await this.storage.set('playAuto', true);
-      console.log("Event finalizo el audio reproducción");
-      this.marcarVersiculoAudioRemove("all");
-      this.currentHighlightedVerse = null;
-      this.nextboton()
-    });
-
-    this.audio.addEventListener("loadstart", () => {
-      console.log("Event loadstart");
-    });
-    this.audio.addEventListener("canplaythrough", () => {
-      console.log("Event canplaythrough");
-    });
-    this.audio.addEventListener("waiting", () => {
-      //La reproducción se ha detenido por ausencia (temporal) de datos.
-      console.log("Event waiting");
-      // this.isPlaying = false // Don't stop logic on waiting, buffering is normal
-      this.playPausa = "alert-circle-outline"
-    });
-    this.audio.addEventListener(".canplay", () => {
-      //	La carga del recurso multimedia se ha detenido, pero no por un error.
-      console.log("Event .canplay");
-      this.isPlaying = false
-      this.playPausa = "alert-circle-outline"
-    });
-    this.audio.addEventListener(".abort", () => {
-      //	La carga del recurso multimedia se ha detenido, pero no por un error.
-      console.log("Event .abort");
-      this.isPlaying = false
-      this.playPausa = "alert-circle-outline"
-    });
-    this.audio.addEventListener(".error", () => {
-      //	La carga del recurso multimedia se ha detenido, resultado de un error.
-      console.log("Event .error");
-      this.isPlaying = false
-      this.playPausa = "alert-circle-outline"
-    });
-  }
+  // Removed deprecated audioReproductor, calculateTimeMap
 
 
   async previousboton() {
@@ -732,13 +609,7 @@ export class LecturaPage implements OnInit {
     this.marcarVersiculoAudioRemove("all")
 
     if (this.isPlaying) {
-      //this.playAudio()
-      await this.delay2(900);
-      this.idPlay = 0
-      this.tiempoRecorrido = 0
-    } else {
-      this.idPlay = 0
-      this.tiempoRecorrido = 0
+      this.audioService.stopAudio();
     }
 
   }
@@ -767,19 +638,8 @@ export class LecturaPage implements OnInit {
     this.router.navigate(['/tabs/lectura'], { fragment: "" });
     this.marcarVersiculoAudioRemove("all")
 
-    console.log("Desde Next this.isPlaying " + this.isPlaying)
     if (this.isPlaying) {
-      console.log("Desde if next ")
-      await this.delay2(1500);
-      this.tiempoRecorrido = 0
-      this.idPlay = 0
-
-    } else {
-      console.log("Desde else next ")
-      await this.delay2(1500);
-      this.tiempoRecorrido = 0
-      this.idPlay = 0
-
+      this.audioService.stopAudio();
     }
 
   }
@@ -930,17 +790,14 @@ export class LecturaPage implements OnInit {
   async mostrarCitaAlert(cita, textoVersiculo, idLibro, capituloC) {
     const alert = await this.alertController.create({
       header: cita,
-      message: "<h6 align=\"center\">" + textoVersiculo + "</h6>",
+      message: textoVersiculo,
       buttons: [
         { text: 'OK' },
         {
           text: 'Ir al Capitulo',
           handler: () => {
             if (this.isPlaying) {
-              this.audio.pause();//Stop
-              this.audio.currentTime = 0;
-              this.idPlay = 0
-              this.tiempoRecorrido = 0
+              this.audioService.stopAudio();
               this.router.navigate(['/tabs/tab1'], { fragment: "" });
               this.marcarVersiculoAudioRemove("all")
             }
@@ -1014,15 +871,31 @@ export class LecturaPage implements OnInit {
       this.copiaCondensado.splice(versiculo, 1);
       //delete this.copiaCondensado[versiculo]
     }
+    // Multi-select logic is handled by copiaCondensado updates above
     let contador = 0
     for (let clave in this.copiaCondensado) {
       contador++
     }
-    //console.log("contador "+ contador);
+    // Sync Menu State with Count
     if (contador > 0) {
-      this.share = true
+      this.share = true;
+      // Force menu open if not already open (or keep it open)
+      if (!this.isMenuOpen) {
+        this.isMenuOpen = true;
+      }
+
+      // Update "selectedVerseForMenu" to the LATEST selected 
+      this.selectedVerseForMenu = {
+        book_id: idLibro,
+        chapter: capitulo,
+        verse: versiculo,
+        content: this.textTemp
+      };
     } else {
+      // If count is 0, auto-close
       this.share = false
+      this.isMenuOpen = false;
+      this.selectedVerseForMenu = null;
     }
     //this.marcarVersiculoAudioRemove("readVersiculol" + versiculoAnterior)
     //this.marcarVersiculoAudioAdd("readVersiculol" + versiculo)
@@ -1060,14 +933,28 @@ export class LecturaPage implements OnInit {
     //console.log(textTemp + " " + this.librot + " " + this.capitulo + ":"  + ' Biblia SLM http://sionlecheymiel.com')
     this.clipboard.copy('*Biblia "Sion: Leche y Miel" ' + this.librot + " " + this.capitulo + '*' + textTemp + ' https://sionlecheymiel.com');
     this.marcarVersiculoAudioRemove("all")
+    this.isMenuOpen = false;
   }
 
-  async marcarVersiculo() {
+
+
+  async compartirVersiculo() {
+    let textTemp = "";
     for (let clave in this.copiaCondensado) {
-      //this.guardarMarcador(idLibro, capitulo, versiculo);
-      await this.guardarMarcador(this.copiaCondensado[clave][0], this.copiaCondensado[clave][1], this.copiaCondensado[clave][2]);
+      textTemp = textTemp + " " + this.copiaCondensado[clave][2] + this.copiaCondensado[clave][3]
     }
-    this.marcarVersiculoAudioRemove("all")
+
+    const shareMsg = `*Biblia "Sion: Leche y Miel" ${this.librot} ${this.capitulo}* ${textTemp} https://sionlecheymiel.com`;
+
+    this.socialSharing.share(shareMsg, null, null, null).then(() => {
+      // Success
+      this.marcarVersiculoAudioRemove("all");
+      this.isMenuOpen = false;
+    }).catch((error) => {
+      console.error("Share failed", error);
+      // Fallback to clipboard if share fails (optional)
+      this.copiarVersiculo();
+    });
   }
 
   aumentarSize() {
@@ -1087,39 +974,150 @@ export class LecturaPage implements OnInit {
 
   // ...
 
-  async guardarMarcador(libro, capitulo, versiculo) {
-    //console.log(this.marcador);
+  async marcarVersiculo() {
+    for (let clave in this.copiaCondensado) {
+      await this.guardarMarcador(this.copiaCondensado[clave][0], this.copiaCondensado[clave][1], this.copiaCondensado[clave][2], this.selectedColor);
+    }
+    this.marcarVersiculoAudioRemove("all")
+    this.isMenuOpen = false;
+  }
+
+  async guardarMarcador(libro, capitulo, versiculo, color = '#FFF9C4') {
     const resultadoMarcador = this.marcador.find(marcador => marcador.capitulo === capitulo && marcador.versiculo === versiculo);
-    //console.log(resultadoMarcador);
     let indiceMarcador = this.marcador.findIndex(marcador => marcador.capitulo === capitulo && marcador.versiculo === versiculo);
 
     if (resultadoMarcador === undefined) {
       // Add to local UI array
       this.marcador.push({
         capitulo: capitulo,
-        versiculo: versiculo
+        versiculo: versiculo,
+        color: color  // Add color support locally
       });
+
+      // Construct Bookmark Object correctly for Repo
+      const newBookmark: Bookmark = {
+        id: this.generateUUID(),
+        book_id: libro,
+        chapter: capitulo,
+        verse: versiculo,
+        color: color,
+        created_at: Date.now(),
+        updated_at: Date.now(),
+        is_synced: 0
+      };
+
       // Save to SQLite via Repo
-      await this.bibliaService.saveBookmark(libro, capitulo, versiculo);
+      await this.bibliaService.saveBookmark(newBookmark);
     } else {
       // Remove from local UI array
       this.marcador.splice(indiceMarcador, 1);
       // Remove from SQLite via Repo
       await this.bibliaService.deleteBookmarkByRef(libro, capitulo, versiculo);
     }
-
-    // Legacy Storage Fallback removed/commented out as per Offline-First architecture
-    // await this.storage.set(libro, this.marcador);
-    // Logic for marcadorLibro is handled by SQL queries now.
   }
   marcar(capitulo, versiculo) {
-    const resultadoMarcador = this.marcador.find(marcador => marcador.capitulo === capitulo && marcador.versiculo === versiculo);
-    if (resultadoMarcador != undefined) {
-      this.marcarV = 'highlight';
-      //return('highlight');
-    } else {
-      this.marcarV = "";
-    }
-
+    // Deprecated for style binding, kept if needed for other logic or can be removed.
+    // Replaced by obtenerColorMarcador
   }
+
+  obtenerColorMarcador(capitulo, versiculo): string {
+    const bookmark = this.marcador.find(m => m.capitulo === capitulo && m.versiculo === versiculo);
+    if (bookmark) {
+      return bookmark.color || '#FFEB3B'; // Return saved color or default yellow
+    }
+    return 'transparent';
+  }
+
+  // --- MENU & NOTE LOGIC ---
+
+  closeMenu() {
+    this.isMenuOpen = false;
+    // Optional: Clear selection depending on UX preference
+  }
+
+  generateUUID() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
+
+  async crearNota() {
+    if (!this.selectedVerseForMenu) return;
+
+    const alert = await this.alertController.create({
+      header: 'Crear Nota',
+      subHeader: `${this.librot} ${this.selectedVerseForMenu.chapter}:${this.selectedVerseForMenu.verse}`,
+      inputs: [
+        {
+          name: 'noteContent',
+          type: 'textarea',
+          placeholder: 'Escribe tu nota aquí...'
+        },
+      ],
+      buttons: [
+        { text: 'Cancelar', role: 'cancel' },
+        {
+          text: 'Guardar',
+          handler: async (data) => {
+            if (data.noteContent) {
+              await this.guardarNota(data.noteContent);
+            }
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  async guardarNota(content: string) {
+    const note: Note = {
+      id: this.generateUUID(),
+      book_id: parseInt(this.selectedVerseForMenu.book_id),
+      chapter: parseInt(this.selectedVerseForMenu.chapter),
+      verse: parseInt(this.selectedVerseForMenu.verse),
+      content: content,
+      created_at: Date.now(),
+      updated_at: Date.now(),
+      is_synced: 0
+    };
+
+    await this.bibliaService.saveNote(note);
+    this.syncService.syncAll(true);
+
+    // Refresh Notes
+    this.notas = await this.bibliaService.getNotes();
+
+    this.closeMenu();
+    this.marcarVersiculoAudioRemove("all");
+  }
+
+  tieneNota(capitulo, versiculo) {
+    if (!this.notas) return false;
+    // this.libro is int, note.book_id is int
+    return this.notas.some(n => n.book_id == this.libro && n.chapter == capitulo && n.verse == versiculo);
+  }
+
+  async verNota(capitulo, versiculo) {
+    const note = this.notas.find(n => n.book_id == this.libro && n.chapter == capitulo && n.verse == versiculo);
+    if (note) {
+      const alert = await this.alertController.create({
+        header: 'Nota',
+        subHeader: `${this.librot} ${capitulo}:${versiculo}`,
+        message: note.content,
+        buttons: ['Cerrar']
+      });
+      await alert.present();
+    }
+  }
+
+  // State for Color Selection
+  selectedColor: string = '#FFF9C4'; // Default Pastel Yellow
+
+  seleccionarColor(color) {
+    console.log("Color selected:", color);
+    this.selectedColor = color;
+    // Do NOT close menu. Visual feedback will be handled in HTML.
+  }
+
 }

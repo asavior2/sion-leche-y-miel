@@ -3,13 +3,14 @@ import { register } from 'swiper/element/bundle';
 
 register();
 
-import { Platform } from '@ionic/angular';
+import { Platform, ModalController } from '@ionic/angular';
 import { SplashScreen } from '@awesome-cordova-plugins/splash-screen/ngx';
 import { StatusBar } from '@awesome-cordova-plugins/status-bar/ngx';
 import { Storage as IonicStorage } from '@ionic/storage-angular';
 import { AuthService } from './core/services/auth.service';
 import { SyncService } from './core/services/sync.service';
 import { DataMigrationService } from './core/services/data-migration.service';
+import { RegistrationPromptPage } from './pages/registration-prompt/registration-prompt.page';
 
 @Component({
   selector: 'app-root',
@@ -23,7 +24,8 @@ export class AppComponent {
     private storage: IonicStorage,
     private migrationService: DataMigrationService,
     private auth: AuthService,
-    private sync: SyncService
+    private sync: SyncService,
+    private modalCtrl: ModalController
   ) {
     this.initializeApp();
   }
@@ -42,6 +44,19 @@ export class AppComponent {
         if (!user) {
           console.log('User not logged in. Operating in Offline Guest Mode.');
           // await this.auth.loginAnonymously(); // Disabled per user request
+
+          // Check Registration Prompt
+          const promptStatus = await this.storage.get('registration_prompt_status');
+          if (promptStatus !== 'never') {
+            setTimeout(async () => {
+              const modal = await this.modalCtrl.create({
+                component: RegistrationPromptPage,
+                cssClass: 'registration-prompt-modal',
+                backdropDismiss: true
+              });
+              await modal.present();
+            }, 3000); // Wait 3s before prompting
+          }
         }
         // Trigger Sync (background)
         this.sync.syncAll();

@@ -34,19 +34,49 @@
 
 <ion-content>
 
-  <ion-fab *ngIf="share" horizontal="start" vertical="top" slot="fixed">
-    <ion-fab-button color="primary">
-      <ion-icon name="share-social"></ion-icon>
-    </ion-fab-button>
-    <ion-fab-list side="end">
-      <ion-fab-button color="light" (click)="copiarVersiculo()">
-        <ion-icon color="primary" name="copy"></ion-icon>
-      </ion-fab-button>
-      <ion-fab-button color="light" (click)="marcarVersiculo()">
-        <ion-icon color="primary" name="bookmark"></ion-icon>
-      </ion-fab-button>
-    </ion-fab-list>
-  </ion-fab>
+  <!-- Selection Menu (Bottom Sheet) -->
+  <!-- Selection Menu (Bottom Sheet) -->
+  <div class="sticky-footer" [class.valid]="isMenuOpen">
+    <div class="menu-content ion-padding">
+      <!-- Row 1: Action Icons with Labels -->
+      <div class="action-row" style="display: flex; justify-content: space-around; margin-bottom: 20px;">
+        <div class="action-item" (click)="marcarVersiculo()">
+          <ion-button fill="clear">
+            <ion-icon name="bookmark" slot="icon-only" size="large"></ion-icon>
+          </ion-button>
+          <ion-label style="font-size: 10px; display: block; text-align: center;">Marcar</ion-label>
+        </div>
+
+        <div class="action-item" (click)="crearNota()">
+          <ion-button fill="clear">
+            <ion-icon name="document-text" slot="icon-only" size="large"></ion-icon>
+          </ion-button>
+          <ion-label style="font-size: 10px; display: block; text-align: center;">Nota</ion-label>
+        </div>
+
+        <div class="action-item" (click)="copiarVersiculo()">
+          <ion-button fill="clear">
+            <ion-icon name="copy" slot="icon-only" size="large"></ion-icon>
+          </ion-button>
+          <ion-label style="font-size: 10px; display: block; text-align: center;">Copiar</ion-label>
+        </div>
+
+        <div class="action-item" (click)="compartirVersiculo()">
+          <ion-button fill="clear">
+            <ion-icon name="share-social" slot="icon-only" size="large"></ion-icon>
+          </ion-button>
+          <ion-label style="font-size: 10px; display: block; text-align: center;">Compartir</ion-label>
+        </div>
+      </div>
+
+      <!-- Row 2: Color Palette (Minimalist) -->
+      <div class="color-row" style="display: flex; justify-content: center; gap: 15px;">
+        <div *ngFor="let color of ['#FFF9C4', '#DCEDC8', '#B3E5FC', '#F8BBD0', '#E1BEE7']" class="color-dot"
+          [style.background-color]="color" [class.selected]="selectedColor === color" (click)="seleccionarColor(color)">
+        </div>
+      </div>
+    </div>
+  </div>
 
   <ion-grid>
     <ion-row>
@@ -73,23 +103,27 @@
                   </ion-text>
                 </FONT>
                 <font *ngFor="let construirVersiculo of text.comprimido" [style.font-size.px]=this.fontSize>
-                  <ion-text class={{marcar(construirVersiculo.capitulo,construirVersiculo.versiculo)}}>
+                  <ion-text>
                     <span
                       (click)="seleccionarVersiculo('noText', construirVersiculo.id_libro, construirVersiculo.capitulo, construirVersiculo.versiculo)"
-                      class={{this.marcarV}}>
+                      [style.background-color]="obtenerColorMarcador(construirVersiculo.capitulo, construirVersiculo.versiculo)">
                       {{construirVersiculo.parteText}}
                     </span>
                     <span
-                      (click)="citaAlert(construirVersiculo.cita, construirVersiculo.ibroCita, construirVersiculo.capituloCita, construirVersiculo.versiculoCitaInicial)">
+                      (click)="citaAlert(construirVersiculo.cita, construirVersiculo.ibroCita, construirVersiculo.capituloCita, construirVersiculo.versiculoCitaInicial)"
+                      [style.background-color]="obtenerColorMarcador(construirVersiculo.capitulo, construirVersiculo.versiculo)">
                       <sup>
                         <!--<ion-icon class='ico-cita' color='medium' ios='ios-quote' md='md-quote'></ion-icon>-->
                         <ion-icon name='medical' class='ico-cita' color='medium'></ion-icon>
                         <!--<ion-icon name="bookmark" class='ico-cita' color='medium'></ion-icon>-->
                       </sup>
                     </span>
+                    <ion-icon *ngIf="tieneNota(construirVersiculo.capitulo, construirVersiculo.versiculo)"
+                      name="document-text" color="tertiary" style="vertical-align: middle; margin-left: 5px;"
+                      (click)="verNota(construirVersiculo.capitulo, construirVersiculo.versiculo); $event.stopPropagation()"></ion-icon>
                     <span
                       (click)="seleccionarVersiculo('noText', construirVersiculo.id_libro, construirVersiculo.capitulo, construirVersiculo.versiculo)"
-                      class={{this.marcarV}}>
+                      [style.background-color]="obtenerColorMarcador(construirVersiculo.capitulo, construirVersiculo.versiculo)">
                       {{construirVersiculo.parteFinal}}
                     </span>
                   </ion-text>
@@ -98,7 +132,8 @@
               </div>
             </div>
 
-            <div *ngIf="!text.hasOwnProperty('comprimido')" class="ion-margin-horizontal ion-margin-bottom">
+            <div *ngIf="!text.hasOwnProperty('comprimido') && text.texto"
+              class="ion-margin-horizontal ion-margin-bottom">
               <div id=lp{{text.versiculo}} outline="true" class=l{{text.versiculo}} #myButton>
                 <FONT [style.font-size.px]=this.fontSize-7 face="Segoe UI">
                   <ion-text *ngIf="!text.hasOwnProperty('idTitulo')" color="medium">
@@ -106,12 +141,15 @@
                   </ion-text>
                 </FONT>
                 <font [style.font-size.px]=this.fontSize>
-                  <ion-text class={{marcar(text.capitulo,text.versiculo)}}>
+                  <ion-text>
                     <span>
                       <a (click)="seleccionarVersiculo(text.texto,text.id_libro, text.capitulo, text.versiculo)"
-                        class={{this.marcarV}}>
+                        [style.background-color]="obtenerColorMarcador(text.capitulo, text.versiculo)">
                         {{text.texto}}
                       </a>
+                      <ion-icon *ngIf="tieneNota(text.capitulo, text.versiculo)" name="document-text" color="tertiary"
+                        style="vertical-align: middle; margin-left: 5px;"
+                        (click)="verNota(text.capitulo, text.versiculo); $event.stopPropagation()"></ion-icon>
                     </span>
                   </ion-text>
                 </font>
@@ -134,20 +172,20 @@
   </ion-grid>
 
   <!--Botones flotantes para la version de escritorio middle y middle right-->
-  <ion-fab vertical="bottom" horizontal="start" slot="fixed">
+  <ion-fab vertical="bottom" horizontal="start" slot="fixed" [class.raise-fabs]="isMenuOpen">
     <ion-fab-button (click)="previousboton()" size="small">
       <ion-icon name="chevron-back-outline"></ion-icon>
     </ion-fab-button>
   </ion-fab>
 
-  <ion-fab *ngIf="botonPlay" vertical="bottom" horizontal="center" slot="fixed">
+  <ion-fab *ngIf="botonPlay" vertical="bottom" horizontal="center" slot="fixed" [class.raise-fabs]="isMenuOpen">
     <ion-fab-button (click)="playAudio()" size="small" color="light">
       <ion-icon name="{{playPausa}}" color="primary"></ion-icon>
     </ion-fab-button>
   </ion-fab>
 
 
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed" size="small">
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" size="small" [class.raise-fabs]="isMenuOpen">
     <ion-fab-button (click)="nextboton()" size="small">
       <ion-icon name="chevron-forward-outline"></ion-icon>
     </ion-fab-button>

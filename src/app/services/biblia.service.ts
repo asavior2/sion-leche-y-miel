@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { HTTP } from '@awesome-cordova-plugins/http/ngx';
 import { File } from '@awesome-cordova-plugins/file/ngx';
 import { LocalBibleRepository } from '../core/repositories/local-bible.repository';
-import { Bookmark } from '../core/repositories/bible.repository';
+import { Bookmark, Note } from '../core/repositories/bible.repository';
 import { from, Observable } from 'rxjs';
 //import { Observable } from "rxjs/Observable";
 import { defer } from 'rxjs';
@@ -119,17 +119,7 @@ export class BibliaService {
     return this.bibleRepo.getBookmark(bookId, chapter, verse);
   }
 
-  async saveBookmark(bookId: number, chapter: number, verse: number): Promise<void> {
-    const bookmark: Bookmark = {
-      id: this.generateUUID(),
-      book_id: bookId,
-      chapter: chapter,
-      verse: verse,
-      color: 'default',
-      created_at: Date.now(),
-      updated_at: Date.now(),
-      is_synced: 0
-    };
+  async saveBookmark(bookmark: Bookmark): Promise<void> {
     await this.bibleRepo.saveBookmark(bookmark);
   }
 
@@ -142,6 +132,19 @@ export class BibliaService {
     if (existing) {
       await this.bibleRepo.deleteBookmark(existing.id);
     }
+  }
+
+  // --- NOTES (Added for Phase 7) ---
+  async getNotes(): Promise<Note[]> {
+    return this.bibleRepo.getNotes();
+  }
+
+  async saveNote(note: Note): Promise<void> {
+    await this.bibleRepo.saveNote(note);
+  }
+
+  async deleteNote(id: string): Promise<void> {
+    await this.bibleRepo.deleteNote(id);
   }
 
   // --- READING PROGRESS ---

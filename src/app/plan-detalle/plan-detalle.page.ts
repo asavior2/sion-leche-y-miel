@@ -69,6 +69,9 @@ export class PlanDetallePage implements OnInit {
   planArrayTemp: Array<any> = new Array();
   diaFinPlan;
   posicionSlide: number;
+  // Optimized Rendering
+  renderedDays: any[] = [];
+  RENDER_WINDOW = 30; // Show 30 days around current
   el;
   activarDia;
 
@@ -117,20 +120,24 @@ export class PlanDetallePage implements OnInit {
     }
     // this.storage.remove('bibleOneYear');
     // Load active plan metadata (Start Date) from Storage (Settings)
+    // Load active plan metadata (Start Date) from Storage (Settings)
     await this.storage.get('planesActivos').then((val) => {
+      this.planesActivos = val || []; // Load ALL plans or init empty
       if (val === null) {
         this.btnIniciarPlan = true;
       } else {
-        for (let entry of val) {
-          if (entry.nombre === this.nombrePlan) {
-            this.planesActivos.push(entry); // Keep track of active plan meta
-            console.log('Desde  if dentre del planes activo ');
-            this.btnIniciarPlan = false;
-            console.log('this.btnIniciarPlan ' + this.btnIniciarPlan);
-            this.ddStora = entry.diaInicio;
-            this.mmStora = entry.mesInicio;
-            this.yyyyStora = entry.anoInicio;
-          }
+        // Check if CURRENT plan is in the list
+        const activePlan = this.planesActivos.find(p => p.nombre === this.nombrePlan);
+
+        if (activePlan) {
+          console.log('Desde  if dentre del planes activo ');
+          this.btnIniciarPlan = false;
+          console.log('this.btnIniciarPlan ' + this.btnIniciarPlan);
+          this.ddStora = activePlan.diaInicio;
+          this.mmStora = activePlan.mesInicio;
+          this.yyyyStora = activePlan.anoInicio;
+        } else {
+          this.btnIniciarPlan = true;
         }
       }
     });
@@ -244,17 +251,15 @@ export class PlanDetallePage implements OnInit {
     // If we want the active day centered, we might offset.
     // But for now, let's just ensure the active day is visible.
     // Day 1 => Index 0. 
-    let targetIndex = Math.max(0, this.posicionSlide - 1);
+    // let targetIndex = Math.max(0, this.posicionSlide - 1);
 
-    this.slideOpts.initialSlide = targetIndex;
-    console.log(this.slideOpts)
-
-    this.swiperRef?.nativeElement.swiper?.slideTo(targetIndex);
+    // this.slideOpts.initialSlide = targetIndex;
+    this.updateRenderedWindow();
     /*this.slides.slideTo(this.imageIndex, 0).then(() => {
-      setTimeout(() => {
-      this.loading = false;
-      }, 250);
-      }); */
+    setTimeout(() => {
+    this.loading = false;
+    }, 250);
+    }); */
 
   } //fin ngOnIniT
 
@@ -360,28 +365,27 @@ export class PlanDetallePage implements OnInit {
     }
   }
 
-  iniciarPlan() {
+  async iniciarPlan() {
     // Check for duplicates before adding
     const planExists = this.planesActivos.some(activePlan => activePlan.nombre === this.nombrePlan);
 
     if (!planExists) {
       for (let plan of this.planes) {
         if (plan.nombre === this.nombrePlan) {
-          this.planesActivos.push(
-            {
-              titulo: plan.titulo,
-              nombre: plan.nombre,
-              imagen: plan.imagen,
-              descripcion: plan.descripcion,
-              URI: plan.URI,
-              diaInicio: this.dd,
-              mesInicio: this.mm,
-              anoInicio: this.yyyy,
-              progreso: 0
-            });
+          this.planesActivos.push({
+            titulo: plan.titulo,
+            nombre: plan.nombre,
+            imagen: plan.imagen,
+            descripcion: plan.descripcion,
+            URI: plan.URI,
+            diaInicio: this.dd,
+            mesInicio: this.mm,
+            anoInicio: this.yyyy,
+            progreso: 0
+          });
         }
       }
-      this.storage.set('planesActivos', this.planesActivos);
+      await this.storage.set('planesActivos', this.planesActivos);
     }
     this.btnIniciarPlan = false;
     for (let dias of this.temporalPlan) {
@@ -500,6 +504,30 @@ export class PlanDetallePage implements OnInit {
     } else {
       return false
     }
+  }
+
+  updateRenderedWindow() {
+    if (!this.planOfStora) return;
+
+    // Current global index (0-based)
+    const currentIndex = Math.max(0, this.posicionSlide - 1);
+
+    // Define Window: +/- 15 days, ensuring bounds
+    const start = Math.max(0, currentIndex - 15);
+    const end = Math.min(this.planOfStora.length, currentIndex + 15);
+
+    this.renderedDays = this.planOfStora.slice(start, end);
+
+    // The active day is now at index: currentIndex - start
+    const relativeIndex = currentIndex - start;
+
+    console.log(`Window update: Start ${start}, End ${end}, Relative Index ${relativeIndex}`);
+
+    setTimeout(() => {
+      if (this.swiperRef?.nativeElement?.swiper) {
+        this.swiperRef.nativeElement.swiper.slideTo(relativeIndex, 0); // 0 speed for instant jump or 500 for smooth
+      }
+    }, 100);
   }
 
 }

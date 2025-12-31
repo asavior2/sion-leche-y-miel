@@ -13,5 +13,10 @@ RUN npm install -g @ionic/cli @angular/cli cordova native-run
 # 35729: Live Reload
 EXPOSE 8100 35729
 
+COPY package*.json ./
+
+# Ensure dependencies are installed with legacy peer deps
+RUN npm install --legacy-peer-deps
+
 # Default command
 CMD ["ionic", "serve", "--host", "0.0.0.0", "--disable-host-check"]

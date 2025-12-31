@@ -1,0 +1,58 @@
+<ion-content class="ion-no-padding auth-promo-content">
+  <div class="hero-section">
+    <div class="circle-bg"></div>
+    <img src="assets/icon/icon.png" class="hero-img" alt="Sincronización" />
+  </div>
+
+  <div class="content-container">
+    <h1 class="main-title">¡Sincroniza tu Fe!</h1>
+    <p class="subtitle">
+      No pierdas tu racha espiritual. Lleva tu progreso a todas partes.
+    </p>
+
+    <div class="benefits-grid">
+      <div class="benefit-card">
+        <div class="icon-box secondary-bg">
+          <ion-icon name="cloud-upload"></ion-icon>
+        </div>
+        <div class="text-box">
+          <h4>Respaldo Cloud</h4>
+          <p>Tus datos siempre seguros</p>
+        </div>
+      </div>
+
+      <div class="benefit-card">
+        <div class="icon-box warning-bg">
+          <ion-icon name="trophy"></ion-icon>
+        </div>
+        <div class="text-box">
+          <h4>Logros</h4>
+          <p>Conserva tus medallas</p>
+        </div>
+      </div>
+
+      <div class="benefit-card">
+        <div class="icon-box tertiary-bg">
+          <ion-icon name="phone-portrait"></ion-icon>
+        </div>
+        <div class="text-box">
+          <h4>Multi-dispositivo</h4>
+          <p>Tablet, móvil y web</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <ion-button expand="block" class="btn-gradient" (click)="goToRegister()">
+        Crear cuenta Gratis
+        <ion-icon slot="end" name="arrow-forward"></ion-icon>
+      </ion-button>
+
+      <div class="secondary-actions">
+        <button class="link-btn" (click)="remindLater()">Más tarde</button>
+        <span class="separator">•</span>
+        <button class="link-btn muted" (click)="dontShowAgain()">No mostrar</button>
+      </div>
+    </div>
+  </div>
+</ion-content>
