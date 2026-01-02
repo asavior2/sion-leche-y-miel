@@ -200,73 +200,11 @@
         </div>
 
         <div class="scroll-container" *ngIf="mostrarTexto" align="justify">
-          <ion-label text-wrap part="placeholder" *ngFor="let text of textoJsonFinal">
-
-            <div *ngIf="text.hasOwnProperty('idTitulo')" class="ion-margin2">
-              <h4 align="center"><span class="text-segoe"
-                  [style.font-size.px]="fontSize+6"><strong>{{text.titulo}}</strong></span></h4>
-            </div>
-
-            <div *ngIf="text.hasOwnProperty('comprimido')" class="ion-margin-horizontal ion-margin-bottom">
-              <div id=l{{text.versiculo}} class="l{{text.versiculo}}">
-                <span class="text-segoe" [style.font-size.px]="fontSize-7"><ion-text color="medium">{{text.versiculo}}
-                  </ion-text></span>
-                <span *ngFor="let construirVersiculo of text.comprimido" [style.font-size.px]="fontSize">
-                  <ion-text>
-                    <span
-                      (click)="seleccionarVersiculo('noText', construirVersiculo.id_libro, construirVersiculo.capitulo, construirVersiculo.versiculo)"
-                      [style.background-color]="obtenerColorMarcador(construirVersiculo.capitulo, construirVersiculo.versiculo)">
-                      {{construirVersiculo.parteText}}
-                    </span>
-                    <span
-                      (click)="citaAlert(construirVersiculo.cita, construirVersiculo.ibroCita, construirVersiculo.capituloCita, construirVersiculo.versiculoCitaInicial)"
-                      [style.background-color]="obtenerColorMarcador(construirVersiculo.capitulo, construirVersiculo.versiculo)">
-                      <sup>
-                        <!-- Esto es una daga &dagger; -->
-                        <ion-icon class='ico-cita' ios='open-outline' md='md-quote'></ion-icon>
-                        <!--<ion-icon name="open-outline" class="verse-icon"></ion-icon>-->
-                        <!--<ion-icon name='medical' class='ico-cita' color='medium'></ion-icon>
-                        <!--<ion-icon name="bookmark" class='ico-cita' color='medium'></ion-icon>-->
-                      </sup>
-                    </span>
-                    <span
-                      (click)="seleccionarVersiculo('noText', construirVersiculo.id_libro, construirVersiculo.capitulo, construirVersiculo.versiculo)"
-                      [style.background-color]="obtenerColorMarcador(construirVersiculo.capitulo, construirVersiculo.versiculo)">
-                      {{construirVersiculo.parteFinal}}
-                    </span>
-                  </ion-text>
-
-                </span>
-                <ion-icon *ngIf="tieneNota(capitulo, text.versiculo)" name="document-text" color="tertiary"
-                  style="vertical-align: middle; margin-left: 5px;"
-                  (click)="verNota(capitulo, text.versiculo); $event.stopPropagation()">
-                </ion-icon>
-              </div>
-            </div>
-
-            <div *ngIf="!text.hasOwnProperty('comprimido') && text.texto"
-              class="ion-margin-horizontal ion-margin-bottom">
-              <div id=l{{text.versiculo}} outline="true" class=l{{text.versiculo}} #myButton>
-                <span class="text-segoe" [style.font-size.px]="fontSize-7"><ion-text
-                    *ngIf="!text.hasOwnProperty('idTitulo')" color="medium">{{text.versiculo}} </ion-text>
-                </span>
-                <span [style.font-size.px]="fontSize">
-                  <!-- size={{this.fontSize}}  style="font-size: 20px"   size={{this.fontSize-2}}-->
-                  <ion-text>
-                    <span (click)="seleccionarVersiculo(text.texto,text.id_libro, text.capitulo, text.versiculo)"
-                      [style.background-color]="obtenerColorMarcador(text.capitulo, text.versiculo)">
-                      {{text.texto}}
-                    </span>
-                    <ion-icon *ngIf="tieneNota(text.capitulo, text.versiculo)" name="document-text" color="tertiary"
-                      style="vertical-align: middle; margin-left: 5px;"
-                      (click)="verNota(text.capitulo, text.versiculo); $event.stopPropagation()"></ion-icon>
-                  </ion-text>
-                </span>
-              </div>
-            </div>
-
-
-          </ion-label>
+          <app-bible-viewer [content]="textoJsonFinal" [fontSize]="fontSize" [notes]="notas"
+            [highlights]="highlightsMap"
+            (verseClick)="seleccionarVersiculo($event.texto, $event.idLibro, $event.capitulo, $event.versiculo)"
+            (citationClick)="citaAlert($event.cita, $event.ibroCita, $event.capituloCita, $event.versiculoCitaInicial)">
+          </app-bible-viewer>
 
           <div align="center">
             <span class="text-segoe" style="font-size: 16px;"><strong>Sion: Leche y Miel (SLM) </strong></span>

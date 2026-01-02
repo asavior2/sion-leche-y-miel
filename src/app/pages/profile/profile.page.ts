@@ -1,11 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { LoadingController, ToastController } from '@ionic/angular';
+import { LoadingController, ToastController, AlertController, Platform } from '@ionic/angular';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { SyncService } from 'src/app/core/services/sync.service';
 import { GamificationService, Badge } from 'src/app/core/services/gamification.service';
 import { LocalBibleRepository } from 'src/app/core/repositories/local-bible.repository';
 import { Observable } from 'rxjs';
 import firebase from 'firebase/compat/app';
+import { Zip } from '@awesome-cordova-plugins/zip/ngx';
+import { File } from '@awesome-cordova-plugins/file/ngx';
+import { HTTP } from '@awesome-cordova-plugins/http/ngx';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
@@ -22,6 +26,13 @@ export class ProfilePage implements OnInit {
   booksRead = 0;
   versesMarked = 0;
   currentStreak = 0;
+  planProgress = 0;
+
+  // Audio Download State
+  activeDownloadQuality: 'alta' | 'media' | 'baja' | null = null;
+  downloadProgress = 0;
+  pathDiviceIosAndroid: string = '';
+  audioAvailable = false;
 
   constructor(
     private auth: AuthService,
@@ -29,12 +40,26 @@ export class ProfilePage implements OnInit {
     private gamification: GamificationService,
     private localRepo: LocalBibleRepository,
     private loadingCtrl: LoadingController,
-    private toastCtrl: ToastController
+    private toastCtrl: ToastController,
+    private zip: Zip,
+    private file: File,
+    private nativeHTTP: HTTP,
+    private alertCtrl: AlertController,
+    private platform: Platform,
+    private router: Router
   ) { }
 
   ngOnInit() {
     this.user$ = this.auth.user$;
     this.isSyncing$ = this.sync.isSyncing$;
+
+    // Platform Path Init
+    if (this.platform.is("android")) {
+      this.pathDiviceIosAndroid = "/files/Documents/"
+    } else if (this.platform.is("ios")) {
+      this.pathDiviceIosAndroid = "/Documents/"
+    }
+    this.checkAudioStatus();
     this.loadStats();
   }
 
@@ -68,6 +93,11 @@ export class ProfilePage implements OnInit {
     // 2. Get Badges using the Map returned by worker
     this.badges = this.gamification.getBadges(statsResult.raw);
 
+    // 3. Plan Progress (Bible One Year)
+    // Assuming 365 days for the standard plan
+    const planProgressData = await this.localRepo.getReadingProgress('bibleOneYear');
+    const completedDays = planProgressData.filter(p => p.status === 1).length;
+    this.planProgress = Math.min(100, Math.round((completedDays / 365) * 100));
   }
 
 
@@ -127,5 +157,119 @@ export class ProfilePage implements OnInit {
       unsyncedBookmarks: await this.localRepo.getUnsyncedBookmarks()
     };
     console.log('Debug Data:', this.debugData);
+  }
+
+  // --- AUDIO DOWNLOAD LOGIC ---
+
+  async checkAudioStatus() {
+    try {
+      // Check if 'por-Capitulos' directory exists
+      await this.file.checkDir(this.file.applicationStorageDirectory + this.pathDiviceIosAndroid, 'por-Capitulos');
+      this.audioAvailable = true;
+    } catch (e) {
+      this.audioAvailable = false;
+    }
+  }
+
+  async initiateDownload(calidad: 'alta' | 'media' | 'baja') {
+    if (this.activeDownloadQuality) return; // Prevent concurrent downloads
+
+    let url = '';
+    let nombre = '';
+
+    if (calidad === 'alta') {
+      url = 'https://sionlecheymiel.com/file/audio-SLM-calidad-alta.zip';
+      nombre = "audio-SLM-calidad-alta.zip";
+    } else if (calidad === 'media') {
+      url = 'https://sionlecheymiel.com/file/audio-SLM-calidad-media.zip';
+      nombre = "audio-SLM-calidad-media.zip";
+    } else {
+      url = 'https://sionlecheymiel.com/file/audio-SLM-calidad-baja.zip';
+      nombre = "audio-SLM-calidad-baja.zip";
+    }
+
+    this.activeDownloadQuality = calidad;
+    this.downloadProgress = 0;
+    this.presentToast('Iniciando descarga en segundo plano...', 'primary');
+
+    await this.download(url, nombre);
+  }
+
+  async download(url: string, nombre: string) {
+    const filePath = this.file.applicationStorageDirectory + this.pathDiviceIosAndroid + nombre;
+
+    this.nativeHTTP.downloadFile(url, {}, {}, filePath).then(response => {
+      console.log('Archivo descargado...', response);
+      // Delete old directory if exists
+      this.file.checkDir(this.file.applicationStorageDirectory + this.pathDiviceIosAndroid, 'por-Capitulos')
+        .then(_ => {
+          this.file.removeRecursively(this.file.applicationStorageDirectory + this.pathDiviceIosAndroid, 'por-Capitulos')
+            .then(_ => this.unZip(nombre))
+            .catch(err => {
+              console.error("Error removing old dir", err);
+              this.unZip(nombre);
+            });
+        }).catch(err => {
+          this.unZip(nombre); // Directory didn't exist, proceed
+        });
+
+    }).catch(err => {
+      console.error('Download error', err);
+      this.resetDownloadState();
+      this.alertErrorDownloadAudio("Ocurrió un problema", err.status + " " + err.error);
+    });
+  }
+
+  async unZip(nombre: string) {
+    const zipPath = this.file.applicationStorageDirectory + this.pathDiviceIosAndroid + nombre;
+
+    try {
+      await this.file.checkFile(zipPath, '');
+      const result = await this.zip.unzip(zipPath,
+        this.file.applicationStorageDirectory + this.pathDiviceIosAndroid,
+        (progress) => {
+          if (progress.total > 0) {
+            this.downloadProgress = Math.round((progress.loaded / progress.total) * 100);
+            // Force change detection if needed, implied by Angular Zone
+          }
+        }
+      );
+
+      if (result === 0) {
+        // Success
+        this.presentToast('Biblia en Audio instalada correctamente.', 'success');
+        this.audioAvailable = true;
+        this.file.removeFile(this.file.applicationStorageDirectory + this.pathDiviceIosAndroid, nombre);
+      } else {
+        this.alertErrorDownloadAudio('Error al descomprimir', 'Código: ' + result);
+      }
+    } catch (err) {
+      this.alertErrorDownloadAudio('Error', JSON.stringify(err));
+    } finally {
+      this.resetDownloadState();
+    }
+  }
+
+  resetDownloadState() {
+    this.activeDownloadQuality = null;
+    this.downloadProgress = 0;
+  }
+
+  async alertErrorDownloadAudio(header: string, message: string) {
+    const alert = await this.alertCtrl.create({
+      header,
+      message,
+      buttons: ['OK'],
+      mode: 'ios'
+    });
+    await alert.present();
+  }
+
+  openContact() {
+    this.router.navigate(['/tabs/contacto']);
+  }
+
+  openAbout() {
+    this.router.navigate(['/tabs/tab4']);
   }
 }

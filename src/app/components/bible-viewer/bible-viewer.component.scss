@@ -1,0 +1,31 @@
+.text-segoe {
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.ico-cita {
+    color: #C2A153;
+    /* Leche y Miel Citation Color */
+    font-size: 12px;
+    vertical-align: super;
+}
+
+.ico-nota {
+    color: #D98D2F;
+    /* Leche y Miel Note Color */
+    vertical-align: middle;
+    margin-left: 5px;
+    font-size: 1.2em;
+    /* Ensure visibility */
+    cursor: pointer;
+}
+
+/* Highlight style - usually handled by background-color inline, but base styles here */
+/* .versiculo-highlight class might be toggle dynamically by AudioService directly on DOM elements. 
+   We must ensure the ID matches. */
+
+
+/* Ensure nice spacing similar to pages */
+.ion-margin2 {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}

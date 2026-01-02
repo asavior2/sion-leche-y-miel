@@ -1,88 +1,95 @@
-<ion-header mode="md">
+<ion-header mode="md" class="transparent-header">
   <ion-toolbar>
-    <ion-title>
-      <div align="center">           
-            <strong> <h6>  <ion-title >Redes Sociales</ion-title></h6> </strong>
-     </div>
-    </ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/profile" color="primary"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="header-title">Comunidad y Contacto</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-grid >
-    <ion-row >
-      <ion-col size-md="2"  size-lg="3" >     </ion-col>
-      <ion-col  size-xs="12"  size-md="8"  size-lg="6">
-          
-      <ion-card>
-        <ion-card-header align="center">
-          <ion-card-subtitle>¿Tienes dudas sobre la versión SLM? </ion-card-subtitle>
-          <ion-card-subtitle>¿Tienes alguna pregunta a los creadores de SLM?</ion-card-subtitle>
-          <ion-card-subtitle>¿Tienes alguna consulta sobre el evangelio? </ion-card-subtitle>
+<ion-content class="contact-content">
 
-        </ion-card-header>
-        <ion-card-content align="center">
-          Respuestas a las preguntas anteriores o cualquier otra duda, te invitamos a participar en nuestras redes (WhatsApp y Facebook).
-        </ion-card-content>
-        <ion-item align="center">
-            <ion-avatar item-start>
-              <img src="assets/imgs/whatsApp.png">
-            </ion-avatar>
-            <a href="https://chat.whatsapp.com/LKj16Lwh08D1y5BSJizyi7" style="text-decoration:none"> </a> &nbsp; &nbsp;
-            <ion-avatar item-start>
-                <img src="assets/imgs/facebook.png">
-            </ion-avatar>
-            <a href="https://www.facebook.com/groups/346681428858355/" style="text-decoration:none"> &nbsp;</a>
-            <ion-avatar item-start>
-              <img src="assets/imgs/telegram.png">
-            </ion-avatar>
-            <a href="https://t.me/+Vf9T_an-AU78HRp4" style="text-decoration:none"> &nbsp;</a>
-            <ion-avatar item-start>
-              <img src="assets/imgs/twitter.png">
-            </ion-avatar>
-            <a href="https://twitter.com/AtalayaDeSion4" style="text-decoration:none"> &nbsp;</a>
-            
-        </ion-item>
-        
-        <ion-card-content  align="center">
-            <ion-card-subtitle>Ayudamos a mantener Sion: Leche y Miel <br>  Contribuciones, ofrendas o primicias  a través de nuestra página web o contactanos por las redes sociales.   
-            </ion-card-subtitle>
-            <a href="https://sionlecheymiel.com/" align="center">https://sionlecheymiel.com/</a>
-            <ion-card-subtitle>De Gracias se recibió y de Gracia se da. Sion: Leche y Miel</ion-card-subtitle>
-      
-        </ion-card-content>
-      
-      </ion-card>
+  <div class="main-container">
 
-      <ion-card>
-          <ion-card-header align="center">
-            <ion-card-subtitle>Hermano y discípulo llamado por <ion-text color="danger">Yo Soy el Salvador y Mesías de Israel</ion-text>, varón poderoso en las Escrituras e instruido en el Camino de Dios.</ion-card-subtitle>
-            <ion-card-title >Pedro José Rangel Torres </ion-card-title>
-          </ion-card-header>
-        
-          <ion-card-content>
-              <ion-list>
-                  <ion-item>
-                    <ion-avatar item-start>
-                      <img src="assets/imgs/whatsApp.png">
-                    </ion-avatar>
-                    <a href="https://wa.me/584125421181" style="text-decoration:none"> &nbsp; Pedro Rangel </a>
-                    &nbsp; &nbsp; 
-                      
-                  </ion-item>
-                  <ion-item>
-                    <ion-avatar item-start>
-                      <img src="assets/imgs/facebook.png">
-                    </ion-avatar>
-                    <a href="https://www.facebook.com/profile.php?id=100080039304691" style="text-decoration:none"> &nbsp; Pedro Rangel </a>
-                  </ion-item>
-                </ion-list>
-          </ion-card-content>
-    
-        </ion-card>
-      </ion-col>
-      <ion-col size-md="2" size-lg="3" >
-      </ion-col>
-      </ion-row>
-    </ion-grid>
+    <div class="intro-section ion-text-center">
+      <h2 class="page-headline">Conversemos sobre la Palabra</h2>
+      <p class="page-subhead">
+        ¿Tienes dudas sobre la versión, preguntas del evangelio o comentarios? Únete a nuestros canales oficiales.
+      </p>
+
+      <div class="social-grid">
+        <a href="https://chat.whatsapp.com/LKj16Lwh08D1y5BSJizyi7" target="_blank" class="social-btn whatsapp">
+          <img src="assets/imgs/whatsApp.png" alt="WhatsApp">
+          <span>Grupo WhatsApp</span>
+        </a>
+
+        <a href="https://t.me/+Vf9T_an-AU78HRp4" target="_blank" class="social-btn telegram">
+          <img src="assets/imgs/telegram.png" alt="Telegram">
+          <span>Telegram</span>
+        </a>
+
+        <a href="https://www.facebook.com/groups/346681428858355/" target="_blank" class="social-btn facebook">
+          <img src="assets/imgs/facebook.png" alt="Facebook">
+          <span>Grupo Facebook</span>
+        </a>
+
+        <a href="https://x.com/AtalayaDeSion" target="_blank" class="social-btn twitter">
+          <img src="assets/imgs/twitter.png" alt="Twitter">
+          <span>Twitter / X</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="support-card">
+      <div class="card-icon">
+        <ion-icon name="heart"></ion-icon>
+      </div>
+      <h3>Apoya el Proyecto</h3>
+      <p>
+        Ayúdanos a mantener <em>Sion: Leche y Miel</em>. Recibimos contribuciones y ofrendas a través de nuestra web.
+      </p>
+
+      <ion-button expand="block" href="https://sionlecheymiel.com/" target="_blank" class="btn-gold-outline">
+        Visitar SionLecheyMiel.com
+        <ion-icon slot="end" name="open-outline"></ion-icon>
+      </ion-button>
+
+      <p class="biblical-footer">"De Gracia recibisteis, dad de Gracia"</p>
+    </div>
+
+    <div class="author-section">
+      <div class="section-divider">
+        <span>Contacto Pastoral</span>
+      </div>
+
+      <div class="author-card">
+        <div class="author-header">
+          <div class="author-avatar-placeholder">
+            <span class="initials">PR</span>
+          </div>
+          <div class="author-info">
+            <h4>Pedro José Rangel Torres</h4>
+            <p class="role">Siervo y Discípulo</p>
+          </div>
+        </div>
+
+        <p class="author-bio">
+          Instruido en el Camino de Dios y llamado por <span class="sacred-name">YaHshua</span>, el Mesías de Israel.
+        </p>
+
+        <div class="author-actions">
+          <ion-button fill="clear" href="https://wa.me/584125421181" target="_blank">
+            <ion-icon slot="start" name="logo-whatsapp"></ion-icon>
+            Escribir Directo
+          </ion-button>
+
+          <ion-button fill="clear" href="https://www.facebook.com/profile.php?id=100080039304691" target="_blank">
+            <ion-icon slot="start" name="logo-facebook"></ion-icon>
+            Ver Perfil
+          </ion-button>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </ion-content>

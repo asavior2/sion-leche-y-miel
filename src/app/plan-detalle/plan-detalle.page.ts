@@ -245,6 +245,9 @@ export class PlanDetallePage implements OnInit {
     }
 
     this.posicionSlide = await parseInt(this.diaLecturaV) - parseInt(this.diaAtraso)
+    if (isNaN(this.posicionSlide)) {
+      this.posicionSlide = 1;
+    }
     console.log("posicionSlide " + this.posicionSlide)
 
     // Calculate 0-based index. Ensure it's not negative.
@@ -455,33 +458,21 @@ export class PlanDetallePage implements OnInit {
     }
   }
   async statusCheckbox(dia, libro, capitulo) {
-    // Find the day object
-    // Note: Legacy logic matched on dia AND libro. Ensuring specificity.
-    const dayObj = this.planOfStora.find(d => d.dia === dia && d.libro === libro);
+    // Note: HTML uses [(ngModel)], so the value is ALREADY updated when this runs.
+    // Do NOT manually toggle it again, or you revert the user's action.
+
+    // Find day with loose equality to handle string/number diffs
+    const dayObj = this.planOfStora.find(d => d.dia == dia);
+    console.log('DEBUG: statusCheckbox', { dia, libro, capitulo, found: !!dayObj });
 
     if (dayObj) {
       // Find the specific chapter detail
-      const detail = dayObj.detalles.find(d => d.capitulo === capitulo);
+      // Note: Some plans might have string 'capitulo', others number. Use loose equality.
+      const detail = dayObj.detalles.find(d => d.capitulo == capitulo);
 
       if (detail) {
-        // Toggle status. 
-        // Note: HTML uses [(ngModel)], so value might already be updated? 
-        // But legacy code did manual toggle logic. 
-        // If we removed [(ngModel)] from HTML or if we trust it, logic changes.
-        // To contain scope, I will manually toggle and assume clicking triggers this.
-        // Ideally, remove [(ngModel)] from HTML if we handle click manually, or remove (click) if we use (dChange).
-        // Legacy used both (click) and [(ngModel)].
-        // "Safe" approach: The legacy code inverted the value provided by checks?
-        // Actually, let's look at legacy: "if true -> push false". Yes, it toggles.
-        // But wait, [(ngModel)] updates the variable *before* click handler?
-        // If so, legacy code was: "Value is now true (via model). IF true -> save false". 
-        // That would toggle it BACK.
-        // Let's simplified: Explicitly set it to what the user intended (Inverse of current state?)
-        // Or just check the state of the checkboxes? 
-        // Let's assume detail.status holds the CURRENT state (after click/model update).
-        // Re-evaluating: The simplest valid logic is: "Update status. Check all. Save."
-        // I will force the toggle here to be sure, assuming (click) prevents default or model sync issues.
-        detail.status = !detail.status;
+        // detail.status is already updated via ngModel.
+        console.log('DEBUG: New Status:', detail.status);
       }
 
       // Validate Day Completion

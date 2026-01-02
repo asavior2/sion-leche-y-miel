@@ -1,1 +1,227 @@
+.contact-content {
+    --background: #FDFBF7;
+    /* Crema */
+    font-family: 'Inter', sans-serif;
 
+    .main-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px 24px 60px;
+    }
+
+    /* --- INTRO --- */
+    .intro-section {
+        margin-bottom: 30px;
+
+        .page-headline {
+            font-family: 'Merriweather', serif;
+            color: #9E7F2A;
+            /* Dorado */
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .page-subhead {
+            color: #666;
+            font-size: 15px;
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
+    }
+
+    /* --- GRID DE REDES SOCIALES --- */
+    .social-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        /* 2 columnas */
+        gap: 15px;
+
+        .social-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #FFFFFF;
+            border-radius: 16px;
+            padding: 20px 10px;
+            text-decoration: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+
+            img {
+                width: 40px;
+                height: 40px;
+                margin-bottom: 10px;
+                object-fit: contain;
+            }
+
+            span {
+                color: #444;
+                font-size: 13px;
+                font-weight: 600;
+            }
+
+            &:active {
+                transform: scale(0.98);
+                box-shadow: none;
+            }
+        }
+    }
+
+    /* --- TARJETA DE APOYO --- */
+    .support-card {
+        background: linear-gradient(135deg, #FFFDF5 0%, #FFF 100%);
+        border: 1px solid rgba(158, 127, 42, 0.2);
+        border-radius: 16px;
+        padding: 25px;
+        text-align: center;
+        margin: 30px 0;
+        position: relative;
+        overflow: hidden;
+
+        .card-icon {
+            font-size: 30px;
+            color: #9E7F2A;
+            margin-bottom: 10px;
+        }
+
+        h3 {
+            font-family: 'Merriweather', serif;
+            color: #2C2C2C;
+            font-size: 18px;
+            margin: 0 0 10px;
+        }
+
+        p {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .btn-gold-outline {
+            --border-color: #9E7F2A;
+            --color: #9E7F2A;
+            --border-radius: 8px;
+            --background: transparent;
+            --background-hover: rgba(158, 127, 42, 0.05);
+            font-weight: 600;
+        }
+
+        .biblical-footer {
+            margin-top: 15px;
+            font-style: italic;
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 0;
+        }
+    }
+
+    /* --- SECCIÓN AUTOR --- */
+    .author-section {
+        .section-divider {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            color: #999;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+
+            &::before,
+            &::after {
+                content: '';
+                flex: 1;
+                height: 1px;
+                background: #ddd;
+            }
+
+            span {
+                margin: 0 15px;
+            }
+        }
+
+        .author-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.03);
+
+            .author-header {
+                display: flex;
+                align-items: center;
+                margin-bottom: 15px;
+
+                .author-avatar-placeholder {
+                    width: 50px;
+                    height: 50px;
+                    background: #2C2C2C;
+                    color: #9E7F2A;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-family: 'Merriweather', serif;
+                    font-weight: bold;
+                    margin-right: 15px;
+                }
+
+                .author-info {
+                    h4 {
+                        margin: 0;
+                        font-family: 'Merriweather', serif;
+                        font-size: 16px;
+                        color: #2C2C2C;
+                    }
+
+                    .role {
+                        margin: 4px 0 0;
+                        font-size: 13px;
+                        color: #888;
+                    }
+                }
+            }
+
+            .author-bio {
+                font-size: 14px;
+                color: #555;
+                line-height: 1.6;
+                margin-bottom: 20px;
+
+                .sacred-name {
+                    color: #d9534f;
+                    /* Color Danger pero suave */
+                    font-weight: 600;
+                }
+            }
+
+            .author-actions {
+                display: flex;
+                justify-content: space-around;
+                border-top: 1px solid #f0f0f0;
+                padding-top: 10px;
+
+                ion-button {
+                    --color: #666;
+                    --color-hover: #9E7F2A;
+                    font-size: 13px;
+                }
+            }
+        }
+    }
+}
+
+.transparent-header {
+    ion-toolbar {
+        --background: #FDFBF7;
+        --border-width: 0;
+    }
+
+    .header-title {
+        font-family: 'Merriweather', serif;
+        color: #9E7F2A;
+        font-size: 18px;
+    }
+}

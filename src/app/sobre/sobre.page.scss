@@ -1,9 +1,203 @@
-.my-nav {
-    list-style-type: disc;
-    padding-left:8px;
+.about-content {
+  --background: #FDFBF7;
+  /* Fondo Crema */
+
+  /* Contenedor centralizado para lectura (tipo Medium o Blog) */
+  .reading-container {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 20px 24px 60px;
+    background: #FDFBF7;
   }
 
-.responsive {
-    width: 30%;
-    height: auto;
+  /* --- HERO SECTION --- */
+  .hero-intro {
+    margin-bottom: 40px;
+
+    .brand-logo {
+      width: 80px;
+      margin-bottom: 15px;
+      opacity: 0.9;
+    }
+
+    .intro-text {
+      font-size: 16px;
+      color: #666;
+      line-height: 1.5;
+      margin-bottom: 30px;
+
+      em {
+        color: #9E7F2A;
+        font-style: normal;
+        font-weight: 600;
+      }
+    }
+
+    .book-cover-wrapper {
+      position: relative;
+      display: inline-block;
+      perspective: 1000px;
+
+      .book-cover {
+        width: 160px;
+        border-radius: 4px;
+        /* Sombra realista de libro */
+        box-shadow:
+          -2px 0 2px #ccc,
+          /* lomo */
+          10px 10px 20px rgba(0, 0, 0, 0.2);
+        transform: rotateY(-5deg);
+        transition: transform 0.3s ease;
+      }
+
+      &:hover .book-cover {
+        transform: rotateY(0deg) scale(1.02);
+      }
+    }
   }
+
+  /* --- TYPOGRAPHY & CONTENT --- */
+  .text-content {
+    color: #2C2C2C;
+    font-family: 'Inter', sans-serif;
+    /* O la fuente que uses para lectura */
+    line-height: 1.8;
+    /* Importante para lectura cómoda */
+    font-size: 16px;
+
+    .chapter-title {
+      font-family: 'Merriweather', serif;
+      color: #9E7F2A;
+      font-size: 26px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      border-bottom: 2px solid rgba(158, 127, 42, 0.2);
+      padding-bottom: 10px;
+      display: inline-block;
+    }
+
+    .section-subtitle {
+      font-family: 'Merriweather', serif;
+      color: #555;
+      font-size: 20px;
+      margin-top: 40px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      margin-bottom: 16px;
+      text-align: justify;
+      /* Opcional: left suele ser más legible en web */
+    }
+
+    /* Caja destacada */
+    .highlight-box {
+      background: rgba(158, 127, 42, 0.08);
+      border-left: 4px solid #9E7F2A;
+      padding: 15px 20px;
+      border-radius: 0 8px 8px 0;
+      margin: 25px 0;
+      font-style: italic;
+      color: #555;
+    }
+
+    /* --- LISTA TEOLÓGICA --- */
+    .theological-list {
+      margin-top: 20px;
+
+      .list-item {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 20px;
+
+        .bullet-icon {
+          color: #9E7F2A;
+          font-size: 20px;
+          margin-right: 15px;
+          margin-top: 4px;
+          /* Alinear con la primera línea de texto */
+          flex-shrink: 0;
+        }
+
+        .item-text {
+          font-size: 15px;
+          color: #444;
+
+          span {
+            color: #9E7F2A;
+            font-weight: 700;
+            font-family: 'Merriweather', serif;
+          }
+        }
+      }
+    }
+
+    .separator {
+      border: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #ddd, transparent);
+      margin: 40px 0;
+    }
+
+    /* --- FOOTER / AUTHOR --- */
+    .author-note {
+      text-align: center;
+      margin-bottom: 40px;
+
+      .signature {
+        margin-top: 20px;
+        font-family: 'Merriweather', serif;
+        color: #2C2C2C;
+
+        strong {
+          font-size: 18px;
+        }
+
+        .role {
+          display: block;
+          font-size: 14px;
+          color: #888;
+          margin-top: 5px;
+          font-family: sans-serif;
+        }
+      }
+    }
+
+    .scripture-quote {
+      text-align: center;
+      font-family: 'Merriweather', serif;
+      font-style: italic;
+      color: #666;
+      border-top: 1px solid #eee;
+      border-bottom: 1px solid #eee;
+      padding: 20px;
+      margin: 0;
+      font-size: 14px;
+
+      footer {
+        display: block;
+        margin-top: 10px;
+        font-weight: bold;
+        color: #9E7F2A;
+        font-style: normal;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+    }
+  }
+}
+
+/* Header transparente para que no moleste */
+.transparent-header {
+  ion-toolbar {
+    --background: #FDFBF7;
+    --border-width: 0;
+  }
+
+  .header-title {
+    font-family: 'Merriweather', serif;
+    color: #9E7F2A;
+    font-size: 18px;
+  }
+}

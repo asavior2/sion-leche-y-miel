@@ -1,0 +1,66 @@
+<div class="scroll-container" align="justify">
+  <div *ngFor="let text of content">
+
+    <!-- Title (if exists) -->
+    <div *ngIf="text.hasOwnProperty('idTitulo')" class="ion-margin2">
+      <h4 align="center">
+        <span class="text-segoe" [style.font-size.px]="fontSize+6">
+          <strong>{{text.titulo}}</strong>
+        </span>
+      </h4>
+    </div>
+
+    <!-- Compressed Verse (with citations) -->
+    <div *ngIf="text.hasOwnProperty('comprimido')" class="ion-margin-horizontal ion-margin-bottom">
+      <div id="{{idPrefix}}{{text.versiculo}}" class="l{{text.versiculo}}">
+        <span class="text-segoe" [style.font-size.px]="fontSize-7">
+          <ion-text color="medium">{{text.versiculo}}</ion-text>
+        </span>
+
+        <span *ngFor="let construirVersiculo of text.comprimido" [style.font-size.px]="fontSize">
+          <ion-text>
+            <span (click)="onVerseClick(text.id_libro, text.capitulo, text.versiculo, 'noText')"
+              [style.background-color]="obtenerColorMarcador(text.capitulo, text.versiculo)">
+              {{construirVersiculo.parteText}}
+            </span>
+            <span (click)="onCitationClick(construirVersiculo)"
+              [style.background-color]="obtenerColorMarcador(text.capitulo, text.versiculo)">
+              <sup>
+                <ion-icon class='ico-cita' name='open-outline'></ion-icon>
+              </sup>
+            </span>
+            <span (click)="onVerseClick(text.id_libro, text.capitulo, text.versiculo, 'noText')"
+              [style.background-color]="obtenerColorMarcador(text.capitulo, text.versiculo)">
+              {{construirVersiculo.parteFinal}}
+            </span>
+          </ion-text>
+        </span>
+
+        <ion-icon *ngIf="tieneNota(text.capitulo, text.versiculo)" name="document-text" class="ico-nota"
+          (click)="onNoteClick(text.capitulo, text.versiculo); $event.stopPropagation()">
+        </ion-icon>
+      </div>
+    </div>
+
+    <!-- Normal Verse -->
+    <div *ngIf="!text.hasOwnProperty('comprimido') && text.texto" class="ion-margin-horizontal ion-margin-bottom">
+      <div id="{{idPrefix}}{{text.versiculo}}" class="l{{text.versiculo}}">
+        <span class="text-segoe" [style.font-size.px]="fontSize-7">
+          <ion-text *ngIf="!text.hasOwnProperty('idTitulo')" color="medium">{{text.versiculo}} </ion-text>
+        </span>
+        <span [style.font-size.px]="fontSize">
+          <ion-text>
+            <span (click)="onVerseClick(text.id_libro, text.capitulo, text.versiculo, text.texto)"
+              [style.background-color]="obtenerColorMarcador(text.capitulo, text.versiculo)">
+              {{text.texto}}
+            </span>
+            <ion-icon *ngIf="tieneNota(text.capitulo, text.versiculo)" name="document-text" class="ico-nota"
+              (click)="onNoteClick(text.capitulo, text.versiculo); $event.stopPropagation()">
+            </ion-icon>
+          </ion-text>
+        </span>
+      </div>
+    </div>
+
+  </div>
+</div>

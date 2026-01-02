@@ -109,7 +109,7 @@
         <ion-list *ngIf="verCapitulos">
           <ion-item *ngFor="let item of detallesDia">
             <ion-item size="small" lines="none">
-              <ion-checkbox (click)="statusCheckbox(this.dia, item.libro, item.capitulo)" size="small" slot="end"
+              <ion-checkbox (ionChange)="statusCheckbox(this.dia, item.libro, item.capitulo)" size="small" slot="end"
                 color="primary" mode="ios" [(ngModel)]="item.status">
 
               </ion-checkbox>

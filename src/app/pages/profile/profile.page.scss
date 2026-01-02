@@ -1,26 +1,268 @@
-.center-avatar {
-    margin: 0 auto;
-    width: 100px;
-    height: 100px;
-}
+.profile-content {
+    --background: #FDFBF7;
+    /* Fondo Crema */
+    font-family: 'Inter', sans-serif;
 
-.profile-header {
-    background: var(--ion-color-light);
-    padding-bottom: 2rem;
-}
+    /* Decoración sutil detrás del avatar */
+    .header-decoration {
+        height: 120px;
+        background: linear-gradient(180deg, rgba(158, 127, 42, 0.1) 0%, rgba(253, 251, 247, 0) 100%);
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 0;
+    }
 
-.status-text {
-    color: var(--ion-color-medium);
-    font-size: 0.9rem;
-}
+    .profile-section {
+        position: relative;
+        padding-top: 40px;
+        padding-bottom: 20px;
+        z-index: 1;
 
-.spin {
-    animation: spin 1s linear infinite;
-}
+        .avatar-wrapper {
+            position: relative;
+            display: inline-block;
 
-@keyframes spin {
-    100% {
-        -webkit-transform: rotate(360deg);
-        transform: rotate(360deg);
+            .main-avatar {
+                width: 100px;
+                height: 100px;
+                border: 3px solid #fff;
+                box-shadow: 0 8px 20px rgba(158, 127, 42, 0.25);
+                /* Sombra dorada */
+            }
+
+            .sync-badge {
+                position: absolute;
+                bottom: 5px;
+                right: 0;
+                background: #9E7F2A;
+                color: white;
+                border-radius: 50%;
+                width: 28px;
+                height: 28px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border: 2px solid #fff;
+
+                .spin {
+                    animation: spin 1s linear infinite;
+                }
+            }
+        }
+
+        .user-name {
+            font-family: 'Merriweather', serif;
+            color: #2C2C2C;
+            font-weight: 700;
+            margin-top: 15px;
+            margin-bottom: 5px;
+        }
+
+        .user-email {
+            font-size: 14px;
+            color: #888;
+            margin: 0 0 10px;
+        }
+
+        .status-chip {
+            display: inline-flex;
+            background: rgba(158, 127, 42, 0.1);
+            color: #9E7F2A;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+
+            &.syncing {
+                background: rgba(0, 0, 0, 0.05);
+                color: #666;
+            }
+        }
+    }
+
+    /* ESTADÍSTICAS */
+    .stats-container {
+        padding: 0 10px;
+    }
+
+    .stat-card {
+        background: #FFFFFF;
+        border-radius: 16px;
+        padding: 15px;
+        text-align: center;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+        /* Sombra muy suave */
+        border: 1px solid rgba(0, 0, 0, 0.03);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        .stat-icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 800;
+            font-family: 'Merriweather', serif;
+            line-height: 1.2;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #999;
+            margin-top: 2px;
+        }
+
+        /* Variantes de color */
+        &.gold-accent {
+
+            .stat-icon,
+            .stat-value {
+                color: #D98D2F;
+            }
+
+            /* Ámbar */
+        }
+
+        &.sand-accent {
+
+            .stat-icon,
+            .stat-value {
+                color: #9E7F2A;
+            }
+
+            /* Dorado oscuro */
+        }
+
+        /* Barra de Progreso */
+        &.progress-card {
+            align-items: stretch;
+            text-align: left;
+
+            .progress-info {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 8px;
+
+                .stat-percent {
+                    font-weight: bold;
+                    color: #9E7F2A;
+                }
+            }
+
+            .custom-progress {
+                --background: #EEE;
+                --progress-background: #9E7F2A;
+                height: 8px;
+                border-radius: 4px;
+            }
+
+            .tiny-note {
+                font-size: 11px;
+                color: #bbb;
+                margin: 8px 0 0;
+                text-align: center;
+            }
+        }
+    }
+
+    /* LISTAS Y BADGES */
+    .section-title {
+        padding-left: 20px;
+        font-size: 18px;
+        font-family: 'Merriweather', serif;
+        color: #2C2C2C;
+        margin-top: 20px;
+        margin-bottom: 10px;
+    }
+
+    .audio-section {
+        padding: 0 20px;
+    }
+
+    .settings-list {
+        padding: 20px;
+
+        .guest-cta {
+            text-align: center;
+            margin-bottom: 20px;
+
+            .btn-gold {
+                --background: #9E7F2A;
+                --border-radius: 12px;
+                font-weight: 600;
+            }
+
+            .guest-note {
+                font-size: 12px;
+                color: #999;
+                margin-top: 8px;
+            }
+        }
+    }
+
+    /* ESTILOS COMUNES DE LISTA (Audio y Ajustes) */
+    .custom-list {
+        background: transparent;
+        padding: 0;
+
+        ion-item {
+            --background: #FFFFFF;
+            --border-radius: 12px;
+            --padding-start: 16px;
+            --inner-padding-end: 16px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+
+            .icon-slot {
+                background: #FDFBF7;
+                width: 36px;
+                height: 36px;
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-right: 15px;
+                color: #555;
+
+                &.danger {
+                    color: var(--ion-color-danger);
+                    background: rgba(var(--ion-color-danger-rgb), 0.1);
+                }
+
+                &.audio-icon {
+                    color: #9E7F2A;
+                    background: rgba(158, 127, 42, 0.1);
+                }
+            }
+
+            ion-label {
+                h3 {
+                    font-weight: 600;
+                    color: #333;
+                    font-size: 15px;
+                }
+
+                p {
+                    font-size: 12px;
+                }
+            }
+        }
+    }
+
+    /* Animación Spin */
+    @keyframes spin {
+        100% {
+            -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+        }
     }
 }

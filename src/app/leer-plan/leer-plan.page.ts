@@ -118,6 +118,19 @@ export class LeerPlanPage implements OnInit {
   selectedVerseForMenu: any = null;
   selectedColor: string = '#FFF9C4'; // Default Pastel Yellow
 
+  highlightsMap: { [key: string]: string } = {};
+
+  updateHighlightsMap() {
+    this.highlightsMap = {};
+    if (this.marcador) {
+      for (const marca of this.marcador) {
+        // Marcador object structure: {capitulo, versiculo, color}
+        const key = `${this.capitulo}:${marca.versiculo}`;
+        this.highlightsMap[key] = marca.color || '#FFEB3B';
+      }
+    }
+  }
+
   @ViewChild(IonContent, { static: true }) ionContent: IonContent;
   constructor(private activatedRoute: ActivatedRoute,
     private bibliaService: BibliaService,
@@ -478,6 +491,7 @@ export class LeerPlanPage implements OnInit {
     } else {
       this.textoJsonFinal = await this.bibliaService.getTextoImport(this.libro, this.capitulo);
     }
+    this.updateHighlightsMap();
 
     const vInicio = parseInt(versiculo);
     const vFin = parseInt(versiculoFinal);
@@ -525,7 +539,20 @@ export class LeerPlanPage implements OnInit {
     // Analytics
     this.analytics.logReading(this.librot || libro.toString(), capitulo);
 
+    // Inject Metadata for Robustness (Fixes blank screen on component)
+    if (this.textoJsonFinal) {
+      this.textoJsonFinal.forEach(t => {
+        if (!t.id_libro) t.id_libro = this.libro;
+        if (!t.capitulo) t.capitulo = this.capitulo;
+      });
+    }
+
     this.mostrarTexto = true;
+  }
+
+  clickDias(dia, index) {
+    this.contParteDia = index;
+    this.mostrarTextoMetodo(dia.libro, dia.capitulo, dia.versiculo, dia.versiculoFinal);
   }
 
   // Removed deprecated audio logic (audioReproductor, calculateTimeMap)
@@ -635,8 +662,12 @@ export class LeerPlanPage implements OnInit {
         if (statusDiaBoleano) {
           tempoDia.push({ dia: dias.dia, statusDia: true, libro: dias.libro, detalles: tempoDetalle });
           this.analytics.logEvent('complete_plan_day', { plan_name: this.nombrePlan, dia: dias.dia });
+          // Sync with SQLite
+          this.bibliaService.saveReadingProgress(this.nombrePlan, parseInt(dias.dia), 1);
         } else {
           tempoDia.push({ dia: dias.dia, statusDia: false, libro: dias.libro, detalles: tempoDetalle });
+          // Sync with SQLite (0 = incomplete)
+          this.bibliaService.saveReadingProgress(this.nombrePlan, parseInt(dias.dia), 0);
         }
       } else {
         //  this.primerP.push({ id: entry.id, capitulos: entry.capitulos, libro: this.getCleanedString(entry.libro), estado : 'listo'});
@@ -790,7 +821,7 @@ export class LeerPlanPage implements OnInit {
   async mostrarCitaAlert(cita, textoVersiculo, idLibro, capituloC) {
     const alert = await this.alertController.create({
       header: cita,
-      message: "<h6 align=\"center\">" + textoVersiculo + "</h6>",
+      message: textoVersiculo,
       buttons: [
         { text: 'OK' },
         {
@@ -1016,6 +1047,7 @@ export class LeerPlanPage implements OnInit {
       this.marcador.splice(indiceMarcador, 1);
       this.storage.set(libro, this.marcador);
     }
+    this.updateHighlightsMap();
 
     //Esto es para futuro sincronizar los marcadores
     if (this.marcadorLibro == null) {

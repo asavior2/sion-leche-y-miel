@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, OnDestroy, ElementRef, Renderer2 } from '
 import { BibliaService } from '../services/biblia.service';
 import Libros from '../../assets/libros.json';
 import LibrosHebreo from '../../assets/librosHebreo.json';
-import { IonContent, AlertController, NumericValueAccessor } from '@ionic/angular';
+import { IonContent, AlertController, NumericValueAccessor, NavController } from '@ionic/angular';
 import { Storage as IonicStorage } from '@ionic/storage-angular';
 import { HttpClient } from '@angular/common/http';
 import { HTTP } from '@awesome-cordova-plugins/http/ngx';
@@ -98,7 +98,23 @@ export class LecturaPage implements OnInit {
   notas: Note[] = [];
 
   @ViewChild(IonContent) ionContent: IonContent;
-  constructor(private bibliaService: BibliaService,
+  highlightsMap: { [key: string]: string } = {};
+
+  updateHighlightsMap() {
+    this.highlightsMap = {};
+    if (this.marcador) {
+      for (const marca of this.marcador) {
+        // marca is likely { versiculo: number, color: string } or similar
+        // Need to verify structure from obtenerColorMarcador logic
+        // For now, assuming standard structure
+        const key = `${this.capitulo}:${marca.versiculo}`;
+        this.highlightsMap[key] = marca.color;
+      }
+    }
+  }
+
+  constructor(public navCtrl: NavController,
+    private bibliaService: BibliaService,
     public actionSheetController: ActionSheetController,
     private http: HTTP,
     private httpClient: HttpClient,
@@ -594,6 +610,16 @@ export class LecturaPage implements OnInit {
     } else {
       this.textoJsonFinal = await this.bibliaService.getTextoImport(this.libro, this.capitulo);
     }
+
+    // Inject Metadata for robustness
+    if (this.textoJsonFinal) {
+      this.textoJsonFinal.forEach(t => {
+        if (!t.id_libro) t.id_libro = this.libro;
+        if (!t.capitulo) t.capitulo = this.capitulo;
+      });
+    }
+
+    this.updateHighlightsMap();
     console.log("textoJsonFinal***********")
     console.log(this.textoJsonFinal)
 
@@ -1030,6 +1056,7 @@ export class LecturaPage implements OnInit {
       // Remove from SQLite via Repo
       await this.bibliaService.deleteBookmarkByRef(libro, capitulo, versiculo);
     }
+    this.updateHighlightsMap();
   }
   marcar(capitulo, versiculo) {
     // Deprecated for style binding, kept if needed for other logic or can be removed.

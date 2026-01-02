@@ -1,98 +1,175 @@
-<ion-header [translucent]="true" mode="md">
-  <ion-toolbar align="center">
-    <ion-title>Mi Perfil</ion-title>
-    <ion-buttons slot="end">
-      <!-- Sync status indicator only, no click -->
-      <ion-button *ngIf="(isSyncing$ | async)">
+<ion-content [fullscreen]="true" class="profile-content">
+
+  <div class="header-decoration"></div>
+
+  <div class="profile-section ion-text-center">
+    <div class="avatar-wrapper">
+      <ion-avatar class="main-avatar">
+        <img [src]="(user$ | async)?.photoURL || 'assets/icon/icon-medium.png'" alt="Avatar" />
+      </ion-avatar>
+      <div class="sync-badge" *ngIf="(isSyncing$ | async)">
         <ion-icon name="sync" class="spin"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
+      </div>
+    </div>
 
-<ion-content [fullscreen]="true">
-
-  <!-- Header / Avatar Area -->
-  <div class="profile-header ion-text-center ion-padding">
-    <ion-avatar class="center-avatar">
-      <img src="assets/icon/icon-small.png" alt="Avatar" />
-    </ion-avatar>
-    <h2 *ngIf="user$ | async as user; else guestTemplate">
-      {{ user.displayName || 'Usuario Anónimo' }}
+    <h2 class="user-name">
+      {{ (user$ | async)?.displayName || 'Explorador de la Palabra' }}
     </h2>
-    <ng-template #guestTemplate>
-      <h2>Invitado</h2>
-    </ng-template>
-    <p class="status-text">
-      {{ (isSyncing$ | async) ? 'Sincronizando...' : 'Sincronizado' }}
-    </p>
+
+    <p class="user-email" *ngIf="user$ | async as user">{{ user.email }}</p>
+
+    <div class="status-chip" [class.syncing]="(isSyncing$ | async)">
+      <span *ngIf="!(isSyncing$ | async)">● Sincronizado</span>
+      <span *ngIf="(isSyncing$ | async)">Sincronizando...</span>
+    </div>
   </div>
 
-  <!-- Stats Cards -->
-  <ion-grid>
-    <ion-row>
-      <ion-col size="6">
-        <ion-card>
-          <ion-card-header>
-            <ion-card-subtitle>Marcadores</ion-card-subtitle>
-            <ion-card-title>{{ versesMarked }}</ion-card-title>
-          </ion-card-header>
-        </ion-card>
-      </ion-col>
-      <ion-col size="6">
-        <ion-card>
-          <ion-card-header>
-            <ion-card-subtitle>Racha Actual</ion-card-subtitle>
-            <!-- We need a variable for streak. Let's assume badges might show it or compute it -->
-            <!-- Actually I didn't add a public variable for streak in TS, I should have. -->
-            <!-- Displaying computed stats from badges rules or adding 'currentStreak' var -->
-            <ion-card-title>{{ currentStreak }} Días</ion-card-title>
-          </ion-card-header>
-        </ion-card>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col size="12">
-        <ion-card>
-          <ion-card-header>
-            <ion-card-subtitle>Progreso Plan</ion-card-subtitle>
-            <ion-card-title>0 %</ion-card-title>
-          </ion-card-header>
-        </ion-card>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+  <div class="stats-container">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="6">
+          <div class="stat-card gold-accent">
+            <div class="stat-icon"><ion-icon name="flame"></ion-icon></div>
+            <div class="stat-value">{{ currentStreak }}</div>
+            <div class="stat-label">Días Racha</div>
+          </div>
+        </ion-col>
 
-  <!-- Badges Section -->
-  <app-badges-card [badges]="badges"></app-badges-card>
+        <ion-col size="6">
+          <div class="stat-card sand-accent">
+            <div class="stat-icon"><ion-icon name="bookmark"></ion-icon></div>
+            <div class="stat-value">{{ versesMarked }}</div>
+            <div class="stat-label">Versículos</div>
+          </div>
+        </ion-col>
+      </ion-row>
 
-  <!-- Actions -->
-  <ion-list inset="true">
-    <ion-item button *ngIf="!(user$ | async)" (click)="loginGoogle()">
-      <ion-icon slot="start" name="logo-google"></ion-icon>
-      <ion-label>Iniciar Sesión / Registrarse</ion-label>
-    </ion-item>
+      <ion-row>
+        <ion-col size="12">
+          <div class="stat-card progress-card">
+            <div class="progress-info">
+              <span class="stat-label">Progreso: Biblia en un Año</span>
+              <span class="stat-percent">{{ planProgress }}%</span>
+            </div>
+            <ion-progress-bar [value]="planProgress / 100" class="custom-progress"></ion-progress-bar>
+            <p class="tiny-note">Sigue leyendo para completar tu meta.</p>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
 
+  <div class="badges-section">
+    <h3 class="section-title">Mis Logros</h3>
+    <app-badges-card [badges]="badges"></app-badges-card>
+  </div>
 
-    <ion-item button lines="none" *ngIf="user$ | async" (click)="logout()">
-      <ion-icon slot="start" name="log-out" color="danger"></ion-icon>
-      <ion-label color="danger">Cerrar Sesión</ion-label>
-    </ion-item>
+  <!-- Audio Download Section -->
+  <div class="audio-section">
+    <h3 class="section-title">Audio Biblia (Descarga)</h3>
+    <ion-list lines="none" class="custom-list">
 
-    <ion-item button lines="none" (click)="toggleDebug()">
-      <ion-icon slot="start" name="bug" color="medium"></ion-icon>
-      <ion-label>Modo Desarrollador</ion-label>
-    </ion-item>
-  </ion-list>
+      <!-- Alta -->
+      <ion-item button [disabled]="activeDownloadQuality && activeDownloadQuality !== 'alta'"
+        (click)="initiateDownload('alta')">
+        <div class="icon-slot audio-icon"><ion-icon name="musical-notes"></ion-icon></div>
+        <ion-label>
+          <h3>Alta Calidad</h3>
+          <p>1.1 GB <span *ngIf="activeDownloadQuality === 'alta'">- {{ downloadProgress }}%</span></p>
+          <ion-progress-bar *ngIf="activeDownloadQuality === 'alta'" [value]="downloadProgress / 100" color="warning"
+            class="mt-2"></ion-progress-bar>
+        </ion-label>
+        <ion-icon slot="end" name="cloud-download-outline"
+          *ngIf="!audioAvailable && activeDownloadQuality !== 'alta'"></ion-icon>
+        <ion-icon slot="end" name="checkmark-circle" color="success"
+          *ngIf="audioAvailable && activeDownloadQuality !== 'alta'"></ion-icon>
+        <ion-spinner slot="end" *ngIf="activeDownloadQuality === 'alta'" color="warning"></ion-spinner>
+      </ion-item>
 
-  <!-- Debug Area -->
-  <div *ngIf="showDebug" class="ion-padding">
-    <ion-button expand="block" color="dark" (click)="dumpDebugData()">Ver Datos Internos</ion-button>
-    <ion-card *ngIf="debugData" color="light">
-      <ion-card-content>
-        <pre>{{ debugData | json }}</pre>
-      </ion-card-content>
-    </ion-card>
+      <!-- Media -->
+      <ion-item button [disabled]="activeDownloadQuality && activeDownloadQuality !== 'media'"
+        (click)="initiateDownload('media')">
+        <div class="icon-slot audio-icon"><ion-icon name="musical-notes"></ion-icon></div>
+        <ion-label>
+          <h3>Media Calidad</h3>
+          <p>824 MB <span *ngIf="activeDownloadQuality === 'media'">- {{ downloadProgress }}%</span></p>
+          <ion-progress-bar *ngIf="activeDownloadQuality === 'media'" [value]="downloadProgress / 100" color="warning"
+            class="mt-2"></ion-progress-bar>
+        </ion-label>
+        <ion-icon slot="end" name="cloud-download-outline"
+          *ngIf="!audioAvailable && activeDownloadQuality !== 'media'"></ion-icon>
+        <ion-icon slot="end" name="checkmark-circle" color="success"
+          *ngIf="audioAvailable && activeDownloadQuality !== 'media'"></ion-icon>
+        <ion-spinner slot="end" *ngIf="activeDownloadQuality === 'media'" color="warning"></ion-spinner>
+      </ion-item>
+
+      <!-- Baja -->
+      <ion-item button [disabled]="activeDownloadQuality && activeDownloadQuality !== 'baja'"
+        (click)="initiateDownload('baja')">
+        <div class="icon-slot audio-icon"><ion-icon name="musical-notes"></ion-icon></div>
+        <ion-label>
+          <h3>Baja Calidad</h3>
+          <p>550 MB <span *ngIf="activeDownloadQuality === 'baja'">- {{ downloadProgress }}%</span></p>
+          <ion-progress-bar *ngIf="activeDownloadQuality === 'baja'" [value]="downloadProgress / 100" color="warning"
+            class="mt-2"></ion-progress-bar>
+        </ion-label>
+        <ion-icon slot="end" name="cloud-download-outline"
+          *ngIf="!audioAvailable && activeDownloadQuality !== 'baja'"></ion-icon>
+        <ion-icon slot="end" name="checkmark-circle" color="success"
+          *ngIf="audioAvailable && activeDownloadQuality !== 'baja'"></ion-icon>
+        <ion-spinner slot="end" *ngIf="activeDownloadQuality === 'baja'" color="warning"></ion-spinner>
+      </ion-item>
+    </ion-list>
+  </div>
+
+  <div class="settings-list">
+
+    <div *ngIf="!(user$ | async)" class="guest-cta">
+      <ion-button expand="block" class="btn-gold" (click)="loginGoogle()">
+        <ion-icon slot="start" name="logo-google"></ion-icon>
+        Conectar con Google
+      </ion-button>
+      <p class="guest-note">Guarda tu progreso en la nube</p>
+    </div>
+
+    <ion-list lines="none" class="custom-list">
+
+      <ion-item button detail="true" (click)="openAbout()">
+        <div class="icon-slot"><ion-icon name="information-circle-outline"></ion-icon></div>
+        <ion-label>
+          <h3>Sobre Sion:Leche y Miel</h3>
+          <p>Conoce más sobre nosotros</p>
+        </ion-label>
+      </ion-item>
+
+      <ion-item button detail="true" (click)="openContact()">
+        <div class="icon-slot"><ion-icon name="person-circle-outline"></ion-icon></div>
+        <ion-label>
+          <h3>Contacto</h3>
+          <p>Escríbenos</p>
+        </ion-label>
+      </ion-item>
+
+      <ion-item button detail="true" (click)="toggleDebug()">
+        <div class="icon-slot"><ion-icon name="hammer-outline"></ion-icon></div>
+        <ion-label>
+          <h3>Ajustes Avanzados</h3>
+          <p>Modo desarrollador y caché</p>
+        </ion-label>
+      </ion-item>
+
+      <ion-item button detail="false" *ngIf="user$ | async" (click)="logout()" class="logout-item">
+        <div class="icon-slot danger"><ion-icon name="log-out-outline"></ion-icon></div>
+        <ion-label color="danger">Cerrar Sesión</ion-label>
+      </ion-item>
+
+    </ion-list>
+  </div>
+
+  <div *ngIf="showDebug" class="debug-panel">
+    <p>DEBUG MODE</p>
+    <ion-button size="small" fill="outline" (click)="dumpDebugData()">Dump Data</ion-button>
+    <pre *ngIf="debugData">{{ debugData | json }}</pre>
   </div>
 
 </ion-content>

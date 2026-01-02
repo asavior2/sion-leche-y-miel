@@ -60,7 +60,7 @@ export class GamificationService {
     if (typeof Worker !== 'undefined') {
       return new Promise((resolve, reject) => {
         // Create a new
-        const worker = new Worker(new URL('../workers/stats.worker', import.meta.url));
+        const worker = new Worker(new URL('../workers/stats.worker.ts', import.meta.url));
 
         worker.onmessage = ({ data }) => {
           // Construct the stats map for internal badge logic

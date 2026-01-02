@@ -84,79 +84,29 @@
       </ion-col>
       <ion-col size-xs="12" size-md="8" size-lg="6">
 
-        <div *ngIf="mostrarTexto" align="justify">
-          <ion-label text-wrap *ngFor="let text of textoJsonFinal">
-
-            <div *ngIf="text.hasOwnProperty('idTitulo')">
-              <h4 align="center" class="ion-margin-bottom">
-                <FONT face="Segoe UI" [style.font-size.px]=this.fontSize+6>
-                  <strong>{{text.titulo}}</strong>
-                </FONT>
-              </h4>
-            </div>
-
-            <div *ngIf="text.hasOwnProperty('comprimido')" class="ion-margin-horizontal ion-margin-bottom">
-              <div id=lp{{text.versiculo}} class=l{{text.versiculo}}>
-                <FONT [style.font-size.px]=this.fontSize-7 face="Segoe UI">
-                  <ion-text color="medium">
-                    {{text.versiculo}}
-                  </ion-text>
-                </FONT>
-                <font *ngFor="let construirVersiculo of text.comprimido" [style.font-size.px]=this.fontSize>
-                  <ion-text>
-                    <span (click)="seleccionarVersiculo('noText', text.id_libro, text.capitulo, text.versiculo)"
-                      [style.background-color]="obtenerColorMarcador(text.capitulo, text.versiculo)">
-                      {{construirVersiculo.parteText}}
-                    </span>
-                    <span
-                      (click)="citaAlert(construirVersiculo.cita, construirVersiculo.ibroCita, construirVersiculo.capituloCita, construirVersiculo.versiculoCitaInicial)"
-                      [style.background-color]="obtenerColorMarcador(text.capitulo, text.versiculo)">
-                      <sup>
-                        <ion-icon name='medical' class='ico-cita'></ion-icon>
-                      </sup>
-                    </span>
-                    <span (click)="seleccionarVersiculo('noText', text.id_libro, text.capitulo, text.versiculo)"
-                      [style.background-color]="obtenerColorMarcador(text.capitulo, text.versiculo)">
-                      {{construirVersiculo.parteFinal}}
-                    </span>
-                  </ion-text>
-                </font>
-                <ion-icon *ngIf="tieneNota(text.capitulo, text.versiculo)" name="document-text" class="ico-nota"
-                  (click)="verNota(text.capitulo, text.versiculo); $event.stopPropagation()">
-                </ion-icon>
-              </div>
-            </div>
-
-            <div *ngIf="!text.hasOwnProperty('comprimido') && text.texto"
-              class="ion-margin-horizontal ion-margin-bottom">
-              <div id=lp{{text.versiculo}} outline="true" class=l{{text.versiculo}} #myButton>
-                <FONT [style.font-size.px]=this.fontSize-7 face="Segoe UI">
-                  <ion-text *ngIf="!text.hasOwnProperty('idTitulo')" color="medium">
-                    {{text.versiculo}}
-                  </ion-text>
-                </FONT>
-                <font [style.font-size.px]=this.fontSize>
-                  <ion-text>
-                    <span>
-                      <a (click)="seleccionarVersiculo(text.texto,text.id_libro, text.capitulo, text.versiculo)"
-                        [style.background-color]="obtenerColorMarcador(text.capitulo, text.versiculo)">
-                        {{text.texto}}
-                      </a>
-                      <ion-icon *ngIf="tieneNota(text.capitulo, text.versiculo)" name="document-text" class="ico-nota"
-                        (click)="verNota(text.capitulo, text.versiculo); $event.stopPropagation()"></ion-icon>
-                    </span>
-                  </ion-text>
-                </font>
-              </div>
-            </div>
-
-
-          </ion-label>
-          <div align="center">
-            <FONT face="Segoe UI" size="3"><strong>*(SLM) Sion: Leche y Miel</strong></FONT>
-            <br><br>
-          </div>
+        <!-- Restored Days Carousel -->
+        <div *ngIf="detalleDia && detalleDia.length > 0" class="ion-padding-bottom">
+          <ion-segment scrollable mode="md" [value]="contParteDia">
+            <ion-segment-button *ngFor="let dia of detalleDia; let i = index" [value]="i" (click)="clickDias(dia, i)">
+              <ion-label>
+                {{dia.libroNombre}} {{dia.capitulo}}<span *ngIf="dia.versiculo">:{{dia.versiculo}}</span>
+              </ion-label>
+            </ion-segment-button>
+          </ion-segment>
         </div>
+
+        <app-bible-viewer [content]="textoJsonFinal" [fontSize]="fontSize" [notes]="notas" [highlights]="highlightsMap"
+          [idPrefix]="'lp'"
+          (verseClick)="seleccionarVersiculo($event.texto, $event.idLibro, $event.capitulo, $event.versiculo)"
+          (noteClick)="verNota($event.capitulo, $event.versiculo)"
+          (citationClick)="citaAlert($event.cita, $event.ibroCita, $event.capituloCita, $event.versiculoCitaInicial)">
+        </app-bible-viewer>
+
+        <div align="center">
+          <FONT face="Segoe UI" size="3"><strong>*(SLM) Sion: Leche y Miel</strong></FONT>
+          <br><br>
+        </div>
+
 
       </ion-col>
       <ion-col size-md="2" size-lg="3">
