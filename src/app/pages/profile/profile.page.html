@@ -4,8 +4,9 @@
 
   <div class="profile-section ion-text-center">
     <div class="avatar-wrapper">
+      <div class="glow-background"></div>
       <ion-avatar class="main-avatar">
-        <img [src]="(user$ | async)?.photoURL || 'assets/icon/icon-medium.png'" alt="Avatar" />
+        <img [src]="(user$ | async)?.photoURL || 'assets/icon/icon.png'" alt="Avatar" class="hero-style-img" />
       </ion-avatar>
       <div class="sync-badge" *ngIf="(isSyncing$ | async)">
         <ion-icon name="sync" class="spin"></ion-icon>

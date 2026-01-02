@@ -225,3 +225,88 @@
         font-size: 18px;
     }
 }
+
+/* --- DARK MODE SUPPORT --- */
+.contact-content {
+    body.dark & {
+        --background: #121212;
+
+        .main-container {
+            padding-bottom: 80px;
+        }
+
+        .intro-section .page-subhead {
+            color: #BBB;
+        }
+
+        .social-grid .social-btn {
+            background: #1E1E1E;
+            border-color: #333;
+
+            span {
+                color: #E0E0E0;
+            }
+
+            &:active {
+                background: #333;
+            }
+        }
+
+        .support-card {
+            background: linear-gradient(135deg, #1E1E1E 0%, #252525 100%);
+            border-color: rgba(158, 127, 42, 0.3);
+
+            h3 {
+                color: #E0E0E0;
+            }
+
+            p {
+                color: #CCC;
+            }
+
+            .btn-gold-outline {
+                --color: #D98D2F;
+                --border-color: #D98D2F;
+            }
+        }
+
+        .author-section .section-divider {
+            color: #666;
+
+            &::before,
+            &::after {
+                background: #333;
+            }
+        }
+
+        .author-section .author-card {
+            background: #1E1E1E;
+            box-shadow: none;
+
+            .author-header .author-info h4 {
+                color: #E0E0E0;
+            }
+
+            .author-bio {
+                color: #CCC;
+            }
+
+            .author-actions {
+                border-top-color: #333;
+            }
+
+            .author-actions ion-button {
+                --color: #AAA;
+                --color-hover: #D98D2F;
+            }
+        }
+
+        .transparent-header ion-toolbar {
+            --background: #121212;
+        }
+
+        .transparent-header .header-title {
+            color: #D98D2F;
+        }
+    }
+}

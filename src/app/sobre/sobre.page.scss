@@ -201,3 +201,67 @@
     font-size: 18px;
   }
 }
+
+/* --- DARK MODE SUPPORT --- */
+.about-content {
+  body.dark & {
+    --background: #121212;
+
+    .reading-container {
+      background: #121212;
+    }
+
+    .hero-intro .intro-text {
+      color: #BBB;
+    }
+
+    .text-content {
+      color: #E0E0E0;
+    }
+
+    .text-content .chapter-title {
+      color: #D98D2F;
+      border-bottom-color: rgba(158, 127, 42, 0.4);
+    }
+
+    .text-content .section-subtitle {
+      color: #CCC;
+    }
+
+    .text-content .highlight-box {
+      background: rgba(158, 127, 42, 0.15);
+      color: #DDD;
+      border-left-color: #D98D2F;
+    }
+
+    .text-content .theological-list .list-item .item-text {
+      color: #CCC;
+    }
+
+    .text-content .separator {
+      background: linear-gradient(90deg, transparent, #444, transparent);
+    }
+
+    .text-content .author-note .signature {
+      color: #E0E0E0;
+    }
+
+    .text-content .author-note .signature .role {
+      color: #999;
+    }
+
+    .text-content .scripture-quote {
+      color: #BBB;
+      border-color: #333;
+    }
+
+    .transparent-header ion-toolbar {
+      --background: #121212;
+      --color: #E0E0E0;
+    }
+
+    .transparent-header .header-title {
+      color: #D98D2F;
+    }
+  }
+}

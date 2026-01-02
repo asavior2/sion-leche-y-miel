@@ -5,27 +5,27 @@
       <ion-back-button size="small" defaultHref="/" (click)="botonAtras()"></ion-back-button>
     </ion-buttons>
 
-    <ion-button clear small class="ion-no-padding" size="small" fill="clear" color="dark">
+    <ion-button clear small class="ion-no-padding header-btn" size="small" fill="clear">
       <FONT face="Segoe UI" [style.font-size.px]=this.fontSize-3>
         {{librot}}
       </FONT>
     </ion-button>
-    <ion-button color="dark" clear small fill="clear">
+    <ion-button class="header-btn" clear small fill="clear">
       <FONT face="Segoe UI" [style.font-size.px]=this.fontSize-3>
         {{capitulo}}
       </FONT>
     </ion-button>
-    <ion-button color="dark" clear small fill="clear" (click)="aumentarSize()" size="small" class="ion-no-padding">
+    <ion-button class="header-btn ion-no-padding" clear small fill="clear" (click)="aumentarSize()" size="small">
       <FONT face="Segoe UI" [style.font-size.px]=this.fontSize-3>
         A+
       </FONT>
     </ion-button>
-    <ion-button color="dark" clear small fill="clear" (click)="disminuirSize()" size="small">
+    <ion-button class="header-btn" clear small fill="clear" (click)="disminuirSize()" size="small">
       <FONT face="Segoe UI" [style.font-size.px]=this.fontSize-8>
         a-
       </FONT>
     </ion-button>
-    <ion-button color="dark" clear fill="clear" (click)="changeDark()" size="small">
+    <ion-button class="header-btn" clear fill="clear" (click)="changeDark()" size="small">
       <ion-icon name="{{estadoDark}}"></ion-icon>
     </ion-button>
 

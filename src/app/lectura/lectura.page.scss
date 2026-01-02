@@ -157,3 +157,59 @@ ion-fab {
     transform: translateY(-160px);
   }
 }
+
+/* --- DARK MODE SUPPORT --- */
+:host-context(body.dark) {
+
+  /* Header Buttons */
+  .header-btn {
+    --color: var(--ion-color-light, #f4f5f8);
+    color: var(--ion-color-light, #f4f5f8);
+  }
+
+  /* Modern View Books */
+  .modern-book-btn {
+    --color: var(--ion-color-light, #f4f5f8);
+    --border-color: var(--ion-color-light, #f4f5f8);
+    color: white;
+  }
+
+  /* Titles */
+  .pacto-title {
+    color: white !important;
+  }
+
+  /* Sticky Footer */
+  .sticky-footer {
+    background: #1e1e1e;
+    border-top: 1px solid #333;
+
+    .action-item ion-button {
+      --color: var(--ion-color-light);
+    }
+
+    .action-item ion-label {
+      color: #ccc;
+    }
+  }
+
+  /* General Toolbar Overrides if needed */
+  ion-toolbar {
+    --background: #121212;
+    --color: white;
+  }
+}
+
+/* Default Light Mode Styles for these keys */
+.header-btn {
+  --color: var(--ion-color-dark, #222428);
+}
+
+.modern-book-btn {
+  --color: var(--ion-color-dark, #222428);
+  --border-color: var(--ion-color-dark, #222428);
+}
+
+.pacto-title {
+  color: black;
+}

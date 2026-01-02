@@ -27,7 +27,7 @@
             .main-avatar {
                 width: 100px;
                 height: 100px;
-                border: 3px solid #fff;
+                // border: 3px solid #fff; /* Removed border as requested */
                 box-shadow: 0 8px 20px rgba(158, 127, 42, 0.25);
                 /* Sombra dorada */
             }
@@ -263,6 +263,89 @@
         100% {
             -webkit-transform: rotate(360deg);
             transform: rotate(360deg);
+        }
+    }
+}
+
+/* --- GLOW & DARK MODE EXTENSION --- */
+.profile-content {
+    .profile-section .avatar-wrapper {
+        .glow-background {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 160px;
+            height: 160px;
+            background: radial-gradient(circle, rgba(158, 127, 42, 0.4) 0%, rgba(253, 251, 247, 0) 70%);
+            border-radius: 50%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .main-avatar {
+            z-index: 2;
+            position: relative;
+        }
+    }
+
+    body.dark & {
+        --background: #121212;
+
+        .section-title,
+        .profile-section .user-name {
+            color: #E0E0E0;
+        }
+
+        p,
+        .profile-section .user-email {
+            color: #AAAAAA;
+        }
+
+        .stat-card,
+        .custom-list ion-item {
+            --background: #1E1E1E;
+            background: #1E1E1E;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: none;
+        }
+
+        .stat-card .stat-value {
+            color: #E0E0E0;
+        }
+
+        .stat-card.gold-accent .stat-value {
+            color: #D98D2F;
+        }
+
+        .stat-card.sand-accent .stat-value {
+            color: #9E7F2A;
+        }
+
+        .stat-card.progress-card .custom-progress {
+            --background: #333;
+        }
+
+        .custom-list ion-item .icon-slot {
+            background: #2C2C2C;
+            color: #DDD;
+        }
+
+        .custom-list ion-item ion-label h3 {
+            color: #E0E0E0;
+        }
+
+        .custom-list ion-item .icon-slot.audio-icon {
+            background: rgba(158, 127, 42, 0.2);
+            color: #D98D2F;
+        }
+
+        .header-decoration {
+            background: linear-gradient(180deg, rgba(158, 127, 42, 0.15) 0%, rgba(18, 18, 18, 0) 100%);
+        }
+
+        .profile-section .avatar-wrapper .glow-background {
+            background: radial-gradient(circle, rgba(158, 127, 42, 0.3) 0%, rgba(18, 18, 18, 0) 70%);
         }
     }
 }

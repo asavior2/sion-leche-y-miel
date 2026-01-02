@@ -60,4 +60,34 @@ h6 {
     border-left: 4px solid #000000a8 !important;
     padding-left: 2px !important;
     transition: background-color 0.3s ease;
+}/* Global Dark Mode Overrides for Specific Pages */
+body.dark {
+
+    app-lectura,
+    app-leer-plan {
+        ion-header ion-toolbar {
+            --background: #121212 !important;
+            --color: #ffffff !important;
+            background: #121212 !important;
+            color: #ffffff !important;
+        }
+
+        /* Force text colors in header buttons */
+        .header-btn,
+        ion-toolbar ion-button {
+            --color: #ffffff !important;
+            color: #ffffff !important;
+        }
+
+        /* Modern View Items */
+        .modern-book-btn {
+            --color: #ffffff !important;
+            --border-color: #ffffff !important;
+            color: #ffffff !important;
+        }
+
+        .pacto-title {
+            color: #ffffff !important;
+        }
+    }
 }

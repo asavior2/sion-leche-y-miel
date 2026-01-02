@@ -29,3 +29,19 @@
     margin-top: 20px;
     margin-bottom: 20px;
 }
+
+/* Dark Mode Text Fixes */
+:host-context(body.dark) {
+    h4 strong {
+        color: #E0E0E0;
+        /* Reverted to off-white */
+    }
+
+    ion-text {
+        color: #E0E0E0;
+    }
+
+    ion-text[color="medium"] {
+        color: #888 !important;
+    }
+}

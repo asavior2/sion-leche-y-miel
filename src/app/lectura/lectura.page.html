@@ -2,29 +2,29 @@
   <!-- Allow everything but only from the same origin and foo.com -->
   <ion-toolbar align="center" class="minuscula">
     <!-- Boton de los libros-->
-    <ion-button clear (click)="mostrarLibrosMetodo()" fill="clear" color="dark" class="ion-no-padding">
+    <ion-button clear (click)="mostrarLibrosMetodo()" fill="clear" class="ion-no-padding header-btn">
       <span class="text-segoe" [style.font-size.px]="fontSize-3">
         {{librot}}
       </span>
     </ion-button>
-    <ion-button color="dark" clear fill="clear" (click)="mostrarCapitulosMetodo(libro)">
+    <ion-button class="header-btn" clear fill="clear" (click)="mostrarCapitulosMetodo(libro)">
       <span class="text-segoe" [style.font-size.px]="fontSize-3">
         {{capitulo}}
       </span>
     </ion-button>
-    <ion-button color="dark" clear fill="clear" (click)="aumentarSize()" class="ion-no-padding">
+    <ion-button class="header-btn ion-no-padding" clear fill="clear" (click)="aumentarSize()">
       <span class="text-segoe" [style.font-size.px]="fontSize-3">
         A+
       </span>
 
     </ion-button>
-    <ion-button color="dark" clear fill="clear" (click)="disminuirSize()">
+    <ion-button class="header-btn" clear fill="clear" (click)="disminuirSize()">
       <span class="text-segoe" [style.font-size.px]="fontSize-8">
         a-
       </span>
 
     </ion-button>
-    <ion-button color="dark" clear fill="clear" (click)="changeDark()">
+    <ion-button class="header-btn" clear fill="clear" (click)="changeDark()">
       <ion-icon name="{{estadoDark}}"></ion-icon>
     </ion-button>
 
@@ -135,7 +135,7 @@
 
           <div *ngIf="tipoOrdenM">
             <br> <!--Vista Moderna-->
-            <span class="text-segoe ion-margin" style="color: black; font-size: 16px;"> PRIMER PACTO</span> <br>
+            <span class="text-segoe ion-margin pacto-title" style="font-size: 16px;"> PRIMER PACTO</span> <br>
             <!--<ion-button expand="full"   fill="outline" 
             *ngFor="let primerpacto of primerP" 
             (click)=" mostrarCapitulosMetodo(primerpacto.id, primerpacto.capitulos)"
@@ -143,15 +143,15 @@
                 {{ primerpacto.libro }}
           </ion-button> -->
 
-            <ion-button ion-button shape="round" size="small" color="dark" fill="outline"
+            <ion-button ion-button shape="round" size="small" class="modern-book-btn" fill="outline"
               *ngFor="let primerpacto of primerP"
               (click)=" mostrarCapitulosMetodo(primerpacto.id, primerpacto.capitulos)" border-radius>
               {{ primerpacto.libro }}
             </ion-button>
             <br> <br>
-            <span class="text-segoe" style="color: black; font-size: 16px;"> SEGUNDO PACTO</span> <br><br>
+            <span class="text-segoe pacto-title" style="font-size: 16px;"> SEGUNDO PACTO</span> <br><br>
 
-            <ion-button ion-button clear shape="round" size="small" color="dark" fill="outline"
+            <ion-button ion-button clear shape="round" size="small" class="modern-book-btn" fill="outline"
               *ngFor="let segundopacto of segundoP"
               (click)="mostrarCapitulosMetodo(segundopacto.id, segundopacto.capitulos)">
               {{ segundopacto.libro }}
@@ -188,7 +188,7 @@
 
         <!-- Mostrar los capitulos de cada libro  #elementGénesis-->
         <div *ngIf="mostrarCapitulos" align="center">
-          <ion-button ion-button shape="round" size="default" color="dark" fill="outline" slot="start"
+          <ion-button ion-button shape="round" size="default" class="modern-book-btn" fill="outline" slot="start"
             *ngFor="let item of cantCapitulo" (click)="mostrarTextoMetodo(this.libro, item)">
             {{item}}
           </ion-button>
