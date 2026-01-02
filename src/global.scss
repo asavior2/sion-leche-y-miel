@@ -10,6 +10,35 @@
 @import '~@ionic/angular/css/text-transformation.css';
 @import '~@ionic/angular/css/flex-utils.css';
 
+/* Global Typography */
+:root {
+    --ion-font-family: 'Roboto', sans-serif;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.6;
+    /* Improved readability */
+}
+
+/* Specific class for Bible Text (Serif) */
+.bible-text,
+p {
+    font-family: 'Libre Baskerville', serif;
+}
+
+/* Headings */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
 .custom-centered-icon {
     display: block;
     margin-left: auto;

@@ -106,7 +106,8 @@ export class LeerPlanPage implements OnInit {
   copiaCondensado = [];
   botonPlay: boolean = false;
   pathDiviceIosAndroid: string;
-  darkMode: boolean = true;
+  darkMode: boolean = true; // Kept for Backwards Compatibility
+  currentTheme: 'light' | 'sepia' | 'dark' = 'light';
   estadoDark: string = "moon";
 
   // Audio State from Service
@@ -141,11 +142,12 @@ export class LeerPlanPage implements OnInit {
   ) {
     this.platform.backButton.observers.pop();
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-    this.darkMode = prefersDark.matches;
-    if (this.darkMode) {
+    if (prefersDark.matches) {
+      this.currentTheme = 'dark';
       this.estadoDark = 'sunny';
     } else {
-      this.estadoDark = 'moon';
+      this.currentTheme = 'light';
+      this.estadoDark = 'eye';
     }
   }
 
@@ -388,12 +390,27 @@ export class LeerPlanPage implements OnInit {
   }
 
   changeDark() {
-    this.darkMode = !this.darkMode;
-    document.body.classList.toggle('dark');
-    if (this.darkMode) {
-      this.estadoDark = 'sunny';
+    // Cycle: Light -> Sepia -> Dark -> Light
+    if (this.currentTheme === 'light') {
+      // Switch to Sepia
+      this.currentTheme = 'sepia';
+      document.body.classList.remove('dark');
+      document.body.classList.add('sepia');
+      this.estadoDark = 'moon'; // Next is Dark
+    } else if (this.currentTheme === 'sepia') {
+      // Switch to Dark
+      this.currentTheme = 'dark';
+      document.body.classList.remove('sepia');
+      document.body.classList.add('dark');
+      this.estadoDark = 'sunny'; // Next is Light
+      this.darkMode = true;
     } else {
-      this.estadoDark = 'moon';
+      // Switch to Light
+      this.currentTheme = 'light';
+      document.body.classList.remove('dark');
+      document.body.classList.remove('sepia');
+      this.estadoDark = 'eye'; // Next is Sepia
+      this.darkMode = false;
     }
   }
 
@@ -481,7 +498,9 @@ export class LeerPlanPage implements OnInit {
         };
         if (this.idTituloTemp) pushObj.idTitulo = this.idTituloTemp;
         if (this.tituloTemp) pushObj.titulo = this.tituloTemp;
-        if (this.comprimidoTemp) pushObj.comprimido = this.comprimidoTemp;
+        if (this.comprimidoTemp) {
+          pushObj.comprimido = this.comprimidoTemp;
+        }
 
         this.textoJsonFinal.push(pushObj);
       }
@@ -704,7 +723,7 @@ export class LeerPlanPage implements OnInit {
           posicionInicial = citaVersiculo.posicion;
           cont++;
         }
-        this.textoJsonFinal.push({ versiculo: this.versiculoTEMP, comprimido: this.mapText });
+        this.textoJsonFinal.push({ versiculo: this.versiculoTEMP, capitulo: text.capitulo, id_libro: text.id_libro, comprimido: this.mapText });
         // console.log("mapText");
         // console.log(this.mapText);
         // this.sanitizer.bypassSecurityTrustHtml(this.versiculoFinal);
@@ -851,7 +870,7 @@ export class LeerPlanPage implements OnInit {
 
 
   async seleccionarVersiculo(texto, idLibro, capitulo, versiculo) {
-    console.log('DEBUG: Manual Click on Verse:', versiculo);
+    console.log('DEBUG: seleccionarVersiculo called', { idLibro, capitulo, versiculo, texto });
 
     // document.body.classList.toggle("readVersiculol" + versiculo);
     // Use new highlighting logic

@@ -88,7 +88,8 @@ export class LecturaPage implements OnInit {
   share: boolean = false;
   copiaCondensado = [];
   pathDiviceIosAndroid: string;
-  darkMode: boolean = true;
+  darkMode: boolean = true; // Kept for Backwards Compatibility if needed
+  currentTheme: 'light' | 'sepia' | 'dark' = 'light';
   estadoDark: string = "moon";
   currentHighlightedVerse: any = null;
   // Selection Menu State
@@ -120,15 +121,15 @@ export class LecturaPage implements OnInit {
     //this.guardarMarcador();
     this.platform.backButton.observers.pop();
 
+    // Initialize Theme
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-    this.darkMode = prefersDark.matches;
-    if (this.darkMode) {
-      this.estadoDark = 'sunny';
+    if (prefersDark.matches) {
+      this.currentTheme = 'dark';
+      this.estadoDark = 'sunny'; // Icon to switch to Light
     } else {
-      this.estadoDark = 'moon';
+      this.currentTheme = 'light';
+      this.estadoDark = 'eye'; // Icon to switch to Sepia (Reading mode)
     }
-
-
   }
 
 
@@ -354,12 +355,27 @@ export class LecturaPage implements OnInit {
   }
 
   changeDark() {
-    this.darkMode = !this.darkMode;
-    document.body.classList.toggle('dark');
-    if (this.darkMode) {
-      this.estadoDark = 'sunny';
+    // Cycle: Light -> Sepia -> Dark -> Light
+    if (this.currentTheme === 'light') {
+      // Switch to Sepia
+      this.currentTheme = 'sepia';
+      document.body.classList.remove('dark');
+      document.body.classList.add('sepia');
+      this.estadoDark = 'moon'; // Next is Dark
+    } else if (this.currentTheme === 'sepia') {
+      // Switch to Dark
+      this.currentTheme = 'dark';
+      document.body.classList.remove('sepia');
+      document.body.classList.add('dark');
+      this.estadoDark = 'sunny'; // Next is Light
+      this.darkMode = true;
     } else {
-      this.estadoDark = 'moon';
+      // Switch to Light
+      this.currentTheme = 'light';
+      document.body.classList.remove('dark');
+      document.body.classList.remove('sepia');
+      this.estadoDark = 'eye'; // Next is Sepia
+      this.darkMode = false;
     }
   }
 
