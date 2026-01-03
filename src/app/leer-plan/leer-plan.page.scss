@@ -1,86 +1,282 @@
-.welcome-card img {
-  max-height: 35vh;
-  overflow: hidden;
-}
+/* --- LEER PLAN PAGE (Based on LecturaPage Design) --- */
 
+.reader-header {
+  ion-toolbar {
+    --background: #FDFBF7;
+    /* Crema */
+    --border-width: 0;
+    padding-top: 5px;
+  }
 
+  /* Selector Central Estilo Cápsula */
+  .book-selector-capsule {
+    background: rgba(158, 127, 42, 0.1);
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 10px;
+    margin: 0 auto;
 
-ion-button {
-  --border-width: 1px;
-}
+    .capsule-btn {
+      --color: #9E7F2A;
+      font-family: 'Merriweather', serif;
+      font-weight: 700;
+      font-size: 16px;
+      text-transform: none;
+      --padding-start: 5px;
+      --padding-end: 5px;
+      height: 32px;
+    }
 
+    .divider {
+      color: rgba(158, 127, 42, 0.4);
+      margin: 0 5px;
+      font-size: 14px;
+    }
+  }
 
+  /* Controles Derecha */
+  .reading-controls {
+    ion-button {
+      --color: #666;
+      --padding-start: 5px;
+      --padding-end: 5px;
+    }
 
-.alert-ios .alert-radio-label {
-  white-space: pre-line;
-}
+    .text-icon {
+      font-family: 'Merriweather', serif;
+      font-weight: bold;
+    }
 
-.alert-md .alert-radio-label {
-  white-space: pre-line;
-}
+    .font-control.small .text-icon {
+      font-size: 14px;
+    }
 
-.alert-wp .alert-radio-label {
-  white-space: pre-line;
-}
-
-.ico-cita {
-  font-size: 0.8em;
-  color: #C2A153;
-  vertical-align: middle;
-  margin-left: 0px;
-  opacity: 0.9;
-}
-
-.ico-nota {
-  color: #D98D2F;
-  vertical-align: middle;
-  margin-left: 5px;
-}
-
-.parrafo {
-  p {
-    display: inline;
+    .font-control.large .text-icon {
+      font-size: 18px;
+    }
   }
 }
 
-.action-sheet-options,
-.action-sheet-group {
-  --backdrop-opacity: 0;
+.reader-content {
+  --background: #FDFBF7;
+
+  .main-reading-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px 80px 20px;
+  }
+
+  /* Days Carousel (Specific to LeerPlan) */
+  .days-carousel-wrapper {
+    padding: 10px 0;
+    background: rgba(158, 127, 42, 0.05);
+    margin-bottom: 20px;
+    border-radius: 12px;
+
+    ion-segment {
+      --background: transparent;
+    }
+
+    ion-segment-button {
+      --color: #666;
+      --color-checked: #9E7F2A;
+      --indicator-color: #9E7F2A;
+      min-width: auto;
+      padding: 0 10px;
+
+      ion-label {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: none;
+      }
+    }
+  }
+
+  /* --- FOOTER DEL TEXTO --- */
+  .text-footer {
+    text-align: center;
+    padding: 40px 0 20px;
+    opacity: 0.6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .footer-logo {
+      width: 30px;
+      margin-bottom: 8px;
+      filter: grayscale(1);
+    }
+
+    span {
+      font-family: 'Merriweather', serif;
+      font-size: 12px;
+      color: #9E7F2A;
+    }
+  }
 }
 
-.element.style {
-  opacity: 0.1;
+/* --- STICKY FOOTER (MENÚ) --- */
+.sticky-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.05);
+  border-radius: 20px 20px 0 0;
+  z-index: 999;
+  padding-bottom: env(safe-area-inset-bottom);
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+  border-top: 1px solid rgba(158, 127, 42, 0.1);
+
+  &.valid {
+    transform: translateY(0);
+  }
+
+  .menu-content {
+    .action-row {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 20px;
+
+      .action-item {
+        text-align: center;
+
+        .icon-circle {
+          width: 45px;
+          height: 45px;
+          background: #FDFBF7;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin: 0 auto 5px;
+          color: #9E7F2A;
+          font-size: 22px;
+          border: 1px solid rgba(158, 127, 42, 0.1);
+
+          &:active {
+            background: #9E7F2A;
+            color: #FFF;
+          }
+        }
+
+        ion-label {
+          font-size: 11px;
+          color: #666;
+          font-weight: 500;
+        }
+      }
+    }
+
+    .color-row {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+
+      .color-dot {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+        ion-icon {
+          color: #555;
+          font-size: 18px;
+        }
+
+        &.selected {
+          transform: scale(1.1);
+          border: 2px solid #555;
+        }
+      }
+    }
+  }
 }
 
-.highlight {
-  background-color: rgba(0, 162, 255, 0.171);
-  text-decoration: none;
+/* --- NAVEGACIÓN FABS --- */
+ion-fab {
+  transition: transform 0.3s ease;
+  z-index: 998;
 
+  &.raise-fabs {
+    transform: translateY(-180px);
+  }
+}
+
+.nav-fab {
+  --background: rgba(255, 255, 255, 0.8);
+  --color: #666;
+  --box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.play-fab {
+  --background: #9E7F2A;
+  --color: #FFF;
+  --box-shadow: 0 4px 15px rgba(158, 127, 42, 0.4);
+}
+
+/* --- MODO OSCURO (Overrides) --- */
+:host-context(body.dark) {
+
+  .reader-header ion-toolbar,
+  .reader-content {
+    --background: #121212;
+    color: #E0E0E0;
+  }
+
+  .reader-header .book-selector-capsule {
+    background: rgba(255, 255, 255, 0.05);
+
+    .capsule-btn {
+      --color: #C2A153;
+    }
+
+    .divider {
+      color: #555;
+    }
+  }
+
+  .days-carousel-wrapper {
+    background: rgba(255, 255, 255, 0.05);
+
+    ion-segment-button {
+      --color: #AAA;
+      --color-checked: #C2A153;
+    }
+  }
+
+  .reader-header .reading-controls ion-button {
+    --color: #AAA;
+  }
+
+  .sticky-footer {
+    background: rgba(30, 30, 30, 0.95);
+    border-top: 1px solid #333;
+
+    .action-item {
+      .icon-circle {
+        background: #2A2A2A;
+        color: #C2A153;
+        border-color: #333;
+      }
+
+      ion-label {
+        color: #AAA;
+      }
+    }
+  }
 }
 
 
-on-label::part(tab active) {
-  color: green;
-}
-
-
-ion-content::ion-grid::ion-row::div::part(placeholder) {
-  background-color: gold;
-}
-
-ion-content::part(placeholder) {
-  background-color: gold;
-}
-
-ion-fab-button {
-  --border-color: black;
-}
-
-ion-item::part(native):hover {
-  color: green;
-}
-
-
+/* --- PRESERVED HIGHLIGHTS --- */
 .versiculo-highlight {
   background-color: #cccccc2c !important;
   border-left: 4px solid #000000a8;

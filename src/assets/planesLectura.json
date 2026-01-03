@@ -1,112 +1,109 @@
 [
     {
-        "titulo":"Leer la biblia en un año.",
-        "imagen":"../../assets/imgs/bibleOneYear.webp",
-        "descripcion":"Descripcion del plan de lectura de la biblia en un año.",
-        "URI":"'../../assets/planes/bibleOneYear.json'",
-        "nombre":"bibleOneYear"
+        "titulo": "Leer la biblia en un año.",
+        "imagen": "../../assets/imgs/bibleOneYear.webp",
+        "descripcion": "Plan de lectura de la biblia en un año.",
+        "URI": "'../../assets/planes/bibleOneYear.json'",
+        "nombre": "bibleOneYear"
     },
     {
-        "titulo":"La Palabra de Dios es Inerrante.",
-        "imagen":"../../assets/imgs/PalabraDiosInerrante.jpeg",
-        "descripcion":"La Palabra de Dios sin defecto, sin pecado.",
-        "URI":"'../../assets/planes/PalabraDiosInerrante.json'",
-        "nombre":"PalabraDiosInerrante"
+        "titulo": "La Palabra de Dios es Inerrante.",
+        "imagen": "../../assets/imgs/PalabraDiosInerrante.jpeg",
+        "descripcion": "La Palabra de Dios sin defecto, sin pecado.",
+        "URI": "'../../assets/planes/PalabraDiosInerrante.json'",
+        "nombre": "PalabraDiosInerrante"
     },
     {
-        "titulo":"Las tres mayores Virtudes.",
-        "imagen":"../../assets/imgs/tresMayoresVirtudes.webp",
-        "descripcion":"Este plan consta de tres dias en los cuales: El dia 1 se estudiara la Fe dia 2  la Esperanza y dia 3 el Amor",
-        "URI":"../../assets/planes/tresMayoresVirtudes.json",
-        "nombre":"tresMayoresVirtudes",
-        "etiquetas":"Fe, Esperanza, Amor"
+        "titulo": "Las tres mayores Virtudes.",
+        "imagen": "../../assets/imgs/tresMayoresVirtudes.webp",
+        "descripcion": "Este plan consta de tres dias en los cuales: El dia 1 se estudiara la Fe dia 2  la Esperanza y dia 3 el Amor",
+        "URI": "../../assets/planes/tresMayoresVirtudes.json",
+        "nombre": "tresMayoresVirtudes",
+        "etiquetas": "Fe, Esperanza, Amor"
     },
     {
-        "titulo":"El Albedrío.",
-        "imagen":"../../assets/imgs/Albedrio.jpg",
-        "descripcion":"Dios nos creó con libertad, no permitan que los esclavicen.",
-        "URI":"../../assets/planes/Albedrio.json",
-        "nombre":"Albedrio"
+        "titulo": "El Albedrío.",
+        "imagen": "../../assets/imgs/Albedrio.jpg",
+        "descripcion": "Dios nos creó con libertad, no permitan que los esclavicen.",
+        "URI": "../../assets/planes/Albedrio.json",
+        "nombre": "Albedrio"
     },
     {
-        "titulo":"La Santa Cena",
-        "imagen":"../../assets/imgs/SantaCena.jpg",
-        "descripcion":"La Santa Cena del Cordero de la Pascua",
-        "URI":"../../assets/planes/SantaCena.json",
-        "nombre":"SantaCena"
+        "titulo": "La Santa Cena",
+        "imagen": "../../assets/imgs/SantaCena.jpg",
+        "descripcion": "La Santa Cena del Cordero de la Pascua",
+        "URI": "../../assets/planes/SantaCena.json",
+        "nombre": "SantaCena"
     },
     {
-        "titulo":"Devocional religioso a Dios",
-        "imagen":"../../assets/imgs/devocionalReligiosoDios.jpg",
-        "descripcion":"Devocional para intimar con Dios, se trata temas como la Palabra, la oración, el ayuno y la adoración",
-        "URI":"../../assets/planes/devocionalReligiosoDios.json",
-        "nombre":"devocionalReligiosoDios",
-        "etiquetas":"la Palabra, oración, ayuno, adoración"
+        "titulo": "Devocional religioso a Dios",
+        "imagen": "../../assets/imgs/devocionalReligiosoDios.jpg",
+        "descripcion": "Devocional para intimar con Dios, se trata temas como la Palabra, la oración, el ayuno y la adoración",
+        "URI": "../../assets/planes/devocionalReligiosoDios.json",
+        "nombre": "devocionalReligiosoDios",
+        "etiquetas": "la Palabra, oración, ayuno, adoración"
     },
     {
-        "titulo":"Primicias Diezmos y Ofrendas",
-        "imagen":"../../assets/imgs/PrimiciasDiezmosOfrendas.jpg",
-        "descripcion":"Primicias Diezmos y Ofrendas",
-        "URI":"../../assets/planes/PrimiciasDiezmosOfrendas.json",
-        "nombre":"PrimiciasDiezmosOfrendas"
+        "titulo": "Primicias Diezmos y Ofrendas",
+        "imagen": "../../assets/imgs/PrimiciasDiezmosOfrendas.jpg",
+        "descripcion": "Primicias Diezmos y Ofrendas",
+        "URI": "../../assets/planes/PrimiciasDiezmosOfrendas.json",
+        "nombre": "PrimiciasDiezmosOfrendas"
     },
     {
-        "titulo":"Quién es el ser humano; Quién es el Hijo del Hombre?",
-        "imagen":"../../assets/imgs/QuienEsElSerHumanoQuienEsElHijoDelHombre.jpg",
-        "descripcion":"Hijos de Dios.",
-        "URI":"../../assets/planes/QuienEsElSerHumanoQuienEsElHijoDelHombre.json",
-        "nombre":"QuienEsElSerHumanoQuienEsElHijoDelHombre",
-        "etiquetas":"hijos de Dios"
-
+        "titulo": "Quién es el ser humano; Quién es el Hijo del Hombre?",
+        "imagen": "../../assets/imgs/QuienEsElSerHumanoQuienEsElHijoDelHombre.jpg",
+        "descripcion": "Hijos de Dios.",
+        "URI": "../../assets/planes/QuienEsElSerHumanoQuienEsElHijoDelHombre.json",
+        "nombre": "QuienEsElSerHumanoQuienEsElHijoDelHombre",
+        "etiquetas": "hijos de Dios"
     },
     {
-        "titulo":"Enséñanos a orar Yo Soy el Salvador (YaHshua)",
-        "imagen":"../../assets/imgs/oracion.jpg",
-        "descripcion":"Nuestro Salvador y redentor nos enséña a orar.",
-        "URI":"../../assets/planes/EnsenanosOrarYoSoyElSalvador.json",
-        "nombre":"EnsenanosOrarYoSoyElSalvador",
-        "etiquetas":"oracion"
+        "titulo": "Enséñanos a orar Yo Soy el Salvador (YaHshua)",
+        "imagen": "../../assets/imgs/oracion.jpg",
+        "descripcion": "Nuestro Salvador y redentor nos enséña a orar.",
+        "URI": "../../assets/planes/EnsenanosOrarYoSoyElSalvador.json",
+        "nombre": "EnsenanosOrarYoSoyElSalvador",
+        "etiquetas": "oracion"
     },
     {
-        "titulo":"El ayuno",
-        "imagen":"../../assets/imgs/elAyuno.jpg",
-        "descripcion":"El ayuno: Formar el carácter de Yo Soy el Salvador (YaHshua)",
-        "URI":"../../assets/planes/elAyuno.json",
-        "nombre":"elAyuno",
-        "etiquetas":"El Ayuno"
+        "titulo": "El ayuno",
+        "imagen": "../../assets/imgs/elAyuno.jpg",
+        "descripcion": "El ayuno: Formar el carácter de Yo Soy el Salvador (YaHshua)",
+        "URI": "../../assets/planes/elAyuno.json",
+        "nombre": "elAyuno",
+        "etiquetas": "El Ayuno"
     },
     {
-        "titulo":"El Bautismos",
-        "imagen":"../../assets/imgs/elBautismos.jpg",
-        "descripcion":"La Doctrina de Bautismos. He 6:1-3",
-        "URI":"../../assets/planes/elBautismos.json",
-        "nombre":"elBautismos",
-        "etiquetas":"Bautismo agua, Bautismo en el Nombre del Padre, Bautismo Sangre, Bautismo en el Nombre del Hijo, Bautismo en el Espíritu del Santo"
+        "titulo": "El Bautismos",
+        "imagen": "../../assets/imgs/elBautismos.jpg",
+        "descripcion": "La Doctrina de Bautismos. He 6:1-3",
+        "URI": "../../assets/planes/elBautismos.json",
+        "nombre": "elBautismos",
+        "etiquetas": "Bautismo agua, Bautismo en el Nombre del Padre, Bautismo Sangre, Bautismo en el Nombre del Hijo, Bautismo en el Espíritu del Santo"
     },
     {
-        "titulo":"El Altar y sus sacerdotes",
-        "imagen":"../../assets/imgs/elAltarYSusSacerdotes.jpg",
-        "descripcion":"El Altar y sus sacerdotes: Levitico y Melquisedec",
-        "URI":"../../assets/planes/elAltarYSusSacerdotes.json",
-        "nombre":"elAltarYSusSacerdotes",
-        "etiquetas":""
+        "titulo": "El Altar y sus sacerdotes",
+        "imagen": "../../assets/imgs/elAltarYSusSacerdotes.jpg",
+        "descripcion": "El Altar y sus sacerdotes: Levitico y Melquisedec",
+        "URI": "../../assets/planes/elAltarYSusSacerdotes.json",
+        "nombre": "elAltarYSusSacerdotes",
+        "etiquetas": ""
     },
     {
-        "titulo":"Vasos de honra o vasos de deshonra",
-        "imagen":"../../assets/imgs/vasosDeHonraVasosDeDeshonra.jpg",
-        "descripcion":"El hombre que decide obedecer y agradar a Dios vs el que decide comer del árbol del bien y el mal haciendo lo que mejor le parezca.",
-        "URI":"../../assets/planes/vasosDeHonraVasosDeDeshonra.json",
-        "nombre":"vasosDeHonraVasosDeDeshonra",
-        "etiquetas":""
+        "titulo": "Vasos de honra o vasos de deshonra",
+        "imagen": "../../assets/imgs/vasosDeHonraVasosDeDeshonra.jpg",
+        "descripcion": "El hombre que decide obedecer y agradar a Dios vs el que decide comer del árbol del bien y el mal haciendo lo que mejor le parezca.",
+        "URI": "../../assets/planes/vasosDeHonraVasosDeDeshonra.json",
+        "nombre": "vasosDeHonraVasosDeDeshonra",
+        "etiquetas": ""
     },
     {
-        "titulo":"La Palabra morando en nuestro corazón.",
-        "imagen":"../../assets/imgs/laPalabraMorandoEnNuestroCorazon.jpeg",
-        "descripcion":"Tablas de la Ley/La Palabra morando en nuestro corazón.",
-        "URI":"../../assets/planes/laPalabraMorandoEnNuestroCorazon.json",
-        "nombre":"laPalabraMorandoEnNuestroCorazon",
-        "etiquetas":""
+        "titulo": "La Palabra morando en nuestro corazón.",
+        "imagen": "../../assets/imgs/laPalabraMorandoEnNuestroCorazon.jpeg",
+        "descripcion": "Tablas de la Ley/La Palabra morando en nuestro corazón.",
+        "URI": "../../assets/planes/laPalabraMorandoEnNuestroCorazon.json",
+        "nombre": "laPalabraMorandoEnNuestroCorazon",
+        "etiquetas": ""
     }
 ]
-
-

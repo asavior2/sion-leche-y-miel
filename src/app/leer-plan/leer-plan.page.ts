@@ -400,6 +400,7 @@ export class LeerPlanPage implements OnInit {
     if (this.isPlaying) {
       this.audioService.stopAudio();
     }
+    this.navCtrl.back();
   }
 
   changeDark() {

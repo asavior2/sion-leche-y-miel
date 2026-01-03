@@ -1,47 +1,136 @@
-.text-segoe {
-    font-family: 'Segoe UI', Arial, sans-serif;
+/* --- CONFIGURACIÓN TIPOGRÁFICA --- */
+.bible-viewer-container {
+    font-family: 'Merriweather', 'Georgia', serif;
+    /* Fuente Serif para lectura seria */
+    line-height: 1.6;
+    /* Altura de línea cómoda */
+    color: #2C2C2C;
+    /* Gris Carbón en lugar de negro puro */
+    text-align: justify;
+    /* Justificado como pides */
+    hyphens: auto;
+    /* Evita espacios grandes en justificado */
+    padding-bottom: 20px;
 }
 
-.ico-cita {
-    color: #C2A153;
-    /* Leche y Miel Citation Color */
-    font-size: 12px;
+/* --- TÍTULOS DE PERÍCOPAS --- */
+.title-wrapper {
+    margin-top: 25px;
+    margin-bottom: 15px;
+    text-align: center;
+
+    h3 {
+        font-family: 'Merriweather', serif;
+        /* O una Sans-Serif elegante si prefieres contraste */
+        color: #9E7F2A;
+        /* Dorado Sion */
+        margin: 0;
+        font-weight: 700;
+        font-size: 1.1em;
+        /* Relativo al tamaño base */
+        line-height: 1.3;
+    }
+}
+
+/* --- BLOQUE DE VERSÍCULO --- */
+.verse-line {
+    margin-bottom: 0px;
+    /* Párrafo continuo estilo Biblia */
+    /* Si prefieres versículos separados, pon margin-bottom: 8px */
+}
+
+.verse-content {
+    display: inline;
+    /* Hace que el texto fluya como un libro continuo */
+    position: relative;
+}
+
+/* --- NÚMERO DE VERSÍCULO --- */
+.verse-num {
+    font-family: 'Inter', sans-serif;
+    /* Sans-serif para números */
+    font-size: 0.65em;
+    /* Pequeño */
+    font-weight: 700;
+    color: #9E7F2A;
+    /* Dorado */
+    vertical-align: top;
+    margin-right: 4px;
+    user-select: none;
+    /* Evita que se seleccione al copiar */
+    opacity: 0.8;
+    position: relative;
+    top: 2px;
+}
+
+/* --- TEXTO DEL VERSÍCULO (FRAGMENTOS) --- */
+.text-fragment {
+    /* La selección (background-color) se aplica inline desde Angular */
+    /* Añadimos padding pequeño para que el resaltado no se vea pegado */
+    padding: 1px 0;
+    border-radius: 2px;
+    box-decoration-break: clone;
+    /* Importante para que el resaltado funcione en saltos de línea */
+    -webkit-box-decoration-break: clone;
+}
+
+/* --- ICONO DE CITA --- */
+.citation-trigger {
+    display: inline-block;
     vertical-align: super;
-}
-
-.ico-nota {
-    color: #D98D2F;
-    /* Leche y Miel Note Color */
-    vertical-align: middle;
-    margin-left: 5px;
-    font-size: 1.2em;
-    /* Ensure visibility */
     cursor: pointer;
+    margin: 0 1px;
+
+    ion-icon {
+        font-size: 0.7em;
+        /* Muy sutil */
+        color: #C2A153;
+        /* Ocre */
+        transition: transform 0.2s;
+    }
+
+    &:active ion-icon {
+        transform: scale(1.2);
+        color: #9E7F2A;
+    }
 }
 
-/* Highlight style - usually handled by background-color inline, but base styles here */
-/* .versiculo-highlight class might be toggle dynamically by AudioService directly on DOM elements. 
-   We must ensure the ID matches. */
+/* --- ICONO DE NOTA --- */
+.note-indicator {
+    display: inline-block;
+    margin-left: 4px;
+    cursor: pointer;
+    vertical-align: middle;
 
-
-/* Ensure nice spacing similar to pages */
-.ion-margin2 {
-    margin-top: 20px;
-    margin-bottom: 20px;
+    ion-icon {
+        color: #D98D2F;
+        /* Ámbar/Naranja */
+        font-size: 0.85em;
+    }
 }
 
-/* Dark Mode Text Fixes */
+/* --- MODO OSCURO --- */
 :host-context(body.dark) {
-    h4 strong {
+    .bible-viewer-container {
         color: #E0E0E0;
-        /* Reverted to off-white */
+        /* Blanco hueso */
     }
 
-    ion-text {
-        color: #E0E0E0;
+    .title-wrapper h3 {
+        color: #C2A153;
+        /* Dorado más claro para contraste oscuro */
     }
 
-    ion-text[color="medium"] {
-        color: #888 !important;
+    .verse-num {
+        color: #888;
+        /* Números más apagados en modo noche */
     }
+
+    .citation-trigger ion-icon {
+        color: #A68B45;
+    }
+
+    /* Ajuste para resaltados en modo oscuro */
+    /* Esto asegura que el texto negro del resaltado se lea si el fondo es claro */
+    /* O puedes usar mix-blend-mode si el navegador lo soporta */
 }

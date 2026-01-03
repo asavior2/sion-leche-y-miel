@@ -211,7 +211,7 @@ export class PlanDetallePage implements OnInit {
     }
 
     this.diaFinPlan = this.planOfStora.length;
-    //await this.estadoPlan();
+    await this.estadoPlan();
 
     let diaT;
     for (let dia of this.planOfStora) {
@@ -282,90 +282,52 @@ export class PlanDetallePage implements OnInit {
   }
 
   async estadoPlan() {
+    const totalDays = this.planOfStora.length;
+    // Count actually completed days
+    const completedDays = this.planOfStora.filter(entry => entry.statusDia).length;
+    // Calculate percentage (0 to 1)
+    const progress = totalDays > 0 ? (completedDays / totalDays) : 0;
+
+    console.log(`Progreso Real: ${completedDays}/${totalDays} = ${progress}`);
+
+    // Update Storage one time
+    await this.updateGlobalProgress(progress);
+
+    // Legacy Logic for "Atraso" (Delay) - Keeps tracking the "Next Pending Day"
     let diaT;
     for (let entry of this.planOfStora) {
       if (!entry.statusDia) {
         diaT = entry.dia;
-        console.log("diaT " + diaT)
-        await this.updatePlanActual(diaT);
         break;
-        break;
-      } else {
-        console.log("alñ")
-        await this.updatePlanActual(entry.dia);
       }
     }
+    // If all done
+    if (!diaT) diaT = totalDays;
+
     if (parseInt(this.diaLecturaV) >= parseInt(diaT)) {
       this.diaAtraso = parseInt(this.diaLecturaV) - parseInt(diaT);
-      if (this.diaAtraso === 0) {
-        this.verDiaAtraso = false;
-      } else {
-        this.verDiaAtraso = true;
-      }
+      this.verDiaAtraso = this.diaAtraso > 0;
       console.log("dias de atraso " + this.diaAtraso);
+    } else {
+      this.verDiaAtraso = false;
     }
   }
 
-  async updatePlanActual(dia) {
-    await this.storage.get('planesActivos').then((val) => {
-      if (val !== null) {
-        this.planesActivos = val;
+  async updateGlobalProgress(progress: number) {
+    await this.storage.get('planesActivos').then(async (val) => {
+      let activePlans = val || [];
+
+      const planIndex = activePlans.findIndex(p => p.nombre === this.nombrePlan);
+      if (planIndex > -1) {
+        activePlans[planIndex].progreso = progress;
+
+        // Debug
+        console.log(`Actualizando plan ${this.nombrePlan} a progreso ${progress}`);
+
+        this.planesActivos = activePlans;
+        await this.storage.set('planesActivos', this.planesActivos);
       }
     });
-
-    this.planArrayTemp = [];
-    let progresoUpdate;
-    // console.log('ver  planArrayTemp 00000************');
-    // console.log(this.planArrayTemp);
-    if (this.planesActivos.length !== 0) {
-
-      // console.log ('ver************');
-      // console.log(this.planesActivos);
-      for (let planActivo of this.planesActivos) {
-        if (planActivo.nombre === this.nombrePlan) {
-          progresoUpdate = ((100 * parseInt(dia)) / this.diaFinPlan) / 100;
-          console.log("dia parseINT " + parseInt(dia))
-          console.log("dia diaFinPlan " + this.diaFinPlan)
-          this.planArrayTemp.push(
-            {
-              titulo: planActivo.titulo,
-              nombre: planActivo.nombre,
-              imagen: planActivo.imagen,
-              descripcion: planActivo.descripcion,
-              URI: planActivo.URI,
-              diaInicio: planActivo.diaInicio,
-              mesInicio: planActivo.mesInicio,                   //this.mm,
-              anoInicio: planActivo.anoInicio,
-              progreso: progresoUpdate
-            });
-        } else {
-          // this.planArrayTemp.push(planActivo);
-          this.planArrayTemp.push(
-            {
-              titulo: planActivo.titulo,
-              nombre: planActivo.nombre,
-              imagen: planActivo.imagen,
-              descripcion: planActivo.descripcion,
-              URI: planActivo.URI,
-              diaInicio: planActivo.diaInicio,
-              mesInicio: planActivo.mesInicio,                   //this.mm,
-              anoInicio: planActivo.anoInicio,
-              progreso: planActivo.progreso
-            });
-
-        }
-      }
-      this.planesActivos = [];
-      this.planesActivos = this.planArrayTemp;
-      // await this.storage.remove('planesActivos');
-      await this.storage.set('planesActivos', this.planesActivos);
-      // console.log ('ver 2  planArrayTemp ************');
-      // console.log(this.planArrayTemp);
-      // console.log ('ver 2  planesActivos ************');
-      // console.log(this.planesActivos);
-
-
-    }
   }
 
   async iniciarPlan() {

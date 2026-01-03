@@ -1,41 +1,282 @@
+.plan-detail-content {
+    --background: #FDFBF7;
+    /* Fondo Crema */
+    font-family: 'Inter', sans-serif;
 
-ion-thumbnail {
-    --border-radius: 10px;
+    .main-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 10px 20px 60px;
+    }
+
+    /* --- HÉROE --- */
+    .hero-section {
+        text-align: center;
+        margin-bottom: 25px;
+        display: flex;
+        /* Enforce flex layout */
+        flex-direction: column;
+        /* Stack vertically */
+
+        .image-wrapper {
+            margin-bottom: 20px;
+            width: 100%;
+            display: block;
+            /* Ensure block level */
+
+            .cover-img {
+                border-radius: 12px;
+                box-shadow: 0 8px 20px rgba(158, 127, 42, 0.2);
+                width: 100%;
+                /* Force width */
+                height: 200px;
+                /* Fixed height for stability */
+                object-fit: cover;
+                display: block;
+            }
+        }
+
+        .plan-description {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+            padding: 0 10px;
+            margin-top: 5px;
+        }
+    }
+
+    /* --- SWIPER / CALENDARIO --- */
+    .calendar-strip {
+        margin-bottom: 25px;
+
+        .section-label {
+            font-family: 'Merriweather', serif;
+            font-size: 16px;
+            color: #2C2C2C;
+            margin-bottom: 15px;
+            padding-left: 5px;
+        }
+
+        .custom-swiper {
+            padding-bottom: 10px;
+            /* Espacio para sombra */
+        }
+
+        .day-slide {
+            /* Estilo base de la slide */
+        }
+
+        .day-pill {
+            background: #FFFFFF;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            border-radius: 12px;
+            padding: 10px 5px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 65px;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+
+            .day-number {
+                font-size: 11px;
+                color: #888;
+                font-weight: 600;
+                margin-bottom: 5px;
+                text-transform: uppercase;
+            }
+
+            .indicator {
+                font-size: 18px;
+                height: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #DDD;
+            }
+
+            /* ESTADOS */
+            &.completed {
+                .indicator {
+                    color: #9E7F2A;
+                }
+
+                /* Check dorado */
+            }
+
+            &.missed {
+                border-color: rgba(var(--ion-color-danger-rgb), 0.3);
+
+                .indicator {
+                    color: var(--ion-color-danger);
+                    font-size: 16px;
+                }
+            }
+
+            /* ACTIVO (Seleccionado) */
+            &.active {
+                background: #9E7F2A;
+                /* Fondo Dorado */
+                border-color: #9E7F2A;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 10px rgba(158, 127, 42, 0.3);
+
+                .day-number {
+                    color: rgba(255, 255, 255, 0.9);
+                }
+
+                .indicator {
+                    color: #FFF;
+                }
+
+                .date-label {
+                    font-size: 9px;
+                    background: rgba(0, 0, 0, 0.2);
+                    padding: 2px 6px;
+                    border-radius: 8px;
+                    margin-top: 2px;
+                    color: #FFF;
+                }
+            }
+        }
+    }
+
+    /* --- ALERTAS DE ESTADO --- */
+    .status-section {
+        margin-bottom: 25px;
+
+        .status-card {
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+
+            &.success {
+                background: rgba(41, 194, 3, 0.1);
+                color: #2e7d32;
+
+                ion-icon {
+                    font-size: 24px;
+                    margin-right: 15px;
+                }
+            }
+
+            &.warning {
+                background: #FFF8E1;
+                /* Amarillo muy suave */
+                border: 1px solid rgba(255, 193, 7, 0.3);
+                flex-direction: column;
+                align-items: flex-start;
+
+                .status-header {
+                    width: 100%;
+                    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+                    padding-bottom: 8px;
+                    margin-bottom: 8px;
+
+                    .day-counter {
+                        font-weight: 700;
+                        color: #D98D2F;
+                        font-size: 15px;
+
+                        .muted {
+                            font-weight: 400;
+                            color: #888;
+                            font-size: 12px;
+                        }
+                    }
+                }
+
+                .delay-msg {
+                    font-size: 13px;
+                    color: #666;
+
+                    strong {
+                        color: #D9534F;
+                    }
+
+                    /* Rojo suave */
+                }
+            }
+        }
+    }
+
+    /* --- LISTA DE LECTURA --- */
+    .reading-list {
+        .section-label {
+            font-family: 'Merriweather', serif;
+            font-size: 16px;
+            color: #2C2C2C;
+            margin-bottom: 15px;
+            padding-left: 5px;
+        }
+
+        .chapter-card {
+            background: #FFFFFF;
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+
+            .chapter-info {
+                display: flex;
+                align-items: baseline;
+                gap: 5px;
+                font-family: 'Merriweather', serif;
+                color: #2C2C2C;
+
+                .book-name {
+                    font-weight: 700;
+                    font-size: 15px;
+                }
+
+                .chapter-num {
+                    font-size: 18px;
+                    font-weight: 300;
+                }
+
+                .verses {
+                    font-size: 12px;
+                    color: #888;
+                    font-family: 'Inter', sans-serif;
+                }
+            }
+
+            .gold-checkbox {
+                --size: 24px;
+                --checkbox-background-checked: #9E7F2A;
+                --border-color-checked: #9E7F2A;
+                --checkmark-color: #FFF;
+            }
+        }
+    }
+
+    /* --- BOTÓN FOOTER --- */
+    .btn-gold-gradient {
+        --background: linear-gradient(90deg, #9E7F2A 0%, #C2A153 100%);
+        --border-radius: 12px;
+        --box-shadow: 0 4px 12px rgba(158, 127, 42, 0.3);
+        font-weight: 600;
+        margin-top: 30px;
+        text-transform: none;
+        font-size: 16px;
+    }
 }
 
-.bordeSlide {
-    border: double #0042f9c3;
-  }
-.bordeSlidePrimary {
-border: double #f97000c3;
-}
-.slide {
-    border: 1px solid #2525251f;
-}
+.transparent-header {
+    ion-toolbar {
+        --background: #FDFBF7;
+        --border-width: 0;
+    }
 
-ion-item{
-    --padding:0px !important;
-    --padding-start:0px !important;
-    --padding-end:0px !important;
-    --inner-padding-end: 0px;
-    --ion-padding:0px;
-    --ion-padding-top:0px !important;
-    --ion-padding-vertical:0px !important;
-}
-ion-thumbnail{
-    --ion-padding:0px;
-}
-ion-slide{
-    --padding-top:0px !important;
-
-}
-$badge-font-size:4rem;
-
-ion-badge {
-    font-size: 11px !important
-}
-.itemPersonalizado{  
-    height : 25px !important;
-    display: flex;
-    align-items: center;
+    .header-title {
+        font-family: 'Merriweather', serif;
+        color: #9E7F2A;
+        font-size: 18px;
+    }
 }

@@ -1,215 +1,427 @@
-html {
-  scroll-behavior: smooth;
-}
+.reader-header {
+  ion-toolbar {
+    --background: #FDFBF7;
+    /* Crema */
+    --border-width: 0;
+    padding-top: 5px;
+  }
 
-.welcome-card img {
-  max-height: 35vh;
-  overflow: hidden;
-}
+  /* Selector Central Estilo Cápsula */
+  .book-selector-capsule {
+    background: rgba(158, 127, 42, 0.1);
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 10px;
+    margin: 0 auto;
 
-ion-button {
-  --border-width: 1px;
-}
+    .capsule-btn {
+      --color: #9E7F2A;
+      font-family: 'Merriweather', serif;
+      font-weight: 700;
+      font-size: 16px;
+      text-transform: none;
+      --padding-start: 5px;
+      --padding-end: 5px;
+      height: 32px;
+    }
 
+    .divider {
+      color: rgba(158, 127, 42, 0.4);
+      margin: 0 5px;
+      font-size: 14px;
+    }
+  }
 
-.ico-cita {
-  font-size: 0.8em; // Ligeramente más pequeño que el texto
-  color: #C2A153; // Gold/Bronze for citations
-  vertical-align: middle;
-  margin-left: 0px;
-  opacity: 0.9;
-}
+  /* Controles Derecha */
+  .reading-controls {
+    ion-button {
+      --color: #666;
+      --padding-start: 5px;
+      --padding-end: 5px;
+    }
 
-.ico-nota {
-  color: #D98D2F; // Honey/Orange for notes
-  vertical-align: middle;
-  margin-left: 5px;
-}
+    .text-icon {
+      font-family: 'Merriweather', serif;
+      font-weight: bold;
+    }
 
-.alert-ios .alert-radio-label {
-  white-space: pre-line;
-}
+    .font-control.small .text-icon {
+      font-size: 14px;
+    }
 
-.alert-md .alert-radio-label {
-  white-space: pre-line;
-}
-
-.alert-wp .alert-radio-label {
-  white-space: pre-line;
-}
-
-
-
-.parrafo {
-  p {
-    display: inline;
+    .font-control.large .text-icon {
+      font-size: 18px;
+    }
   }
 }
 
-.action-sheet-options,
-.action-sheet-group {
-  --backdrop-opacity: 0;
+.reader-content {
+  --background: #FDFBF7;
+
+  .main-reading-container {
+    max-width: 800px;
+    /* Ancho máximo de lectura cómodo */
+    margin: 0 auto;
+    padding: 0 20px 80px 20px;
+    /* Espacio para FABs + Márgenes laterales */
+  }
+
+  /* --- ZONA DE SELECCIÓN (LIBROS) --- */
+  .selection-area {
+    padding: 10px 15px;
+
+    /* Buscador */
+    .search-box-wrapper {
+      background: #FFF;
+      border: 1px solid rgba(158, 127, 42, 0.3);
+      border-radius: 12px;
+      padding: 0 15px;
+      display: flex;
+      align-items: center;
+      height: 44px;
+      margin: 15px 0;
+
+      ion-icon {
+        color: #9E7F2A;
+        margin-right: 10px;
+      }
+
+      .custom-input {
+        border: none;
+        width: 100%;
+        outline: none;
+        background: transparent;
+      }
+    }
+
+    /* Segmentos */
+    .segment-wrapper {
+      margin-bottom: 10px;
+
+      .custom-segment {
+        background: rgba(158, 127, 42, 0.1);
+        border-radius: 25px;
+        padding: 3px;
+        --background: transparent;
+
+        ion-segment-button {
+          --color: #666;
+          --color-checked: #FFF;
+          --background-checked: #9E7F2A;
+          --border-radius: 20px;
+          min-height: 30px;
+
+          ion-label {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: none;
+          }
+        }
+      }
+    }
+
+    /* Vista Lista */
+    .list-view {
+      .book-list-item {
+        --background: #FFF;
+        --border-radius: 8px;
+        margin-bottom: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+        font-family: 'Inter', sans-serif;
+        font-weight: 500;
+
+        .chapter-count {
+          font-size: 12px;
+          color: #9E7F2A;
+          background: rgba(158, 127, 42, 0.1);
+          padding: 2px 8px;
+          border-radius: 10px;
+        }
+      }
+
+      .section-divider {
+        margin: 20px 0 10px;
+        color: #9E7F2A;
+        font-weight: bold;
+        text-transform: uppercase;
+        font-size: 12px;
+        letter-spacing: 1px;
+        padding-left: 5px;
+      }
+    }
+
+    /* Vista Mosaico (Grid) */
+    .grid-view {
+      .pacto-header {
+        font-family: 'Merriweather', serif;
+        color: #9E7F2A;
+        font-size: 16px;
+        margin: 20px 0 10px;
+        border-bottom: 1px solid rgba(158, 127, 42, 0.2);
+        padding-bottom: 5px;
+      }
+
+      .books-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 10px;
+      }
+
+      .book-tile {
+        background: #FFF;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        border-radius: 8px;
+        padding: 15px 5px;
+        text-align: center;
+        font-weight: 600;
+        color: #444;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 50px;
+
+        &:active {
+          background: #9E7F2A;
+          color: #FFF;
+        }
+
+        .full-name {
+          font-size: 13px;
+        }
+      }
+    }
+
+    /* Capítulos Grid */
+    .chapters-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+      gap: 12px;
+      padding: 10px;
+
+      .chapter-circle {
+        background: #FFF;
+        border: 1px solid #DDD;
+        color: #444;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        font-size: 16px;
+        font-weight: 600;
+        font-family: 'Inter', sans-serif;
+
+        /* Efecto presionar */
+        &:active {
+          background: #9E7F2A;
+          color: #FFF;
+          border-color: #9E7F2A;
+        }
+      }
+    }
+  }
+
+  /* --- FOOTER DEL TEXTO --- */
+  .text-footer {
+    text-align: center;
+    padding: 40px 0 20px;
+    opacity: 0.6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .footer-logo {
+      width: 30px;
+      margin-bottom: 8px;
+      filter: grayscale(1);
+    }
+
+    span {
+      font-family: 'Merriweather', serif;
+      font-size: 12px;
+      color: #9E7F2A;
+    }
+  }
+
+  /* --- ANIMACIONES --- */
+  .animate-fade-in {
+    animation: fadeIn 0.4s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 }
 
-.element.style {
-  opacity: 0.1;
-}
-
-.highlight {
-  background-color: rgba(0, 162, 255, 0.127);
-  text-decoration: none;
-
-}
-
-
-on-label::part(tab active) {
-  color: green;
-}
-
-
-ion-content::ion-grid::ion-row::div::part(placeholder) {
-  background-color: gold;
-}
-
-ion-content::part(placeholder) {
-  background-color: gold;
-}
-
-ion-fab-button {
-  --border-color: black;
-}
-
-ion-item::part(native):hover {
-  color: green;
-}
-
-.versiculo-highlight {
-  background-color: #cccccc2c;
-  border-left: 4px solid #000000a8;
-  padding-left: 2px;
-}
-
-.text-segoe {
-  font-family: "Segoe UI", sans-serif;
-}
-
-// Minimalist Menu Styles (Sticky Footer)
+/* --- STICKY FOOTER (MENÚ) --- */
 .sticky-footer {
   position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
-  background: white;
-  /* Or variable --ion-background-color */
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-  border-radius: 16px 16px 0 0;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  /* Efecto Glass */
+  box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.05);
+  border-radius: 20px 20px 0 0;
   z-index: 999;
-  /* Above everything else */
   padding-bottom: env(safe-area-inset-bottom);
   transform: translateY(100%);
-  transition: transform 0.3s ease-in-out;
+  transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+  border-top: 1px solid rgba(158, 127, 42, 0.1);
 
   &.valid {
     transform: translateY(0);
   }
-}
 
-.menu-content {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
+  .menu-content {
+    .action-row {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 20px;
 
-.color-dot {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  cursor: pointer;
-  border: 2px solid transparent;
-  /* Prepare for border transition */
-  transition: all 0.2s ease-in-out;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+      .action-item {
+        text-align: center;
 
-  &.selected {
-    transform: scale(1.2);
-    border: 2px solid #555;
-    /* Dark border to contrast */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    position: relative;
+        .icon-circle {
+          width: 45px;
+          height: 45px;
+          background: #FDFBF7;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin: 0 auto 5px;
+          color: #9E7F2A;
+          font-size: 22px;
+          border: 1px solid rgba(158, 127, 42, 0.1);
 
-    /* Optional: Add a checkmark if desired, spread keeps it simple for now */
+          &:active {
+            background: #9E7F2A;
+            color: #FFF;
+          }
+        }
+
+        ion-label {
+          font-size: 11px;
+          color: #666;
+          font-weight: 500;
+        }
+      }
+    }
+
+    .color-row {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+
+      .color-dot {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+        ion-icon {
+          color: #555;
+          font-size: 18px;
+        }
+
+        &.selected {
+          transform: scale(1.1);
+          border: 2px solid #555;
+        }
+      }
+    }
   }
 }
 
-.color-dot:active {
-  transform: scale(0.9);
-}
-
-.action-row ion-button {
-  --color: var(--ion-color-dark);
-}
-
-// Raise FABs when menu is open
+/* --- NAVEGACIÓN FABS --- */
+/* --- NAVEGACIÓN FABS --- */
 ion-fab {
-  transition: transform 0.3s ease-in-out;
+  transition: transform 0.3s ease;
+  z-index: 998;
+  /* Ensure below sticky footer if needed, but sticky is 999 */
 
   &.raise-fabs {
-    transform: translateY(-160px);
+    transform: translateY(-180px);
   }
 }
 
-/* --- DARK MODE SUPPORT --- */
+.nav-fab {
+  --background: rgba(255, 255, 255, 0.8);
+  --color: #666;
+  --box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.play-fab {
+  --background: #9E7F2A;
+  --color: #FFF;
+  --box-shadow: 0 4px 15px rgba(158, 127, 42, 0.4);
+}
+
+/* --- MODO OSCURO (Overrides) --- */
 :host-context(body.dark) {
 
-  /* Header Buttons */
-  .header-btn {
-    --color: var(--ion-color-light, #f4f5f8);
-    color: var(--ion-color-light, #f4f5f8);
+  .reader-header ion-toolbar,
+  .reader-content {
+    --background: #121212;
+    color: #E0E0E0;
   }
 
-  /* Modern View Books */
-  .modern-book-btn {
-    --color: var(--ion-color-light, #f4f5f8);
-    --border-color: var(--ion-color-light, #f4f5f8);
-    color: white;
+  .reader-header .book-selector-capsule {
+    background: rgba(255, 255, 255, 0.05);
+
+    .capsule-btn {
+      --color: #C2A153;
+    }
+
+    .divider {
+      color: #555;
+    }
   }
 
-  /* Titles */
-  .pacto-title {
-    color: white !important;
+  .reader-header .reading-controls ion-button {
+    --color: #AAA;
   }
 
-  /* Sticky Footer */
   .sticky-footer {
-    background: #1e1e1e;
+    background: rgba(30, 30, 30, 0.95);
     border-top: 1px solid #333;
 
-    .action-item ion-button {
-      --color: var(--ion-color-light);
-    }
+    .action-item {
+      .icon-circle {
+        background: #2A2A2A;
+        color: #C2A153;
+        border-color: #333;
+      }
 
-    .action-item ion-label {
-      color: #ccc;
+      ion-label {
+        color: #AAA;
+      }
     }
   }
 
-  /* General Toolbar Overrides if needed */
-  ion-toolbar {
-    --background: #121212;
-    --color: white;
+  .grid-view .book-tile {
+    background: #1E1E1E;
+    color: #DDD;
+    border-color: #333;
   }
-}
 
-/* Default Light Mode Styles for these keys */
-.header-btn {
-  --color: var(--ion-color-dark, #222428);
-}
-
-.modern-book-btn {
-  --color: var(--ion-color-dark, #222428);
-  --border-color: var(--ion-color-dark, #222428);
-}
-
-.pacto-title {
-  color: black;
+  .list-view .book-list-item {
+    --background: #1E1E1E;
+    color: #DDD;
+  }
 }
