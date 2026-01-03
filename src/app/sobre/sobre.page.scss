@@ -10,6 +10,17 @@
     background: #FDFBF7;
   }
 
+  /* Global Link Styles for this page */
+  a {
+    color: #9E7F2A;
+    text-decoration: none;
+    font-weight: 600;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
   /* --- HERO SECTION --- */
   .hero-intro {
     margin-bottom: 40px;
@@ -64,6 +75,16 @@
     line-height: 1.8;
     /* Importante para lectura cómoda */
     font-size: 16px;
+
+    a {
+      color: #9E7F2A;
+      text-decoration: none;
+      font-weight: 600;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
 
     .chapter-title {
       font-family: 'Merriweather', serif;

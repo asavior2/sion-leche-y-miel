@@ -1,0 +1,123 @@
+<ion-content class="tutorial-content">
+  <swiper-container #swiper (slidechange)="onSlideChange()" pagination="true" class="full-h">
+
+    <!-- Slide 1: Welcome -->
+    <swiper-slide>
+      <div class="slide-content">
+        <div class="hero-img-wrapper">
+          <div class="glow-effect"></div>
+          <img src="assets/icon/icon.png" class="hero-logo" alt="Logo SLM" />
+        </div>
+        <h2 class="slide-title">Biblia <br>Sion: Leche y Miel </h2>
+        <p class="slide-sub">Te invita a redescubrir la Palabra con una mirada fresca y fiel.<br>
+          Un retorno a las raíces de nuestra fe. Esta versión única armoniza lo mejor de 24 traducciones para revelar la
+          belleza de los conceptos hebreos originales, restaurando con mansedumbre y fidelidad el precioso Nombre del
+          Dios de Israel.
+        </p>
+      </div>
+    </swiper-slide>
+
+    <!-- Slide 2: Theological Pillars -->
+    <swiper-slide>
+      <div class="slide-scrollable-content">
+        <h3 class="slide-header">Fundamentos</h3>
+        <p class="slide-sub">Lo que hace única a esta versión:</p>
+
+        <div class="theological-list">
+          <div class="list-item">
+            <ion-icon name="flame" class="bullet-icon"></ion-icon>
+            <div class="item-text">
+              <strong>El Nombre:</strong> Restauramos el tetragrama <span>YHWH, יהוה </span> (Yo Soy el que Soy) en
+              lugar de
+              títulos genéricos.
+            </div>
+          </div>
+
+          <div class="list-item">
+            <ion-icon name="text" class="bullet-icon"></ion-icon>
+            <div class="item-text">
+              <strong>La Abreviatura:</strong> Usamos <span>YaH</span> (Yo Soy), visible en nombres y alabanzas
+              (Alelu-YaH).
+            </div>
+          </div>
+
+          <div class="list-item">
+            <ion-icon name="person" class="bullet-icon"></ion-icon>
+            <div class="item-text">
+              <strong>El Salvador:</strong> Su nombre es <span>YaHshua</span> (Yo Soy el Salvador).
+            </div>
+          </div>
+
+          <div class="list-item">
+            <ion-icon name="git-network" class="bullet-icon"></ion-icon>
+            <div class="item-text">
+              <strong>El Mediador:</strong> Corregimos "Ángel de Jehová" por <strong>Mediador</strong>, aclarando su rol
+              entre el Padre y la humanidad.
+            </div>
+          </div>
+        </div>
+      </div>
+    </swiper-slide>
+
+    <!-- Slide 3: Features -->
+    <swiper-slide>
+      <div class="slide-content">
+        <h3 class="slide-header">Herramientas de Estudio</h3>
+
+        <div class="features-grid">
+          <div class="feature-card">
+            <ion-icon name="bookmark" color="warning"></ion-icon>
+            <h4>Subrayados</h4>
+            <p>Marca tus versos favoritos</p>
+          </div>
+          <div class="feature-card">
+            <ion-icon name="clipboard" color="secondary"></ion-icon>
+            <h4>Notas Personales</h4>
+            <p>Guarda tus revelaciones</p>
+          </div>
+          <div class="feature-card">
+            <ion-icon name="musical-notes" color="tertiary"></ion-icon>
+            <h4>Audio Biblia</h4>
+            <p>Escucha la Palabra</p>
+          </div>
+          <div class="feature-card">
+            <ion-icon name="cloud-done" color="success"></ion-icon>
+            <h4>Sincronización</h4>
+            <p>Respaldo en la nube</p>
+          </div>
+        </div>
+
+      </div>
+    </swiper-slide>
+
+    <!-- Slide 4: CTA -->
+    <swiper-slide>
+      <div class="slide-content">
+        <div class="final-hero">
+          <ion-icon name="book" class="big-icon"></ion-icon>
+        </div>
+        <h2 class="slide-title">Comienza tu Viaje</h2>
+        <p class="slide-desc">
+          "De Gracia recibisteis, dad de Gracia". <br>
+          Disfruta de la lectura sin distracciones.
+        </p>
+
+        <ion-button expand="block" class="btn-gold-gradient" (click)="finishTutorial()">
+          Empezar a leer.
+          <ion-icon slot="end" name="arrow-forward"></ion-icon>
+        </ion-button>
+      </div>
+    </swiper-slide>
+
+  </swiper-container>
+
+  <div class="footer-controls" *ngIf="!isEnd">
+    <ion-button fill="clear" (click)="finishTutorial()" class="skip-btn">Omitir</ion-button>
+    <div class=" dots">
+      <!-- Swiper pagination handles this usually, but we can have custom if needed. defaulting to swiper's -->
+    </div>
+    <ion-button fill="clear" (click)="nextSlide()" class="next-btn">
+      Siguiente <ion-icon slot="end" name="arrow-forward"></ion-icon>
+    </ion-button>
+  </div>
+</ion-content>

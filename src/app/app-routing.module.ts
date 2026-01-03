@@ -15,6 +15,10 @@ const routes: Routes = [
   {
     path: 'registration-prompt',
     loadChildren: () => import('./pages/registration-prompt/registration-prompt.module').then( m => m.RegistrationPromptPageModule)
+  },
+  {
+    path: 'tutorial',
+    loadChildren: () => import('./pages/tutorial/tutorial.module').then( m => m.TutorialPageModule)
   }
 ];
 const routerOptions: ExtraOptions = {

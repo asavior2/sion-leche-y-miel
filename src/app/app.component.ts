@@ -11,6 +11,7 @@ import { AuthService } from './core/services/auth.service';
 import { SyncService } from './core/services/sync.service';
 import { DataMigrationService } from './core/services/data-migration.service';
 import { RegistrationPromptPage } from './pages/registration-prompt/registration-prompt.page';
+import { TutorialPage } from './pages/tutorial/tutorial.page';
 
 @Component({
   selector: 'app-root',
@@ -45,6 +46,21 @@ export class AppComponent {
           console.log('User not logged in. Operating in Offline Guest Mode.');
           // await this.auth.loginAnonymously(); // Disabled per user request
 
+          // Check Tutorial Status First
+          const hasSeenTutorial = await this.storage.get('has_seen_tutorial');
+          if (!hasSeenTutorial) {
+            const tutorialModal = await this.modalCtrl.create({
+              component: TutorialPage,
+              backdropDismiss: false
+            });
+            await tutorialModal.present();
+            await tutorialModal.onDidDismiss(); // Wait for tutorial to finish
+
+            // First run: Do not show registration prompt immediately after tutorial.
+            // It will appear on next launch.
+            return;
+          }
+
           // Check Registration Prompt
           const promptStatus = await this.storage.get('registration_prompt_status');
           if (promptStatus !== 'never') {
@@ -55,7 +71,7 @@ export class AppComponent {
                 backdropDismiss: true
               });
               await modal.present();
-            }, 3000); // Wait 3s before prompting
+            }, 1000); // Shorter wait if tutorial was just closed
           }
         }
         // Trigger Sync (background)

@@ -1,0 +1,253 @@
+.tutorial-content {
+    --background: #FDFBF7;
+    /* Crema */
+    font-family: 'Inter', sans-serif;
+
+    swiper-container {
+        height: 100%;
+        --swiper-pagination-color: #9E7F2A;
+        --swiper-pagination-bullet-inactive-color: #ccc;
+    }
+
+    swiper-slide {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 40px 24px 80px;
+        /* Bottom padding for footer controls */
+        box-sizing: border-box;
+        overflow-y: auto;
+        /* Allow scrolling for text heavy slides */
+    }
+
+    /* Shared Styles */
+    .slide-title {
+        font-family: 'Merriweather', serif;
+        color: #9E7F2A;
+        font-size: 28px;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 16px;
+    }
+
+    .slide-desc {
+        color: #666;
+        font-size: 16px;
+        text-align: center;
+        line-height: 1.6;
+        max-width: 320px;
+    }
+
+    .slide-header {
+        font-family: 'Merriweather', serif;
+        color: #2C2C2C;
+        font-size: 22px;
+        font-weight: 700;
+        margin-bottom: 8px;
+        text-align: center;
+    }
+
+    .slide-sub {
+        color: #888;
+        font-size: 14px;
+        margin-bottom: 24px;
+        text-align: center;
+    }
+
+    /* Slide 1: Welcome */
+    .hero-img-wrapper {
+        position: relative;
+        width: 200px;
+        height: 200px;
+        margin-bottom: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .glow-effect {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(158, 127, 42, 0.3) 0%, rgba(253, 251, 247, 0) 70%);
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        .hero-logo {
+            width: 140px;
+            height: auto;
+            position: relative;
+            z-index: 2;
+            filter: drop-shadow(0px 10px 15px rgba(158, 127, 42, 0.2));
+        }
+    }
+
+    /* Slide 2: Theological List */
+    .theological-list {
+        text-align: left;
+        width: 100%;
+
+        .list-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 16px;
+            background: #fff;
+            padding: 12px;
+            border-radius: 12px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+
+            .bullet-icon {
+                color: #9E7F2A;
+                /* Gold */
+                font-size: 20px;
+                margin-right: 12px;
+                margin-top: 3px;
+                flex-shrink: 0;
+            }
+
+            .item-text {
+                font-size: 14px;
+                color: #555;
+                line-height: 1.5;
+
+                strong {
+                    color: #2C2C2C;
+                }
+
+                span {
+                    color: #9E7F2A;
+                    font-family: 'Merriweather', serif;
+                    font-weight: 700;
+                }
+            }
+        }
+    }
+
+    /* Slide 3: Features Grid */
+    .features-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        width: 100%;
+
+        .feature-card {
+            background: #fff;
+            padding: 20px 10px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+
+            ion-icon {
+                font-size: 32px;
+                margin-bottom: 10px;
+            }
+
+            h4 {
+                font-size: 15px;
+                font-weight: 600;
+                color: #333;
+                margin: 0 0 5px;
+            }
+
+            p {
+                font-size: 12px;
+                color: #999;
+                margin: 0;
+            }
+        }
+    }
+
+    /* Slide 4: Final */
+    .final-hero {
+        margin-bottom: 40px;
+
+        .big-icon {
+            font-size: 80px;
+            color: #9E7F2A;
+            opacity: 0.8;
+        }
+    }
+
+    .btn-gold-gradient {
+        --background: linear-gradient(90deg, #9E7F2A 0%, #C2A153 100%);
+        --border-radius: 12px;
+        --box-shadow: 0 4px 12px rgba(158, 127, 42, 0.3);
+        font-weight: 600;
+        text-transform: none;
+        font-size: 16px;
+        width: 100%;
+        margin-top: 30px;
+    }
+
+    /* Footer Controls */
+    .footer-controls {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 70px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 20px;
+        background: linear-gradient(180deg, rgba(253, 251, 247, 0) 0%, rgba(253, 251, 247, 1) 40%);
+        z-index: 10;
+
+        .skip-btn {
+            --color: #999;
+            font-size: 14px;
+        }
+
+        .next-btn {
+            --color: #9E7F2A;
+            font-weight: 600;
+        }
+    }
+
+    /* Dark Mode Support */
+    :host-context(body.dark) & {
+        --background: #121212;
+
+        .slide-title,
+        .slide-header {
+            color: #E0E0E0;
+        }
+
+        .slide-desc,
+        .slide-sub {
+            color: #BBB;
+        }
+
+        .hero-img-wrapper .glow-effect {
+            background: radial-gradient(circle, rgba(158, 127, 42, 0.4) 0%, rgba(18, 18, 18, 0) 70%);
+        }
+
+        .theological-list .list-item {
+            background: #1E1E1E;
+            box-shadow: none;
+
+            .item-text {
+                color: #ccc;
+
+                strong {
+                    color: #E0E0E0;
+                }
+            }
+        }
+
+        .features-grid .feature-card {
+            background: #1E1E1E;
+            border-color: #333;
+
+            h4 {
+                color: #E0E0E0;
+            }
+        }
+
+        .footer-controls {
+            background: linear-gradient(180deg, rgba(18, 18, 18, 0) 0%, rgba(18, 18, 18, 1) 40%);
+        }
+    }
+}

@@ -123,13 +123,7 @@
 
   <div class="settings-list">
 
-    <div *ngIf="!(user$ | async)" class="guest-cta">
-      <ion-button expand="block" class="btn-gold" (click)="loginGoogle()">
-        <ion-icon slot="start" name="logo-google"></ion-icon>
-        Conectar con Google
-      </ion-button>
-      <p class="guest-note">Guarda tu progreso en la nube</p>
-    </div>
+
 
     <ion-list lines="none" class="custom-list">
 
@@ -163,6 +157,14 @@
       </ion-item>
 
     </ion-list>
+
+    <div *ngIf="!(user$ | async)" class="guest-cta">
+      <ion-button expand="block" class="btn-gold" (click)="loginGoogle()">
+        <ion-icon slot="start" name="logo-google"></ion-icon>
+        Conectar con Google
+      </ion-button>
+      <p class="guest-note">Guarda tu progreso en la nube</p>
+    </div>
   </div>
 
   <div *ngIf="showDebug" class="debug-panel">
