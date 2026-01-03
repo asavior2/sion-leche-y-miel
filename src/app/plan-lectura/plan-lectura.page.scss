@@ -1,4 +1,255 @@
-ion-slides {
-    height: 15%;
-    
+.plans-content {
+  --background: #FDFBF7;
+  /* Crema */
+  font-family: 'Inter', sans-serif;
+
+  .main-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px 24px 60px;
   }
+
+  /* --- SEGMENTOS PERSONALIZADOS --- */
+  .segment-wrapper {
+    margin-bottom: 25px;
+
+    .custom-segment {
+      background: rgba(158, 127, 42, 0.1);
+      /* Fondo dorado muy suave */
+      border-radius: 30px;
+      padding: 4px;
+      --background: transparent;
+
+      ion-segment-button {
+        --color: #666;
+        --color-checked: #FFFFFF;
+        --background-checked: #9E7F2A;
+        /* Dorado Activo */
+        --indicator-color: transparent;
+        /* Quitamos la linea default de Ionic */
+        --border-radius: 25px;
+        font-weight: 600;
+        text-transform: none;
+        letter-spacing: 0.5px;
+        min-height: 36px;
+      }
+    }
+  }
+
+  /* --- TARJETAS GENERALES --- */
+  .plan-card {
+    background: #FFFFFF;
+    border-radius: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.03);
+    transition: transform 0.2s;
+    overflow: hidden;
+
+    &:active {
+      transform: scale(0.98);
+    }
+
+    .plan-title {
+      font-family: 'Merriweather', serif;
+      font-size: 17px;
+      color: #2C2C2C;
+      margin: 0 0 8px;
+      font-weight: 700;
+    }
+
+    .plan-desc {
+      font-size: 13px;
+      color: #888;
+      line-height: 1.4;
+      margin: 0;
+    }
+  }
+
+  /* --- ESTILO: MIS PLANES (ACTIVOS) --- */
+  .active-card {
+    display: flex;
+    padding: 12px;
+    gap: 15px;
+
+    .card-image-wrapper {
+      width: 80px;
+      height: 100px;
+      flex-shrink: 0;
+      position: relative;
+      border-radius: 8px;
+      overflow: hidden;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      /* Overlay oscuro para icono de play */
+      .overlay-play {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 24px;
+      }
+    }
+
+    .card-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      .progress-section {
+        margin-bottom: 8px;
+
+        .progress-info {
+          display: flex;
+          justify-content: space-between;
+          font-size: 11px;
+          color: #9E7F2A;
+          margin-bottom: 4px;
+          font-weight: 600;
+        }
+
+        .gold-progress {
+          --background: #EEE;
+          --progress-background: #9E7F2A;
+          height: 6px;
+          border-radius: 3px;
+        }
+      }
+    }
+  }
+
+  /* --- ESTILO: BUSCAR (CATÁLOGO) --- */
+  .catalog-card {
+    display: flex;
+    padding: 15px;
+    align-items: center;
+
+    .thumbnail-col {
+      width: 60px;
+      height: 60px;
+      margin-right: 15px;
+
+      img {
+        width: 100%;
+        height: 100%;
+        border-radius: 8px;
+        object-fit: cover;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+    }
+
+    .info-col {
+      flex: 1;
+
+      .action-row {
+        margin-top: 8px;
+
+        .read-more {
+          font-size: 12px;
+          color: #9E7F2A;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          gap: 4px;
+        }
+      }
+    }
+  }
+
+  /* --- BUSCADOR --- */
+  .search-box-wrapper {
+    background: #FFFFFF;
+    border: 1px solid rgba(158, 127, 42, 0.3);
+    border-radius: 12px;
+    padding: 0 15px;
+    display: flex;
+    align-items: center;
+    height: 48px;
+    margin-bottom: 20px;
+
+    .search-icon {
+      color: #9E7F2A;
+      font-size: 20px;
+      margin-right: 10px;
+    }
+
+    .custom-input {
+      border: none;
+      background: transparent;
+      width: 100%;
+      outline: none;
+      color: #333;
+    }
+  }
+
+  /* --- EMPTY STATE --- */
+  .empty-state {
+    text-align: center;
+    padding: 40px 20px;
+
+    .empty-icon {
+      font-size: 50px;
+      color: #DDD;
+      margin-bottom: 15px;
+    }
+
+    h3 {
+      font-family: 'Merriweather', serif;
+      color: #555;
+      margin-bottom: 5px;
+    }
+
+    p {
+      color: #999;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .btn-gold-outline {
+      --color: #9E7F2A;
+      --border-color: #9E7F2A;
+      --border-radius: 20px;
+      text-transform: none;
+    }
+  }
+
+  /* Animación suave al cambiar de tab */
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(5px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+/* Header Transparente */
+.transparent-header {
+  ion-toolbar {
+    --background: #FDFBF7;
+    --border-width: 0;
+  }
+
+  .header-title {
+    font-family: 'Merriweather', serif;
+    color: #9E7F2A;
+    font-size: 18px;
+  }
+}

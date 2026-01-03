@@ -1,87 +1,89 @@
-<ion-header mode="md" >
+<ion-header mode="md" class="transparent-header">
   <ion-toolbar>
-    <div align="center">
-      <strong> <h6> <ion-title >Planes de Lectura</ion-title></h6> </strong>
-          
-    </div>  
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/" color="primary"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="header-title">Biblioteca de Planes</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content padding-top>
-  <ion-grid  class="ion-no-padding">
-    <ion-row  class="ion-no-padding">
-      <ion-col size-md="2"  size-lg="3" >     </ion-col>
-      <ion-col  size-xs="12"  size-md="8"  size-lg="6">
+<ion-content class="plans-content">
 
-      <ion-toolbar mode="md" >
-        <ion-segment [(ngModel)]="tipoOrdenName">
-          <ion-segment-button value="miPlanes" (click)="tipoOrdenLibro('miPlanes')">
-            Mis planes
-          </ion-segment-button>
-          <ion-segment-button value="bucarPlanes" (click)="tipoOrdenLibro('bucarPlanes')">
-            Buscar planes
-          </ion-segment-button>
-        </ion-segment>
-      </ion-toolbar>
-      
-      <div *ngIf="tipoOrdenBuscarPlan">                                                                               <!--Vista Tradicional-->
-        <ion-item>
-          <ion-icon name="ios-search" ></ion-icon>
-          <ion-input   
-            show-cancel-button="always"
-            (ionBlur)="filterListPlan('limpiar')"
-            clear-on-edit=true
-            placeholder="Buscar libro"
-            type="text" 
-            (ionInput)="filterListPlan($event)"
-          ></ion-input >
-        </ion-item>
-      
-        <ion-list>
-          <ion-item *ngFor="let plan of planes" (click)="pushPlanDetalleNav(plan.nombre)" ion-no-padding> 
-            <ion-thumbnail slot="start">
-              <img src="{{plan.imagen}}">
-            </ion-thumbnail>
-            <ion-label>
-              <h2>{{plan.titulo}}</h2>
-              <p>{{plan.descripcion}}</p>
-            </ion-label>
-          </ion-item >
-        </ion-list>          
-      </div>  
+  <div class="main-container">
 
-      <div *ngIf="tipoOrdenMiPlan">                                                                               <!--Vista Tradicional-->
-        <!--
-        <ion-item>
-          <ion-icon name="ios-search" ></ion-icon>
-          <ion-input   
-            show-cancel-button="always"
-            (ionBlur)="filterListPlan('limpiar')"
-            clear-on-edit=true
-            placeholder="Buscar libro"
-            type="text" 
-            (ionInput)="filterListPlan($event)"
-          ></ion-input >
-        </ion-item>
-        -->
-        <ion-list>
-          <ion-item *ngFor="let plan of planesActivos" (click)="pushPlanDetalleNav(plan.nombre)" ion-no-padding> 
-            <ion-thumbnail slot="start">
-              <img src="{{plan.imagen}}">
-            </ion-thumbnail>
-            <ion-label>
-              <h2>{{plan.titulo}}</h2>
-              <p>{{plan.descripcion}}
-                <ion-progress-bar value="{{plan.progreso}}"></ion-progress-bar>
-              </p>
-            </ion-label>
-          </ion-item >
-        </ion-list>          
-      </div>  
+    <div class="segment-wrapper">
+      <ion-segment [(ngModel)]="tipoOrdenName" mode="ios" class="custom-segment">
+        <ion-segment-button value="miPlanes" (click)="tipoOrdenLibro('miPlanes')">
+          <ion-label>En Progreso</ion-label> </ion-segment-button>
+        <ion-segment-button value="bucarPlanes" (click)="tipoOrdenLibro('bucarPlanes')">
+          <ion-label>Explorar</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+    </div>
 
-    </ion-col>
-    <ion-col size-md="2" size-lg="3" >           </ion-col>
-  </ion-row>
-</ion-grid>
+    <div *ngIf="tipoOrdenMiPlan" class="animate-fade-in">
 
+      <div *ngIf="planesActivos.length === 0" class="empty-state">
+        <div class="empty-icon"><ion-icon name="library-outline"></ion-icon></div>
+        <h3>Tu mesa está vacía</h3>
+        <p>Inicia un plan de lectura para fortalecer tu hábito espiritual.</p>
+        <ion-button fill="outline" class="btn-gold-outline"
+          (click)="tipoOrdenName = 'bucarPlanes'; tipoOrdenLibro('bucarPlanes')">
+          Explorar catálogo
+        </ion-button>
+      </div>
+
+      <div class="active-plans-list">
+        <div class="plan-card active-card" *ngFor="let plan of planesActivos" (click)="pushPlanDetalleNav(plan.nombre)">
+
+          <div class="card-image-wrapper">
+            <img [src]="plan.imagen" alt="Portada">
+            <div class="overlay-play"><ion-icon name="play-circle"></ion-icon></div>
+          </div>
+
+          <div class="card-content">
+            <h3 class="plan-title">{{plan.titulo}}</h3>
+
+            <div class="progress-section">
+              <div class="progress-info">
+                <span>Tu avance</span>
+                <span class="percentage">{{ (plan.progreso * 100) | number:'1.0-0' }}%</span>
+              </div>
+              <ion-progress-bar [value]="plan.progreso" class="gold-progress"></ion-progress-bar>
+            </div>
+
+            <p class="plan-desc">{{plan.descripcion | slice:0:60}}...</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+
+    <div *ngIf="tipoOrdenBuscarPlan" class="animate-fade-in">
+
+      <div class="search-box-wrapper">
+        <ion-icon name="search-outline" class="search-icon"></ion-icon>
+        <input class="custom-input" placeholder="Buscar un tema (ej: Fe, Salmos)" type="text"
+          (input)="filterListPlan($event)">
+      </div>
+
+      <div class="catalog-list">
+        <div class="plan-card catalog-card" *ngFor="let plan of planes" (click)="pushPlanDetalleNav(plan.nombre)">
+          <div class="thumbnail-col">
+            <img [src]="plan.imagen" alt="Portada">
+          </div>
+          <div class="info-col">
+            <h3 class="plan-title">{{plan.titulo}}</h3>
+            <p class="plan-desc">{{plan.descripcion}}</p>
+            <div class="action-row">
+              <span class="read-more">Ver detalles <ion-icon name="arrow-forward"></ion-icon></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
 </ion-content>
