@@ -228,7 +228,7 @@
 
 /* --- DARK MODE SUPPORT --- */
 .contact-content {
-    body.dark & {
+    :host-context(body.dark) & {
         --background: #121212;
 
         .main-container {

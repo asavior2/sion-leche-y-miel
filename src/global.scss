@@ -90,4 +90,26 @@ body.dark {
             color: #ffffff !important;
         }
     }
+}/* Additional overrides for Profile, Sobre, Contacto headers */
+body.dark {
+
+    app-sobre,
+    app-contacto,
+    app-profile {
+        ion-header ion-toolbar {
+            --background: #121212 !important;
+            background: #121212 !important;
+            --color: #ffffff !important;
+            color: #ffffff !important;
+        }
+
+        .header-title,
+        ion-title {
+            color: #ffffff !important;
+        }
+
+        ion-back-button {
+            color: #ffffff !important;
+        }
+    }
 }
