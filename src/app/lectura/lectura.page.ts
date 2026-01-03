@@ -300,6 +300,38 @@ export class LecturaPage implements OnInit {
 
   } // ngOnInit
 
+  ionViewWillEnter() {
+    this.activeRoute.queryParams.subscribe(params => {
+      if (params && params.libro && params.capitulo) {
+        const targetLibro = parseInt(params.libro);
+        const targetCapitulo = parseInt(params.capitulo);
+        const targetVersiculo = params.versiculo ? parseInt(params.versiculo) : null;
+
+        // Only reload if different or forced
+        if (this.libro !== targetLibro || this.capitulo !== targetCapitulo || targetVersiculo) {
+          this.mostrarTextoMetodo(targetLibro, targetCapitulo).then(() => {
+            if (targetVersiculo) {
+              setTimeout(() => {
+                this.scrollToVerse(targetVersiculo);
+              }, 500); // Allow DOM to render
+            }
+          });
+        }
+      }
+    });
+  }
+
+  scrollToVerse(verse: number) {
+    const id = 'l' + verse;
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // Optional: Highlight temporarily
+      el.classList.add('versiculo-highlight');
+      setTimeout(() => el.classList.remove('versiculo-highlight'), 2000);
+    }
+  }
+
   setupAudioSubscriptions() {
     this.audioService.isPlaying$.subscribe(playing => {
       this.isPlaying = playing;
@@ -554,7 +586,7 @@ export class LecturaPage implements OnInit {
 
   actualizarLibroTitulo(libro) {
     for (let entry of Libros) {
-      if (libro === entry.id) {
+      if (libro == entry.id) {
         this.librot = entry.libro;
       }
     }

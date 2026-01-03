@@ -1,1 +1,207 @@
+.concordance-content {
+    --background: #FDFBF7;
+    /* Crema */
+    font-family: 'Inter', sans-serif;
 
+    .main-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px 24px 60px;
+    }
+
+    /* --- BUSCADOR PERSONALIZADO --- */
+    .search-section {
+        margin-bottom: 30px;
+
+        .search-box-wrapper {
+            background: #FFFFFF;
+            border: 1px solid rgba(158, 127, 42, 0.3);
+            /* Borde dorado suave */
+            border-radius: 12px;
+            padding: 5px 15px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+
+            &:focus-within {
+                border-color: #9E7F2A;
+                box-shadow: 0 4px 20px rgba(158, 127, 42, 0.15);
+            }
+
+            .search-icon {
+                color: #9E7F2A;
+                font-size: 22px;
+                margin-right: 10px;
+            }
+
+            .custom-input {
+                border: none;
+                background: transparent;
+                width: 100%;
+                padding: 12px 0;
+                font-size: 16px;
+                color: #2C2C2C;
+                outline: none;
+                /* Quitamos el borde azul del navegador */
+
+                &::placeholder {
+                    color: #999;
+                }
+            }
+        }
+
+        .btn-search-gold {
+            --background: #9E7F2A;
+            --border-radius: 10px;
+            --box-shadow: 0 4px 10px rgba(158, 127, 42, 0.2);
+            font-weight: 600;
+            text-transform: none;
+            letter-spacing: 0.5px;
+        }
+    }
+
+    /* --- RESULTADOS --- */
+    .results-area {
+
+        .results-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+
+            .count-badge {
+                background: #9E7F2A;
+                color: white;
+                padding: 2px 8px;
+                border-radius: 12px;
+                font-weight: bold;
+                font-size: 12px;
+                margin-right: 8px;
+            }
+
+            .count-label {
+                font-size: 13px;
+                color: #666;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+            }
+        }
+
+        .verse-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .verse-card {
+            background: #FFFFFF;
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid rgba(0, 0, 0, 0.03);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+
+            .verse-ref {
+                display: flex;
+                align-items: center;
+                color: #9E7F2A;
+                font-weight: 700;
+                font-size: 14px;
+                margin-bottom: 8px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+
+                .ref-icon {
+                    font-size: 12px;
+                    margin-right: 6px;
+                }
+            }
+
+            .verse-text {
+                color: #2C2C2C;
+                font-family: 'Merriweather', serif;
+                /* Texto bíblico en Serif */
+                line-height: 1.6;
+                font-size: 16px;
+
+                /* Estilo para las palabras resaltadas dentro del innerHTML */
+                ::ng-deep strong,
+                ::ng-deep b,
+                ::ng-deep .highlight {
+                    color: #D98D2F;
+                    /* Ámbar */
+                    background-color: rgba(255, 243, 196, 0.5);
+                    /* Fondo miel suave */
+                    padding: 0 2px;
+                    border-radius: 2px;
+                }
+            }
+
+            .btn-read-more {
+                --color: #999;
+                font-size: 12px;
+                margin-top: 5px;
+                margin-left: -10px;
+                /* Alinear visualmente a la izquierda */
+                height: 25px;
+            }
+        }
+    }
+
+    /* --- BOTÓN CARGAR MÁS --- */
+    .load-more-container {
+        margin-top: 30px;
+        text-align: center;
+
+        .btn-outline-gold {
+            --color: #9E7F2A;
+            --border-color: #9E7F2A;
+            --border-radius: 20px;
+            --background-hover: rgba(158, 127, 42, 0.05);
+            font-size: 14px;
+            text-transform: none;
+        }
+    }
+
+    /* --- ESTADOS VACÍOS --- */
+    .no-results-state,
+    .initial-state {
+        text-align: center;
+        padding-top: 60px;
+        color: #AAA;
+
+        ion-icon {
+            font-size: 60px;
+            margin-bottom: 10px;
+            opacity: 0.5;
+            color: #C2A153;
+            /* Ocre suave */
+        }
+
+        h3 {
+            color: #666;
+            font-family: 'Merriweather', serif;
+            margin-bottom: 5px;
+        }
+
+        p {
+            font-size: 14px;
+        }
+    }
+}
+
+/* Header Transparente */
+.transparent-header {
+    ion-toolbar {
+        --background: #FDFBF7;
+        --border-width: 0;
+    }
+
+    .header-title {
+        font-family: 'Merriweather', serif;
+        color: #9E7F2A;
+        font-size: 18px;
+    }
+}
