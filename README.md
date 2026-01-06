@@ -117,10 +117,44 @@ Si prefieres ejecutarlo directamente en tu máquina:
     ```
 
 ---
+# Desarrollo pruebas en dispocitivos 
+```bash
+ionic cordova run android --target=emulator-5554
+```
 
-## 📱 Construcción y Despliegue (Notas Legacy)
+---
+## 🏗️ Construcción y Despliegue (Actual 2025)
+Este proyecto utiliza **Cordova** con **Angular 18**. Debido a la mezcla de tecnologías modernas y plugins legacy, el proceso de construcción tiene requisitos específicos.
 
-> *Esta sección contiene notas originales del proyecto para compilación nativa y firma de APKs.*
+### 1. Preparación del Entorno
+*   **JDK**: Requiere JDK 11 o 16 (dependiendo de la versión de Gradle de Cordova).
+*   **Android SDK**: API Level 33+ recomendado.
+*   **Node.js**: v18.x
+
+### 2. Comandos de Construcción
+**Instalación Limpia:**
+Es CRÍTICO usar el flag `--legacy-peer-deps` para evitar conflictos de dependencias entre Ionic 7 y plugins antiguos.
+```bash
+rm -rf node_modules package-lock.json
+npm install --legacy-peer-deps
+```
+
+**Generar APK de Producción:**
+```bash
+# Construye el bundle de Angular optimizado y prepara la plataforma Android
+ionic cordova build android --prod --release
+```
+_El APK no firmado se generará en: `platforms/android/app/build/outputs/apk/release/`_
+
+**Generar App Bundle (.aab) para Play Store:**
+```bash
+ionic cordova build android --prod --release -- -- --packageType=bundle
+```
+
+---
+
+## 🏛️ Construcción y Despliegue (Referencia Legacy)
+> *Esta sección contiene notas originales del proyecto (2020-2023) sobre compilación manual, keystores y firma. Aún son válidas como referencia para el proceso de firma.*
 
 ### Pruebas con Genymotion / Emulador
 

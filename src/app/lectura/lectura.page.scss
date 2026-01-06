@@ -201,6 +201,14 @@
       gap: 12px;
       padding: 10px;
 
+      /* --- PRESERVED HIGHLIGHTS --- */
+      .versiculo-highlight {
+        background-color: rgba(218, 165, 32, 0.45) !important;
+        /* Gold with opacity */
+        box-decoration-break: clone;
+        -webkit-box-decoration-break: clone;
+      }
+
       .chapter-circle {
         background: #FFF;
         border: 1px solid #DDD;
@@ -410,6 +418,7 @@ ion-fab {
 
       ion-label {
         color: #AAA;
+        background: transparent;
       }
     }
   }

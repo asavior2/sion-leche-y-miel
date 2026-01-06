@@ -49,7 +49,7 @@ export class BibliaService {
 
   async getTextoImport(libro: number, capitulo: number) {
     console.log(`Getting text for libro ${libro} capitulo ${capitulo}`);
-    const url = '/assets/libros/' + libro + '/' + libro + '-' + capitulo + '.json';
+    const url = '/assets/libros/' + libro + '/' + libro + '-' + capitulo + '.json?t=' + Date.now();
     console.log('Requesting URL:', url);
     return await firstValueFrom(this.httpClient.get(url));
   }
@@ -171,6 +171,20 @@ export class BibliaService {
       is_synced: 0
     };
     await this.bibleRepo.saveReadingProgress(progress);
+  }
+
+  private _navigationHistory: { libro: number, capitulo: number, versiculo: number } | null = null;
+
+  get navigationHistory() {
+    return this._navigationHistory;
+  }
+
+  setHistory(libro: number, capitulo: number, versiculo: number) {
+    this._navigationHistory = { libro, capitulo, versiculo };
+  }
+
+  clearHistory() {
+    this._navigationHistory = null;
   }
 
   private generateUUID() {

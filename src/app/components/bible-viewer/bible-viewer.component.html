@@ -1,63 +1,52 @@
-<div class="bible-viewer-container" [style.fontSize.px]="fontSize">
+<div class="bible-reading-flow" [style.fontSize.px]="fontSize">
 
-  <div *ngFor="let text of content" class="verse-block">
+  <ng-container *ngFor="let text of content">
 
-    <div *ngIf="text.hasOwnProperty('idTitulo')" class="title-wrapper">
-      <h3>
-        <strong>{{text.titulo}}</strong>
-      </h3>
+    <div *ngIf="text.hasOwnProperty('idTitulo')" class="pericopa-block">
+      <h3>{{text.titulo}}</h3>
     </div>
 
-    <div *ngIf="text.hasOwnProperty('comprimido')" class="verse-line">
+    <!-- Wrap verse in conditional to prevent phantom elements on title-only entries -->
+    <ng-container *ngIf="text.texto || (text.comprimido && text.comprimido.length > 0)">
+      <span id="{{idPrefix}}{{text.versiculo}}" class="verse-span"
+        [style.backgroundColor]="obtenerColorMarcador(text.capitulo, text.versiculo)">
 
-      <div id="{{idPrefix}}{{text.versiculo}}" class="verse-content l{{text.versiculo}}">
+        <!-- Only show verse number if NO title (Prevents duplication for Verse 1) -->
+        <sup class="verse-number" *ngIf="!text.hasOwnProperty('idTitulo')">{{text.versiculo}}</sup>
 
-        <span class="verse-num">{{text.versiculo}}</span>
+        <ng-container *ngIf="text.hasOwnProperty('comprimido')">
+          <ng-container *ngFor="let fragmento of text.comprimido">
 
-        <ng-container *ngFor="let fragmento of text.comprimido">
+            <span class="text-content" (click)="onVerseClick(text.id_libro, text.capitulo, text.versiculo, 'noText')">
+              {{fragmento.parteText}}
+            </span>
 
-          <span class="text-fragment" (click)="onVerseClick(text.id_libro, text.capitulo, text.versiculo, 'noText')"
-            [style.backgroundColor]="obtenerColorMarcador(text.capitulo, text.versiculo)">
-            {{fragmento.parteText}}
-          </span>
+            <span class="citation-icon" (click)="onCitationClick(fragmento)">
+              <ion-icon name="book-outline"></ion-icon>
+            </span>
 
-          <span class="citation-trigger" (click)="onCitationClick(fragmento)"
-            [style.backgroundColor]="obtenerColorMarcador(text.capitulo, text.versiculo)">
-            <ion-icon name="book-outline"></ion-icon> </span>
+            <span class="text-content" (click)="onVerseClick(text.id_libro, text.capitulo, text.versiculo, 'noText')">
+              {{fragmento.parteFinal}}
+            </span>
 
-          <span class="text-fragment" (click)="onVerseClick(text.id_libro, text.capitulo, text.versiculo, 'noText')"
-            [style.backgroundColor]="obtenerColorMarcador(text.capitulo, text.versiculo)">
-            {{fragmento.parteFinal}}
-          </span>
-
+          </ng-container>
         </ng-container>
 
-        <span *ngIf="tieneNota(text.capitulo, text.versiculo)" class="note-indicator"
+        <ng-container *ngIf="!text.hasOwnProperty('comprimido') && text.texto">
+          <span class="text-content" (click)="onVerseClick(text.id_libro, text.capitulo, text.versiculo, text.texto)">
+            {{text.texto}}
+          </span>
+        </ng-container>
+
+        <span *ngIf="tieneNota(text.capitulo, text.versiculo)" class="note-icon"
           (click)="onNoteClick(text.capitulo, text.versiculo); $event.stopPropagation()">
           <ion-icon name="document-text"></ion-icon>
         </span>
 
-      </div>
-    </div>
+        <span class="spacer">&nbsp;</span>
 
-    <div *ngIf="!text.hasOwnProperty('comprimido') && text.texto" class="verse-line">
+      </span>
+    </ng-container>
+  </ng-container>
 
-      <div id="{{idPrefix}}{{text.versiculo}}" class="verse-content l{{text.versiculo}}">
-
-        <span class="verse-num" *ngIf="!text.hasOwnProperty('idTitulo')">{{text.versiculo}}</span>
-
-        <span class="text-fragment" (click)="onVerseClick(text.id_libro, text.capitulo, text.versiculo, text.texto)"
-          [style.backgroundColor]="obtenerColorMarcador(text.capitulo, text.versiculo)">
-          {{text.texto}}
-        </span>
-
-        <span *ngIf="tieneNota(text.capitulo, text.versiculo)" class="note-indicator"
-          (click)="onNoteClick(text.capitulo, text.versiculo); $event.stopPropagation()">
-          <ion-icon name="document-text"></ion-icon>
-        </span>
-
-      </div>
-    </div>
-
-  </div>
 </div>

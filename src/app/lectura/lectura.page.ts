@@ -35,6 +35,7 @@ export class LecturaPage implements OnInit {
   libro: number = 43;
   LibrosPrueba;
   capitulo: number = 3;
+  versiculo: number; // For context navigation
   primerP: Array<any> = new Array();
   segundoP: Array<any> = new Array();
   textoJson;
@@ -100,6 +101,10 @@ export class LecturaPage implements OnInit {
   @ViewChild(IonContent) ionContent: IonContent;
   highlightsMap: { [key: string]: string } = {};
 
+  get history() {
+    return this.bibliaService.navigationHistory;
+  }
+
   updateHighlightsMap() {
     this.highlightsMap = {};
     if (this.marcador) {
@@ -110,6 +115,29 @@ export class LecturaPage implements OnInit {
         const key = `${this.capitulo}:${marca.versiculo}`;
         this.highlightsMap[key] = marca.color;
       }
+    }
+  }
+
+  // Method to Return to Origin
+  async returnToContext() {
+    const history = this.bibliaService.navigationHistory;
+    if (history) {
+      const { libro, capitulo, versiculo } = history;
+      this.bibliaService.clearHistory(); // Clear history via service
+      await this.mostrarTextoMetodo(libro, capitulo, versiculo);
+
+      // Auto-scroll logic is reused in mostrarTextoMetodo's params or logic?
+      // Wait, mostrarTextoMetodo sets this.versiculo but doesn't auto-scroll unless ionViewWillEnter.
+      // We need to replicate scroll logic here if we are on same page.
+      setTimeout(() => {
+        const id = 'l' + versiculo;
+        const el = document.getElementById(id);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          el.classList.add('versiculo-highlight');
+          setTimeout(() => el.classList.remove('versiculo-highlight'), 3000);
+        }
+      }, 500);
     }
   }
 
@@ -336,6 +364,10 @@ export class LecturaPage implements OnInit {
     this.audioService.isPlaying$.subscribe(playing => {
       this.isPlaying = playing;
       this.playPausa = playing ? 'pause' : 'play';
+      if (!playing && this.currentHighlightedVerse) {
+        this.marcarVersiculoAudioRemove(this.currentHighlightedVerse);
+        this.currentHighlightedVerse = null;
+      }
     });
 
     this.audioService.currentVerse$.subscribe(verse => {
@@ -565,7 +597,8 @@ export class LecturaPage implements OnInit {
 
   mostrarCapitulosMetodo(libro) {
     this.marcarVersiculoAudioRemove("all")
-    this.router.navigate(['/tabs/tab1'], { fragment: "" });
+    this.bibliaService.clearHistory(); // Clear history via service
+    this.router.navigate(['/tabs/lectura'], { fragment: "" });
 
     for (let entry of Libros) {
       if (libro === entry.id) {
@@ -593,10 +626,11 @@ export class LecturaPage implements OnInit {
     this.getcapitulos(this.libro);
   }
 
-  async mostrarTextoMetodo(libro, capitulo) {
+  async mostrarTextoMetodo(libro: any, capitulo: any, versiculo?: any, versiculoFinal?: any) {
+    if (versiculo) this.versiculo = versiculo;
     this.ionContent.scrollToTop(300);
     this.marcarVersiculoAudioRemove("all")
-    this.router.navigate(['/tabs/tab1'], { fragment: "" });
+    this.router.navigate(['/tabs/lectura'], { fragment: "" });
 
     this.citas = [];
     this.storage.set('libro', parseInt(libro));
@@ -768,13 +802,13 @@ export class LecturaPage implements OnInit {
               capitulo: text.capitulo,
               versiculo: citaVersiculo.versiculo,
               cita: citaVersiculo.cita,
-              parteText: text.texto.substring(posicionInicial, citaVersiculo.posicion),
+              parteText: text.texto.substring(posicionInicial, citaVersiculo.posicion).replace(/(&nbsp;|\u00A0|\s)+/g, ' ').trim(),
               ibroCita: citaVersiculo.libroCita,
               capituloCita: citaVersiculo.capituloCita,
               versiculoCitaInicial: citaVersiculo.versiculoCitaInicial,
               versiculoCitaFinal: citaVersiculo.versiculoCitaFinal,
               posicion: citaVersiculo.posicion,
-              parteFinal: text.texto.substring(citaVersiculo.posicion, text.texto.length)
+              parteFinal: text.texto.substring(citaVersiculo.posicion, text.texto.length).replace(/(&nbsp;|\u00A0|\s)+/g, ' ').trim()
             });
           } else {
             this.mapText.push({
@@ -782,7 +816,7 @@ export class LecturaPage implements OnInit {
               capitulo: text.capitulo,
               versiculo: citaVersiculo.versiculo,
               cita: citaVersiculo.cita,
-              parteText: text.texto.substring(posicionInicial, citaVersiculo.posicion),
+              parteText: text.texto.substring(posicionInicial, citaVersiculo.posicion).replace(/(&nbsp;|\u00A0|\s)+/g, ' ').trim(),
               ibroCita: citaVersiculo.libroCita,
               capituloCita: citaVersiculo.capituloCita,
               versiculoCitaInicial: citaVersiculo.versiculoCitaInicial,
@@ -794,10 +828,8 @@ export class LecturaPage implements OnInit {
           cont++;
         }
         this.textoJsonFinal.push({ versiculo: this.versiculoTEMP, comprimido: this.mapText });
-        //console.log("mapText");
-        //console.log(this.mapText);
-        //this.sanitizer.bypassSecurityTrustHtml(this.versiculoFinal);
       } else {
+        if (text.texto) text.texto = text.texto.replace(/(&nbsp;|\u00A0|\s)+/g, ' ').trim();
         this.textoJsonFinal.push(text);
       }
     }
@@ -809,13 +841,10 @@ export class LecturaPage implements OnInit {
 
   // ________________________________________________________________________________________________
 
-  async citaAlert(cita, idLibroCita, capituloC, verInicial) {
+  async citaAlert(cita, idLibroCita, capituloC, verInicial, originVersiculo) {
     if (this.update) {
       await this.bibliaService.getTextoFile(idLibroCita, capituloC).then((data) => {
-        // console.log(data);
         this.arregloTextoCita = JSON.parse(data);
-        // console.log ("Texto cita" + this.arregloTextoCita);
-        // console.log(this.textoCita);
         for (let citaText of this.arregloTextoCita) {
           if (verInicial === citaText.versiculo) {
             if (citaText.hasOwnProperty('comprimido')) {
@@ -831,14 +860,11 @@ export class LecturaPage implements OnInit {
             }
           }
         }
-        this.mostrarCitaAlert(cita, this.textoCita, idLibroCita, capituloC);
-        // console.log(this.textoCita);
+        this.mostrarCitaAlert(cita, this.textoCita, idLibroCita, capituloC, verInicial, originVersiculo);
         this.textoCita = '';
       });
     } else {
       this.arregloTextoCita = await this.bibliaService.getTextoImport(idLibroCita, capituloC);
-      // console.log ("Texto cita" + this.arregloTextoCita);
-      // console.log(this.textoCita);
       for (let citaText of this.arregloTextoCita) {
         if (verInicial === citaText.versiculo) {
           if (citaText.hasOwnProperty('comprimido')) {
@@ -854,29 +880,46 @@ export class LecturaPage implements OnInit {
           }
         }
       }
-      this.mostrarCitaAlert(cita, this.textoCita, idLibroCita, capituloC);
-      // console.log(this.textoCita);
+      this.mostrarCitaAlert(cita, this.textoCita, idLibroCita, capituloC, verInicial, originVersiculo);
       this.textoCita = '';
     }
-
   }
 
-  async mostrarCitaAlert(cita, textoVersiculo, idLibro, capituloC) {
+  async mostrarCitaAlert(cita, textoVersiculo, idLibro, capituloC, versiculo, originVersiculo) {
     const alert = await this.alertController.create({
       header: cita,
       message: textoVersiculo,
       buttons: [
         { text: 'OK' },
         {
-          text: 'Ir al Capitulo',
-          handler: () => {
+          text: 'Leer contexto',
+          handler: async () => {
             if (this.isPlaying) {
               this.audioService.stopAudio();
-              this.router.navigate(['/tabs/tab1'], { fragment: "" });
               this.marcarVersiculoAudioRemove("all")
             }
-            this.mostrarTextoMetodo(idLibro, capituloC);
-            this.ionContent.scrollToTop(300);
+            // Save Origin BEFORE navigating using Service
+            this.bibliaService.setHistory(this.libro, this.capitulo, originVersiculo || this.versiculo || 1);
+            // Navigate and load context
+            await this.mostrarTextoMetodo(idLibro, capituloC, versiculo);
+
+            // Scroll to verse after rendering
+            setTimeout(() => {
+              const id = 'l' + versiculo;
+              const el = document.getElementById(id);
+              if (el) {
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                // Add temporary highlight animation
+                el.classList.add('versiculo-highlight');
+                // Remove after a delay for temporary flash
+                setTimeout(() => el.classList.remove('versiculo-highlight'), 3000);
+
+                // Update Menu/Selection State effectively
+                this.libro = idLibro;
+                this.capitulo = capituloC;
+                this.versiculo = versiculo;
+              }
+            }, 500); // Wait for DOM update
           }
         }
       ],
@@ -1100,7 +1143,7 @@ export class LecturaPage implements OnInit {
     if (bookmark) {
       return bookmark.color || '#FFEB3B'; // Return saved color or default yellow
     }
-    return 'transparent';
+    return null; // Return null to allow CSS class (.versiculo-highlight) to show
   }
 
   // --- MENU & NOTE LOGIC ---
@@ -1167,24 +1210,75 @@ export class LecturaPage implements OnInit {
     this.marcarVersiculoAudioRemove("all");
   }
 
+  async verNota(capitulo, versiculo) {
+    const nota = this.notas.find(n => n.chapter == capitulo && n.verse == versiculo);
+    if (nota) {
+      const alert = await this.alertController.create({
+        header: 'Nota',
+        subHeader: `${this.librot} ${capitulo}:${versiculo}`,
+        message: nota.content,
+        buttons: [
+          {
+            text: 'Editar',
+            handler: () => {
+              this.editarNota(nota);
+            }
+          },
+          {
+            text: 'Eliminar',
+            role: 'destructive',
+            handler: () => {
+              this.eliminarNota(nota);
+            }
+          },
+          { text: 'Cerrar', role: 'cancel' }
+        ]
+      });
+      await alert.present();
+    }
+  }
+
+  async editarNota(nota) {
+    const alert = await this.alertController.create({
+      header: 'Editar Nota',
+      inputs: [
+        {
+          name: 'noteContent',
+          type: 'textarea',
+          value: nota.content
+        }
+      ],
+      buttons: [
+        { text: 'Cancelar', role: 'cancel' },
+        {
+          text: 'Guardar',
+          handler: async (data) => {
+            if (data.noteContent) {
+              nota.content = data.noteContent;
+              nota.updated_at = Date.now();
+              nota.is_synced = 0;
+              await this.bibliaService.saveNote(nota);
+              this.syncService.syncAll(true); // Background sync
+              this.notas = await this.bibliaService.getNotes(); // Refresh
+            }
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  async eliminarNota(nota) {
+    await this.bibliaService.deleteNote(nota.id);
+    this.notas = await this.bibliaService.getNotes();
+  }
+
   tieneNota(capitulo, versiculo) {
     if (!this.notas) return false;
     // this.libro is int, note.book_id is int
     return this.notas.some(n => n.book_id == this.libro && n.chapter == capitulo && n.verse == versiculo);
   }
 
-  async verNota(capitulo, versiculo) {
-    const note = this.notas.find(n => n.book_id == this.libro && n.chapter == capitulo && n.verse == versiculo);
-    if (note) {
-      const alert = await this.alertController.create({
-        header: 'Nota',
-        subHeader: `${this.librot} ${capitulo}:${versiculo}`,
-        message: note.content,
-        buttons: ['Cerrar']
-      });
-      await alert.present();
-    }
-  }
 
   // State for Color Selection
   selectedColor: string = '#FFF9C4'; // Default Pastel Yellow

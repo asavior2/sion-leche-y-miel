@@ -2,6 +2,12 @@
 
 Esta guía detalla los componentes críticos del sistema implementados hasta la Fase 5.
 
+## 0. Entorno de Desarrollo (Docker)
+El proyecto ha migrado a un entorno contenerizado para garantizar consistencia.
+- **Docker Compose:** Orquesta el contenedor de la aplicación (`ionic-biblia`).
+- **Volúmenes:** Sincronizan el código local con el contenedor en tiempo real.
+- **Dependencias:** Se gestionan dentro del contenedor (`npm install --legacy-peer-deps`), aislando el sistema anfitrión de conflictos de versiones de Node.js.
+
 ## 1. Estrategia "Offline-First"
 La aplicación prioriza la disponibilidad inmediata.
 1.  **Lectura:** Los planes y textos se cargan desde JSON locales o SQLite.
@@ -9,9 +15,9 @@ La aplicación prioriza la disponibilidad inmediata.
 3.  **Sincronización:** Ocurre en segundo plano.
 
 ## 2. Autenticación (AuthService)
-- **Modo Invitado (Offline):** Por defecto, el usuario es un "Invitado". No se crea sesión en Firebase. Todos los datos son locales(SE ELIMINO).
-- **Modo Registrado:** Si el usuario hace login (Google/Email), se obtiene un UID de Firebase.
-- **Transición:** Al hacer login, los datos locales existentes *deberían* fusionarse con la nube (Lógica de fusión pendiente de refinamiento completo).
+- **Estado Actual:** La aplicación soporta funcionamiento completo sin autenticación (Modo "Guest").
+- **Login Social:** Implementado (Google) pero opcional.
+- **Nota:** La lógica estricta de "Solo Invitado" ha evolucionado a un modelo híbrido donde el usuario inicia sin cuenta y puede vincularla posteriormente para respaldar datos.
 
 ## 3. Sincronización Inteligente (SyncService)
 Ubicación: `src/app/core/services/sync.service.ts`

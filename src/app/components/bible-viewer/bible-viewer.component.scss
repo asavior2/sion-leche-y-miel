@@ -134,3 +134,115 @@
     /* Esto asegura que el texto negro del resaltado se lea si el fondo es claro */
     /* O puedes usar mix-blend-mode si el navegador lo soporta */
 }
+
+
+
+.bible-reading-flow {
+    font-family: 'Merriweather', serif;
+    /* Fuente de lectura */
+    line-height: 1.7;
+    /* Un poco más alto para facilitar la lectura fluida */
+    text-align: justify;
+    /* Clásico en libros */
+    color: #2C2C2C;
+    padding: 0 5px;
+
+    /* IMPORTANTE: Esto asegura que el texto fluya */
+    display: block;
+}
+
+/* --- TÍTULOS (Rompen el flujo) --- */
+.pericopa-block {
+    display: block;
+    /* Fuerza salto de línea */
+    margin-top: 30px;
+    margin-bottom: 15px;
+    text-align: center;
+    width: 100%;
+    /* Ocupa todo el ancho */
+
+    h3 {
+        font-family: 'Merriweather', serif;
+        font-weight: 700;
+        color: #9E7F2A;
+        font-size: 1.2em;
+        margin: 0;
+    }
+}
+
+/* --- VERSÍCULO INDIVIDUAL (Fluye) --- */
+.verse-span {
+    display: inline;
+    /* EL SECRETO: Hace que se pegue al anterior */
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+    padding: 2px 0;
+    /* Add vertical breathing room for highlight */
+}
+
+/* --- NÚMERO DE VERSÍCULO --- */
+.verse-number {
+    font-family: 'Inter', sans-serif;
+    font-weight: bold;
+    font-size: 0.65em;
+    /* Pequeño */
+    color: #9E7F2A;
+    /* Dorado */
+    vertical-align: super;
+    /* Elevado */
+    margin-right: 2px;
+    user-select: none;
+    /* No se selecciona al copiar */
+}
+
+/* --- TEXTO DEL VERSÍCULO --- */
+.text-content {
+    /* Removed box-decoration-break from here since wrapper handles it */
+    border-radius: 2px;
+}
+
+/* --- ICONOS (Cita y Nota) --- */
+.citation-icon,
+.note-icon {
+    display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+    margin: 0 1px;
+
+    ion-icon {
+        font-size: 0.8em;
+        margin-bottom: 2px;
+    }
+}
+
+.citation-icon ion-icon {
+    color: #C2A153;
+}
+
+.note-icon ion-icon {
+    color: #D98D2F;
+}
+
+/* Ajuste Dark Mode */
+:host-context(body.dark) {
+    .bible-reading-flow {
+        color: #E0E0E0;
+    }
+
+    .pericopa-block h3 {
+        color: #C2A153;
+    }
+
+    .verse-number {
+        color: #888;
+    }
+}
+
+/* --- RESALTADO ACTIVO (Añadido para asegurar alcance) --- */
+.versiculo-highlight {
+    background-color: rgba(218, 165, 32, 0.086) !important;
+    /* Dorado Premium */
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+    border-radius: 4px;
+}
