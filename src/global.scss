@@ -60,7 +60,9 @@ h6 {
     border-left: 4px solid #000000a8 !important;
     padding-left: 2px !important;
     transition: background-color 0.3s ease;
-}/* Global Dark Mode Overrides for Specific Pages */
+}
+
+/* Global Dark Mode Overrides for Specific Pages */
 body.dark {
 
     app-lectura,
@@ -90,7 +92,9 @@ body.dark {
             color: #ffffff !important;
         }
     }
-}/* Additional overrides for Profile, Sobre, Contacto headers */
+}
+
+/* Additional overrides for Profile, Sobre, Contacto headers */
 body.dark {
 
     app-sobre,
@@ -111,5 +115,54 @@ body.dark {
         ion-back-button {
             color: #ffffff !important;
         }
+    }
+}
+
+/* Global Desktop Layout (Containment Strategy) */
+/* Apply ONLY on Desktop Browser environment, and ONLY for screens larger than iPad Pro (1024px) */
+/* Global Desktop Layout (Containment Strategy) */
+/* Apply ONLY on Desktop Browser environment, and ONLY for screens larger than iPad Pro (1024px) */
+@media (min-width: 1025px) {
+
+    /* 1. Standard Full-Width Layout */
+    html.plt-desktop body {
+        background-color: #ffffff;
+        display: block;
+        min-height: 100vh;
+    }
+
+    /* 2. Unconstrain App: Let it act like a normal webpage */
+    html.plt-desktop ion-app {
+        position: relative;
+        width: 100%;
+        max-width: none;
+        height: 100%;
+        min-height: 100vh;
+        background-color: transparent;
+        margin: 0;
+        left: 0;
+        transform: none;
+    }
+
+    /* 3. CENTER THE CONTENT: The Magic PWA Trick */
+    /* Instead of shrinking the app, we pad the inside of content containers */
+    /* This keeps the scrollbar at the edge and backgrounds full-width */
+
+    html.plt-desktop {
+        /* Calculate padding to keep content max 1024px centered */
+        --desktop-padding: calc((100% - 1024px) / 2);
+    }
+
+    /* Apply padding to content areas */
+    html.plt-desktop ion-content {
+        --padding-start: var(--desktop-padding);
+        --padding-end: var(--desktop-padding);
+    }
+
+    /* Apply padding to toolbars so titles/buttons center */
+    html.plt-desktop ion-header ion-toolbar,
+    html.plt-desktop ion-footer ion-toolbar {
+        padding-left: var(--desktop-padding);
+        padding-right: var(--desktop-padding);
     }
 }

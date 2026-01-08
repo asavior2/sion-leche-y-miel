@@ -97,6 +97,7 @@ export class LecturaPage implements OnInit {
   isMenuOpen = false;
   selectedVerseForMenu: any = null;
   notas: Note[] = [];
+  isNative: boolean = false;
 
   @ViewChild(IonContent) ionContent: IonContent;
   highlightsMap: { [key: string]: string } = {};
@@ -104,6 +105,7 @@ export class LecturaPage implements OnInit {
   get history() {
     return this.bibliaService.navigationHistory;
   }
+
 
   updateHighlightsMap() {
     this.highlightsMap = {};
@@ -175,6 +177,8 @@ export class LecturaPage implements OnInit {
       this.currentTheme = 'light';
       this.estadoDark = 'eye'; // Icon to switch to Sepia (Reading mode)
     }
+
+    this.isNative = this.platform.is('cordova') || this.platform.is('capacitor');
   }
 
 
@@ -1081,16 +1085,42 @@ export class LecturaPage implements OnInit {
   copiarVersiculo() {
     let textTemp = "";
     let firstVerse = null;
+    let isFirst = true;
+
     for (let clave in this.copiaCondensado) {
-      if (!firstVerse) firstVerse = this.copiaCondensado[clave][2];
-      textTemp = textTemp + " " + this.copiaCondensado[clave][2] + this.copiaCondensado[clave][3]
+      if (isFirst) {
+        firstVerse = this.copiaCondensado[clave][2];
+        // For the first verse, we don't repeat the number in the body, as it will be in the header 3:16
+        textTemp = this.copiaCondensado[clave][3];
+        isFirst = false;
+      } else {
+        // Subsequent verses maintain the number: " 17 content"
+        textTemp = textTemp + " " + this.copiaCondensado[clave][2] + " " + this.copiaCondensado[clave][3];
+      }
     }
 
     const deepLink = `https://sionlecheymiel.com/app/bible/${this.libro}/${this.capitulo}/${firstVerse || 1}`;
-    const clipboardText = `*Biblia "Sion: Leche y Miel" ${this.librot} ${this.capitulo}* \n${textTemp}\n\nLeer aquí: ${deepLink}`;
+    // Format: Biblia "Sion: Leche y Miel" [Libro] [Cap]:[Ver] [Contenido]
+    const clipboardText = `Biblia "Sion: Leche y Miel" ${this.librot} ${this.capitulo}:${firstVerse || 1} ${textTemp}\n\nLeer aquí: ${deepLink}`;
 
-    this.clipboard.copy(clipboardText);
-    this.presentToast("Copiado al portapapeles");
+    if (this.isNative) {
+      this.clipboard.copy(clipboardText);
+      this.presentToast("Copiado al portapapeles");
+    } else {
+      // Web Fallback (Chrome Desktop requires this)
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(clipboardText).then(() => {
+          this.presentToast("Enlace copiado al portapapeles");
+        }).catch(err => {
+          console.error('Error al copiar: ', err);
+          this.presentToast("Error al copiar. Intente manualmente.");
+        });
+      } else {
+        console.warn("Clipboard API not available");
+        this.presentToast("No se pudo copiar (Navegador no soportado)");
+      }
+    }
+
     this.marcarVersiculoAudioRemove("all");
     this.isMenuOpen = false;
   }
@@ -1098,23 +1128,51 @@ export class LecturaPage implements OnInit {
   async compartirVersiculo() {
     let textTemp = "";
     let firstVerse = null;
+    let isFirst = true;
+
     for (let clave in this.copiaCondensado) {
-      if (!firstVerse) firstVerse = this.copiaCondensado[clave][2];
-      textTemp = textTemp + " " + this.copiaCondensado[clave][2] + this.copiaCondensado[clave][3]
+      if (isFirst) {
+        firstVerse = this.copiaCondensado[clave][2];
+        textTemp = this.copiaCondensado[clave][3];
+        isFirst = false;
+      } else {
+        textTemp = textTemp + " " + this.copiaCondensado[clave][2] + " " + this.copiaCondensado[clave][3];
+      }
     }
 
     const deepLink = `https://sionlecheymiel.com/app/bible/${this.libro}/${this.capitulo}/${firstVerse || 1}`;
-    const shareMsg = `*Biblia "Sion: Leche y Miel" ${this.librot} ${this.capitulo}* \n${textTemp}\n\nLeer aquí: ${deepLink}`;
+    const shareMsg = `Biblia "Sion: Leche y Miel" ${this.librot} ${this.capitulo}:${firstVerse || 1} ${textTemp}\n\nLeer aquí: ${deepLink}`;
 
-    this.socialSharing.share(shareMsg, null, null, null).then(() => {
-      // Success
-      this.marcarVersiculoAudioRemove("all");
-      this.isMenuOpen = false;
-    }).catch((error) => {
-      console.error("Share failed", error);
-      // Fallback to clipboard if share fails (optional)
-      this.copiarVersiculo();
-    });
+    if (this.isNative) {
+      this.socialSharing.share(shareMsg, null, null, null).then(() => {
+        this.marcarVersiculoAudioRemove("all");
+        this.isMenuOpen = false;
+      }).catch((error) => {
+        console.error("Share failed", error);
+        this.copiarVersiculo();
+      });
+    } else {
+      // Web Share API
+      if (navigator.share) {
+        navigator.share({
+          title: `Biblia Sion: ${this.librot} ${this.capitulo}`,
+          text: shareMsg,
+          url: deepLink,
+        })
+          .then(() => {
+            this.marcarVersiculoAudioRemove("all");
+            this.isMenuOpen = false;
+          })
+          .catch((error) => {
+            console.log('Error sharing or cancelled', error);
+            // If user catches, maybe they want to copy instead?
+            // On desktop this usually fails or isn't present
+          });
+      } else {
+        // Fallback for Chrome Desktop
+        this.copiarVersiculo();
+      }
+    }
   }
 
   aumentarSize() {

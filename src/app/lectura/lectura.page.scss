@@ -67,6 +67,34 @@
     /* Espacio para FABs + Márgenes laterales */
   }
 
+  /* Desktop Improvements */
+  @media (min-width: 1024px) {
+    .main-reading-container {
+      max-width: 900px;
+      /* Slight increase for desktop */
+      background-color: var(--ion-background-color, #FFF);
+      /* Ensure readable bg if body is different */
+      box-shadow: 0 0 40px rgba(0, 0, 0, 0.03);
+      /* Subtle Shadow */
+      min-height: 100vh;
+      margin-top: 20px;
+      border-radius: 8px;
+    }
+
+    /* Center the floating menu on desktop too */
+    .sticky-footer {
+      max-width: 900px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100%);
+      border-radius: 20px;
+      /* Full rounded top */
+    }
+
+    .sticky-footer.valid {
+      transform: translateX(-50%) translateY(0);
+    }
+  }
+
   /* --- ZONA DE SELECCIÓN (LIBROS) --- */
   .selection-area {
     padding: 10px 15px;

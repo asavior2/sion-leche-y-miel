@@ -47,28 +47,26 @@ export class AppComponent {
       this.splashScreen.hide();
       this.changeDarkMode();
 
-      // Initialize DeepLinks
-      this.deeplinks.routeWithNavController(this.router, {
-        '/app/bible/:libro/:capitulo/:versiculo': 'lectura'
-      }).subscribe(match => {
-        // match.$route - the route we matched, which is the matched entry from the arguments to route()
-        // match.$args - the args passed in the link
-        // match.$link - the full link data
-        console.log('Successfully matched route', match);
-        const args = match.$args;
-        if (args.libro && args.capitulo && args.versiculo) {
-          this.router.navigate(['/tabs/lectura'], {
-            queryParams: {
-              libro: args.libro,
-              capitulo: args.capitulo,
-              versiculo: args.versiculo
-            }
-          });
-        }
-      }, nomatch => {
-        // nomatch.$link - the full link data
-        console.log('Got a deeplink that didn\'t match', nomatch);
-      });
+      if (this.platform.is('cordova')) {
+        // Initialize DeepLinks
+        this.deeplinks.routeWithNavController(this.router, {
+          '/app/bible/:libro/:capitulo/:versiculo': 'lectura'
+        }).subscribe(match => {
+          console.log('Successfully matched route', match);
+          const args = match.$args;
+          if (args.libro && args.capitulo && args.versiculo) {
+            this.router.navigate(['/tabs/lectura'], {
+              queryParams: {
+                libro: args.libro,
+                capitulo: args.capitulo,
+                versiculo: args.versiculo
+              }
+            });
+          }
+        }, nomatch => {
+          console.log('Got a deeplink that didn\'t match', nomatch);
+        });
+      }
 
 
       // Initialize Auth & Sync
