@@ -12,6 +12,9 @@ import { SyncService } from './core/services/sync.service';
 import { DataMigrationService } from './core/services/data-migration.service';
 import { RegistrationPromptPage } from './pages/registration-prompt/registration-prompt.page';
 import { TutorialPage } from './pages/tutorial/tutorial.page';
+import { firstValueFrom } from 'rxjs';
+import { Deeplinks } from '@awesome-cordova-plugins/deeplinks/ngx';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -26,7 +29,9 @@ export class AppComponent {
     private migrationService: DataMigrationService,
     private auth: AuthService,
     private sync: SyncService,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private deeplinks: Deeplinks,
+    private router: Router
   ) {
     this.initializeApp();
   }
@@ -39,9 +44,37 @@ export class AppComponent {
       this.splashScreen.hide();
       this.changeDarkMode();
 
+      this.splashScreen.hide();
+      this.changeDarkMode();
+
+      // Initialize DeepLinks
+      this.deeplinks.routeWithNavController(this.router, {
+        '/app/bible/:libro/:capitulo/:versiculo': 'lectura'
+      }).subscribe(match => {
+        // match.$route - the route we matched, which is the matched entry from the arguments to route()
+        // match.$args - the args passed in the link
+        // match.$link - the full link data
+        console.log('Successfully matched route', match);
+        const args = match.$args;
+        if (args.libro && args.capitulo && args.versiculo) {
+          this.router.navigate(['/tabs/lectura'], {
+            queryParams: {
+              libro: args.libro,
+              capitulo: args.capitulo,
+              versiculo: args.versiculo
+            }
+          });
+        }
+      }, nomatch => {
+        // nomatch.$link - the full link data
+        console.log('Got a deeplink that didn\'t match', nomatch);
+      });
+
+
       // Initialize Auth & Sync
       try {
-        const user = await this.auth.getCurrentUser();
+        // Wait for auth to settle (race condition fix)
+        const user = await firstValueFrom(this.auth.user$);
         if (!user) {
           console.log('User not logged in. Operating in Offline Guest Mode.');
           // await this.auth.loginAnonymously(); // Disabled per user request
@@ -83,9 +116,17 @@ export class AppComponent {
   }
 
   changeDarkMode() {
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-    if (prefersDark.matches) {
-      document.body.classList.toggle('dark');
+    // Only auto-detect on iOS per user preference (avoiding Android Emulator defaults)
+    if (this.platform.is('ios')) {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+      if (prefersDark.matches) {
+        document.body.classList.add('dark');
+      } else {
+        document.body.classList.remove('dark');
+      }
+    } else {
+      // Default to Light on Android/Web
+      document.body.classList.remove('dark');
     }
   }
 }

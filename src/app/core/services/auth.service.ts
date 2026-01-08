@@ -3,6 +3,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { GooglePlus } from '@awesome-cordova-plugins/google-plus/ngx';
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import 'firebase/compat/auth';
 import firebase from 'firebase/compat/app';
 
 @Injectable({
@@ -30,8 +31,14 @@ export class AuthService {
                 'offline': true
             });
 
+            console.log('GooglePlus Login SUCCESS. User:', JSON.stringify(gplusUser));
+            if (!gplusUser.idToken) {
+                console.error('GooglePlus Error: idToken is missing!');
+            }
+
             // 2. Create Credential
             const credential = firebase.auth.GoogleAuthProvider.credential(gplusUser.idToken);
+            console.log('Firebase Credential created. Signing in...');
 
             // 3. Firebase Sign In
             return await this.afAuth.signInWithCredential(credential);

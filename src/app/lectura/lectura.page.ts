@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, OnDestroy, ElementRef, Renderer2 } from '
 import { BibliaService } from '../services/biblia.service';
 import Libros from '../../assets/libros.json';
 import LibrosHebreo from '../../assets/librosHebreo.json';
-import { IonContent, AlertController, NumericValueAccessor, NavController } from '@ionic/angular';
+import { IonContent, AlertController, NumericValueAccessor, NavController, ToastController } from '@ionic/angular';
 import { Storage as IonicStorage } from '@ionic/storage-angular';
 import { HttpClient } from '@angular/common/http';
 import { HTTP } from '@awesome-cordova-plugins/http/ngx';
@@ -159,7 +159,8 @@ export class LecturaPage implements OnInit {
     private elementRef: ElementRef,
     private syncService: SyncService,
     private socialSharing: SocialSharing,
-    private audioService: AudioPlayerService) {
+    private audioService: AudioPlayerService,
+    private toastController: ToastController) {
 
     this.tabs.validaUri();
     //this.guardarMarcador();
@@ -335,18 +336,36 @@ export class LecturaPage implements OnInit {
         const targetCapitulo = parseInt(params.capitulo);
         const targetVersiculo = params.versiculo ? parseInt(params.versiculo) : null;
 
-        // Only reload if different or forced
-        if (this.libro !== targetLibro || this.capitulo !== targetCapitulo || targetVersiculo) {
+        // If content needs update
+        if (this.libro !== targetLibro || this.capitulo !== targetCapitulo) {
           this.mostrarTextoMetodo(targetLibro, targetCapitulo).then(() => {
             if (targetVersiculo) {
-              setTimeout(() => {
-                this.scrollToVerse(targetVersiculo);
-              }, 500); // Allow DOM to render
+              // Give Angular time to render the new list
+              this.waitForElementAndScroll(targetVersiculo);
             }
           });
+        } else if (targetVersiculo) {
+          // Same chapter, just scroll
+          this.waitForElementAndScroll(targetVersiculo);
         }
       }
     });
+  }
+
+  // Helper with simple retry logic
+  waitForElementAndScroll(verse: number, attempt = 1) {
+    if (attempt > 10) return; // Give up after ~2 seconds
+
+    const id = 'l' + verse;
+    const el = document.getElementById(id);
+
+    if (el) {
+      this.scrollToVerse(verse);
+    } else {
+      setTimeout(() => {
+        this.waitForElementAndScroll(verse, attempt + 1);
+      }, 200);
+    }
   }
 
   scrollToVerse(verse: number) {
@@ -354,9 +373,18 @@ export class LecturaPage implements OnInit {
     const el = document.getElementById(id);
     if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      // Optional: Highlight temporarily
+
+      // Remove previous highlight if any
+      const prev = document.querySelectorAll('.versiculo-highlight');
+      prev.forEach(p => p.classList.remove('versiculo-highlight'));
+
+      // Add highlight
       el.classList.add('versiculo-highlight');
-      setTimeout(() => el.classList.remove('versiculo-highlight'), 2000);
+
+      // Remove after 3 seconds
+      setTimeout(() => {
+        if (el) el.classList.remove('versiculo-highlight');
+      }, 3000);
     }
   }
 
@@ -1041,27 +1069,42 @@ export class LecturaPage implements OnInit {
       */
   }
 
+  async presentToast(message: string) {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 2000,
+      position: 'bottom'
+    });
+    toast.present();
+  }
+
   copiarVersiculo() {
     let textTemp = "";
+    let firstVerse = null;
     for (let clave in this.copiaCondensado) {
+      if (!firstVerse) firstVerse = this.copiaCondensado[clave][2];
       textTemp = textTemp + " " + this.copiaCondensado[clave][2] + this.copiaCondensado[clave][3]
-      //console.log(this.copiaCondensado[clave])
     }
-    //console.log(textTemp + " " + this.librot + " " + this.capitulo + ":"  + ' Biblia SLM http://sionlecheymiel.com')
-    this.clipboard.copy('*Biblia "Sion: Leche y Miel" ' + this.librot + " " + this.capitulo + '*' + textTemp + ' https://sionlecheymiel.com');
-    this.marcarVersiculoAudioRemove("all")
+
+    const deepLink = `https://sionlecheymiel.com/app/bible/${this.libro}/${this.capitulo}/${firstVerse || 1}`;
+    const clipboardText = `*Biblia "Sion: Leche y Miel" ${this.librot} ${this.capitulo}* \n${textTemp}\n\nLeer aquí: ${deepLink}`;
+
+    this.clipboard.copy(clipboardText);
+    this.presentToast("Copiado al portapapeles");
+    this.marcarVersiculoAudioRemove("all");
     this.isMenuOpen = false;
   }
 
-
-
   async compartirVersiculo() {
     let textTemp = "";
+    let firstVerse = null;
     for (let clave in this.copiaCondensado) {
+      if (!firstVerse) firstVerse = this.copiaCondensado[clave][2];
       textTemp = textTemp + " " + this.copiaCondensado[clave][2] + this.copiaCondensado[clave][3]
     }
 
-    const shareMsg = `*Biblia "Sion: Leche y Miel" ${this.librot} ${this.capitulo}* ${textTemp} https://sionlecheymiel.com`;
+    const deepLink = `https://sionlecheymiel.com/app/bible/${this.libro}/${this.capitulo}/${firstVerse || 1}`;
+    const shareMsg = `*Biblia "Sion: Leche y Miel" ${this.librot} ${this.capitulo}* \n${textTemp}\n\nLeer aquí: ${deepLink}`;
 
     this.socialSharing.share(shareMsg, null, null, null).then(() => {
       // Success

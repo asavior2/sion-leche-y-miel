@@ -18,6 +18,7 @@ import { Drivers } from '@ionic/storage';
 import { BibliaService } from './services/biblia.service';
 import { SyncService } from './core/services/sync.service'; // Added import
 import { SocialSharing } from '@awesome-cordova-plugins/social-sharing/ngx';
+import { Deeplinks } from '@awesome-cordova-plugins/deeplinks/ngx';
 
 //import { FileOpener } from '@awesome-cordova-plugins/file-opener/ngx';
 
@@ -91,6 +92,7 @@ import { RouterModule } from '@angular/router';
             SQLite,
             SyncService, // Explicitly provide SyncService
             SocialSharing,
+            Deeplinks,
             provideHttpClient(withInterceptorsFromDi()),
             GooglePlus
         ]

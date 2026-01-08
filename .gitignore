@@ -21,6 +21,7 @@ npm-debug.log*
 .versions/
 coverage/
 www/
+site/
 node_modules/
 tmp/
 temp/
@@ -39,3 +40,5 @@ src/assets/libros/libros.json
 src/assets/SLM.json
 src/assets/libros.json
 src/environments/environment.ts
+google-services.json
+GoogleService-Info.plist

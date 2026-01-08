@@ -49,7 +49,7 @@ export class BibliaService {
 
   async getTextoImport(libro: number, capitulo: number) {
     console.log(`Getting text for libro ${libro} capitulo ${capitulo}`);
-    const url = '/assets/libros/' + libro + '/' + libro + '-' + capitulo + '.json?t=' + Date.now();
+    const url = '/assets/libros/' + libro + '/' + libro + '-' + capitulo + '.json';
     console.log('Requesting URL:', url);
     return await firstValueFrom(this.httpClient.get(url));
   }

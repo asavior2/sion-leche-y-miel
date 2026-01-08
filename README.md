@@ -45,6 +45,22 @@ Este proyecto está construido con tecnologías web modernas adaptadas para móv
     *   `rxjs` (Programación Reactiva)
     *   `@ionic/storage` (Persistencia de datos local)
 
+### 🔌 Plugins Cordova
+
+Lista de plugins nativos utilizados y comandos para su instalación:
+
+| Plugin | Propósito | Comando de Instalación |
+| :--- | :--- | :--- |
+| **Google Plus** | Autenticación con Google | `ionic cordova plugin add cordova-plugin-googleplus --variable REVERSED_CLIENT_ID=... --variable WEB_APPLICATION_CLIENT_ID=... --variable PLAY_SERVICES_VERSION=21.+` <br> `npm install @awesome-cordova-plugins/google-plus` |
+| **Social Sharing** | Compartir contenido nativo | `ionic cordova plugin add cordova-plugin-x-socialsharing` <br> `npm install @awesome-cordova-plugins/social-sharing cordova-plugin-x-socialsharing --legacy-peer-deps` |
+| **Advanced HTTP** | Peticiones HTTP nativas (SSL/CORS bypass) | `ionic cordova plugin add cordova-plugin-advanced-http` <br> `npm install @awesome-cordova-plugins/http` |
+| **SQLite** | Base de datos local persistente | `ionic cordova plugin add cordova-sqlite-storage` <br> `npm install @awesome-cordova-plugins/sqlite` |
+| **File** | Gestión de archivos | `ionic cordova plugin add cordova-plugin-file` <br> `npm install @awesome-cordova-plugins/file` |
+| **Zip** | Descompresión de audios | `ionic cordova plugin add cordova-plugin-zip` <br> `npm install @awesome-cordova-plugins/zip` |
+| **Ionic Webview** | Motor web optimizado | `ionic cordova plugin add cordova-plugin-ionic-webview` |
+
+> **Nota:** Al instalar plugins npm, recuerda usar `--legacy-peer-deps` si encuentras conflictos de versiones.
+
 ---
 
 ## ⚙️ Requisitos Previos
@@ -120,6 +136,11 @@ Si prefieres ejecutarlo directamente en tu máquina:
 # Desarrollo pruebas en dispocitivos 
 ```bash
 ionic cordova run android --target=emulator-5554
+npm install --legacy-peer-deps
+rm -rf platforms/android
+rm -rf plugins
+ionic cordova platform add android
+
 ```
 
 ---

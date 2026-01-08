@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { LoadingController, ToastController, AlertController, Platform } from '@ionic/angular';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { SyncService } from 'src/app/core/services/sync.service';
@@ -33,6 +33,7 @@ export class ProfilePage implements OnInit {
   downloadProgress = 0;
   pathDiviceIosAndroid: string = '';
   audioAvailable = false;
+  downloadedQuality: 'alta' | 'media' | 'baja' | null = null;
 
   constructor(
     private auth: AuthService,
@@ -46,7 +47,8 @@ export class ProfilePage implements OnInit {
     private nativeHTTP: HTTP,
     private alertCtrl: AlertController,
     private platform: Platform,
-    private router: Router
+    private router: Router,
+    private ngZone: NgZone
   ) { }
 
   ngOnInit() {
@@ -112,6 +114,7 @@ export class ProfilePage implements OnInit {
 
   async loginGoogle() {
     console.log('Login with Google logic starting...');
+    await this.testConnection(); // Test connection before login
     const loading = await this.loadingCtrl.create({
       message: 'Iniciando sesión con Google...',
     });
@@ -129,6 +132,30 @@ export class ProfilePage implements OnInit {
     } finally {
       loading.dismiss();
     }
+  }
+
+  async testConnection() {
+    console.log('--- TESTING WEBVIEW CONNECTION ---');
+    try {
+      const start = Date.now();
+      const res = await fetch('https://www.googleapis.com/discovery/v1/apis?fields=kind', { mode: 'cors' });
+      const duration = Date.now() - start;
+      console.log(`Connection Test Success: Status ${res.status} (${duration}ms)`);
+      const text = await res.text();
+      console.log('Response preview:', text.substring(0, 50));
+    } catch (e) {
+      console.error('--- CONNECTION TEST FAILED ---');
+      console.error('Fetch Error:', e);
+      // Try fallback to native HTTP if available to compare
+      try {
+        console.log('Attempting Native HTTP fallback check...');
+        const nativeRes = await this.nativeHTTP.get('https://www.google.com', {}, {});
+        console.log('Native HTTP Success! Status:', nativeRes.status);
+      } catch (nativeErr) {
+        console.error('Native HTTP also failed:', nativeErr);
+      }
+    }
+    console.log('----------------------------------');
   }
 
   async presentToast(message: string, color: string) {
@@ -163,11 +190,40 @@ export class ProfilePage implements OnInit {
 
   async checkAudioStatus() {
     try {
-      // Check if 'por-Capitulos' directory exists
-      await this.file.checkDir(this.file.applicationStorageDirectory + this.pathDiviceIosAndroid, 'por-Capitulos');
-      this.audioAvailable = true;
+      const dirPath = this.file.applicationStorageDirectory + this.pathDiviceIosAndroid;
+      // 1. Check if directory exists
+      await this.file.checkDir(dirPath, 'por-Capitulos');
+
+      // 2. Check for marker file to identify quality
+      try {
+        const quality = await this.file.readAsText(dirPath + 'por-Capitulos/', 'calidad.txt');
+        if (quality && (['alta', 'media', 'baja'].includes(quality.trim()))) {
+          this.downloadedQuality = quality.trim() as any;
+          this.audioAvailable = true;
+          return;
+        }
+      } catch (err) {
+        console.warn('calidad.txt missing, falling back to basic check');
+      }
+
+      // 3. Fallback: Verify Genesis 1 exists if marker missing (legacy support)
+      try {
+        await this.file.checkFile(dirPath + 'por-Capitulos/1/', '1.mp3');
+        this.audioAvailable = true;
+        // If we have audio but no marker, we can't be sure of quality. 
+        // We'll leave downloadedQuality null but audioAvailable true, 
+        // or default to 'media' if preferred. For now keeping it ambiguous triggers "Check" on only verified ones? 
+        // Actually, if we want to show GREEN, we need to match. Let's assume 'unknown' doesn't match any.
+        // Or we could write the marker now if we knew? No.
+      } catch (innerErr) {
+        console.warn('Audio directory exists but Genesis 1 is missing.', innerErr);
+        this.audioAvailable = false;
+        this.downloadedQuality = null;
+      }
+
     } catch (e) {
       this.audioAvailable = false;
+      this.downloadedQuality = null;
     }
   }
 
@@ -197,56 +253,133 @@ export class ProfilePage implements OnInit {
 
   async download(url: string, nombre: string) {
     const filePath = this.file.applicationStorageDirectory + this.pathDiviceIosAndroid + nombre;
+    let downloadInterval: any;
 
-    this.nativeHTTP.downloadFile(url, {}, {}, filePath).then(response => {
-      console.log('Archivo descargado...', response);
-      // Delete old directory if exists
-      this.file.checkDir(this.file.applicationStorageDirectory + this.pathDiviceIosAndroid, 'por-Capitulos')
-        .then(_ => {
-          this.file.removeRecursively(this.file.applicationStorageDirectory + this.pathDiviceIosAndroid, 'por-Capitulos')
-            .then(_ => this.unZip(nombre))
-            .catch(err => {
-              console.error("Error removing old dir", err);
-              this.unZip(nombre);
-            });
-        }).catch(err => {
-          this.unZip(nombre); // Directory didn't exist, proceed
-        });
+    try {
+      console.log('Starting Download Process for:', url);
 
-    }).catch(err => {
+      // 1. Get File Size via HEAD request
+      let totalSize = 0;
+      try {
+        const headRes = await this.nativeHTTP.sendRequest(url, { method: 'head' });
+        if (headRes.headers && headRes.headers['content-length']) {
+          totalSize = parseInt(headRes.headers['content-length'], 10);
+          console.log('Total file size:', totalSize);
+        } else if (headRes.headers && headRes.headers['Content-Length']) { // Case sensitive check
+          totalSize = parseInt(headRes.headers['Content-Length'], 10);
+          console.log('Total file size:', totalSize);
+        }
+      } catch (headErr) {
+        console.warn('Could not get file size via HEAD, progress will be indeterminate', headErr);
+      }
+
+      // 2. Start Polling for Progress
+      if (totalSize > 0) {
+        downloadInterval = setInterval(() => {
+          this.file.resolveLocalFilesystemUrl(filePath)
+            .then(fileEntry => {
+              fileEntry.getMetadata(metadata => {
+                this.ngZone.run(() => {
+                  const currentSize = metadata.size;
+                  this.downloadProgress = Math.round((currentSize / totalSize) * 100);
+                  console.log(`Download Polling: ${currentSize} / ${totalSize} (${this.downloadProgress}%)`);
+                });
+              }, _ => { });
+            })
+            .catch(_ => { }); // File might not exist yet
+        }, 500);
+      }
+
+      // 3. Start Download
+      console.log('Starting Native Download...');
+      await this.nativeHTTP.downloadFile(url, {}, {}, filePath);
+      console.log('Download complete');
+
+      // Clear interval immediately
+      if (downloadInterval) clearInterval(downloadInterval);
+      this.ngZone.run(() => this.downloadProgress = 100);
+
+      // 4. Cleanup Old Directory (Logic preserved)
+      try {
+        await this.file.checkDir(this.file.applicationStorageDirectory + this.pathDiviceIosAndroid, 'por-Capitulos');
+        await this.file.removeRecursively(this.file.applicationStorageDirectory + this.pathDiviceIosAndroid, 'por-Capitulos');
+      } catch (e) {
+        // Ignore if dir doesn't exist
+      }
+
+      await this.unZip(nombre);
+
+    } catch (err) {
+      if (downloadInterval) clearInterval(downloadInterval);
       console.error('Download error', err);
       this.resetDownloadState();
       this.alertErrorDownloadAudio("Ocurrió un problema", err.status + " " + err.error);
-    });
+    }
   }
 
   async unZip(nombre: string) {
     const zipPath = this.file.applicationStorageDirectory + this.pathDiviceIosAndroid + nombre;
+    const destPath = this.file.applicationStorageDirectory + this.pathDiviceIosAndroid;
 
     try {
       await this.file.checkFile(zipPath, '');
-      const result = await this.zip.unzip(zipPath,
-        this.file.applicationStorageDirectory + this.pathDiviceIosAndroid,
-        (progress) => {
+      console.log('Starting Unzip:', zipPath, 'to', destPath);
+
+      const result = await this.zip.unzip(zipPath, destPath, (progress) => {
+        this.ngZone.run(() => {
           if (progress.total > 0) {
             this.downloadProgress = Math.round((progress.loaded / progress.total) * 100);
-            // Force change detection if needed, implied by Angular Zone
+            console.log(`Unzip Progress: ${this.downloadProgress}%`);
           }
-        }
-      );
+        });
+      });
 
-      if (result === 0) {
+      console.log('Unzip Result Code:', result);
+
+      // Relaxed Success Check: Verify if result is 0 OR an object (progress/stats object)
+      // User log confirmed result is: {loaded: 0, total: 481131402}
+      if (result === 0 || (typeof result === 'object' && result !== null)) {
         // Success
-        this.presentToast('Biblia en Audio instalada correctamente.', 'success');
-        this.audioAvailable = true;
-        this.file.removeFile(this.file.applicationStorageDirectory + this.pathDiviceIosAndroid, nombre);
+        this.ngZone.run(() => {
+          this.presentToast('Biblia en Audio instalada correctamente.', 'success');
+          this.audioAvailable = true;
+          // Set the newly downloaded quality as active
+          if (nombre.includes('alta')) this.downloadedQuality = 'alta';
+          else if (nombre.includes('media')) this.downloadedQuality = 'media';
+          else if (nombre.includes('baja')) this.downloadedQuality = 'baja';
+
+          this.resetDownloadState();
+        });
+
+        // Write marker file
+        try {
+          let q = 'media';
+          if (nombre.includes('alta')) q = 'alta';
+          if (nombre.includes('baja')) q = 'baja';
+          await this.file.writeFile(destPath + 'por-Capitulos/', 'calidad.txt', q, { replace: true });
+        } catch (wErr) {
+          console.error('Error writing quality marker', wErr);
+        }
+
+        // Cleanup zip
+        this.file.removeFile(this.file.applicationStorageDirectory + this.pathDiviceIosAndroid, nombre)
+          .catch(e => console.warn('Could not delete zip file', e));
+
       } else {
-        this.alertErrorDownloadAudio('Error al descomprimir', 'Código: ' + result);
+        this.ngZone.run(() => {
+          this.alertErrorDownloadAudio('Error al descomprimir', 'Código: ' + JSON.stringify(result));
+          this.resetDownloadState();
+        });
       }
     } catch (err) {
-      this.alertErrorDownloadAudio('Error', JSON.stringify(err));
-    } finally {
-      this.resetDownloadState();
+      console.error('Unzip Catch Error:', err);
+      // Fix for "Error [object Object]": Stringify the error
+      const errMsg = (typeof err === 'object') ? JSON.stringify(err) : String(err);
+
+      this.ngZone.run(() => {
+        this.alertErrorDownloadAudio('Error', errMsg);
+        this.resetDownloadState();
+      });
     }
   }
 

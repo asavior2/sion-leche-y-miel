@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { LocalBibleRepository } from '../repositories/local-bible.repository';
 import { FirebaseBibleRepository } from '../repositories/firebase-bible.repository';
 import { Bookmark, ReadingProgress } from '../repositories/bible.repository';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class SyncService {
@@ -41,7 +41,8 @@ export class SyncService {
             return;
         }
 
-        const user = await this.auth.getCurrentUser();
+        // Wait for auth state to resolve, as currentUser might be null closely after login
+        const user = await firstValueFrom(this.auth.user$);
         if (!user) {
             console.warn('Sync aborted: No authenticated user.');
             return;
