@@ -1,0 +1,46 @@
+<ion-content class="ion-no-padding auth-promo-content">
+
+    <div class="hero-section">
+        <div class="glow-effect"></div>
+        <img src="assets/icon/icon.png" class="hero-img" alt="Logo" />
+    </div>
+
+    <div class="content-container">
+        <h1 class="main-title">Crear Cuenta</h1>
+        <p class="subtitle">Únete para guardar tu progreso</p>
+
+        <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
+            <div class="form-group">
+                <ion-item lines="none" class="custom-input">
+                    <ion-icon name="mail-outline" slot="start" color="medium"></ion-icon>
+                    <ion-input formControlName="email" type="email" placeholder="Correo electrónico"></ion-input>
+                </ion-item>
+
+                <ion-item lines="none" class="custom-input">
+                    <ion-icon name="lock-closed-outline" slot="start" color="medium"></ion-icon>
+                    <ion-input formControlName="password" type="password"
+                        placeholder="Contraseña (mínimo 6)"></ion-input>
+                </ion-item>
+
+                <ion-item lines="none" class="custom-input">
+                    <ion-icon name="lock-closed-outline" slot="start" color="medium"></ion-icon>
+                    <ion-input formControlName="confirmPassword" type="password"
+                        placeholder="Confirmar contraseña"></ion-input>
+                </ion-item>
+                <p class="error-text"
+                    *ngIf="registerForm.hasError('mismatch') && registerForm.get('confirmPassword').touched">
+                    Las contraseñas no coinciden
+                </p>
+
+                <ion-button class="btn-gold-gradient" expand="block" type="submit" [disabled]="registerForm.invalid">
+                    Registrarse
+                </ion-button>
+            </div>
+        </form>
+
+        <div class="footer-link">
+            <p>¿Ya tienes una cuenta? <a [routerLink]="['/login']">Inicia sesión</a></p>
+        </div>
+
+    </div>
+</ion-content>

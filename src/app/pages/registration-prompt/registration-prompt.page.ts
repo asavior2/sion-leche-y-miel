@@ -20,12 +20,10 @@ export class RegistrationPromptPage implements OnInit {
 
   async goToRegister() {
     await this.modalCtrl.dismiss();
-    // Navigate to Profile page where login/register happens
-    this.navCtrl.navigateForward('/tabs/profile');
+    this.navCtrl.navigateForward('/login'); // Send to Login first, which has links to Register
   }
 
   async remindLater() {
-    // Just dismiss. Logic in app.component handles showing it again next boot unless 'never' is set.
     await this.modalCtrl.dismiss();
   }
 

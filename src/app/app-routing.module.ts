@@ -10,20 +10,28 @@ const routes: Routes = [
   { path: 'leer-plan/:libro/:capitulo/:versiculo/:versiculoFinal', loadChildren: () => import('./leer-plan/leer-plan.module').then(m => m.LeerPlanPageModule) },
   {
     path: 'profile',
-    loadChildren: () => import('./pages/profile/profile.module').then( m => m.ProfilePageModule)
+    loadChildren: () => import('./pages/profile/profile.module').then(m => m.ProfilePageModule)
   },
   {
     path: 'registration-prompt',
-    loadChildren: () => import('./pages/registration-prompt/registration-prompt.module').then( m => m.RegistrationPromptPageModule)
+    loadChildren: () => import('./pages/registration-prompt/registration-prompt.module').then(m => m.RegistrationPromptPageModule)
   },
   {
     path: 'tutorial',
-    loadChildren: () => import('./pages/tutorial/tutorial.module').then( m => m.TutorialPageModule)
+    loadChildren: () => import('./pages/tutorial/tutorial.module').then(m => m.TutorialPageModule)
+  },
+  {
+    path: 'login',
+    loadChildren: () => import('./pages/login/login.module').then(m => m.LoginPageModule)
+  },
+  {
+    path: 'register',
+    loadChildren: () => import('./pages/register/register.module').then(m => m.RegisterPageModule)
   }
 ];
 const routerOptions: ExtraOptions = {
-  scrollPositionRestoration:'enabled',
-  anchorScrolling:'enabled'
+  scrollPositionRestoration: 'enabled',
+  anchorScrolling: 'enabled'
 }
 @NgModule({
   imports: [
@@ -31,4 +39,4 @@ const routerOptions: ExtraOptions = {
   ],
   exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

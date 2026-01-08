@@ -26,9 +26,9 @@ import { Deeplinks } from '@awesome-cordova-plugins/deeplinks/ngx';
 
 //import { FirebaseAuthentication } from "@awesome-cordova-plugins/firebase-authentication/ngx";
 import { GooglePlus } from '@awesome-cordova-plugins/google-plus/ngx';
+import { SignInWithApple } from '@awesome-cordova-plugins/sign-in-with-apple/ngx';
 
 import { Clipboard } from '@awesome-cordova-plugins/clipboard/ngx';
-
 import { Zip } from '@awesome-cordova-plugins/zip/ngx';
 import { File } from '@awesome-cordova-plugins/file/ngx';
 //import { Httpd, HttpdOptions } from '@awesome-cordova-plugins/httpd/ngx';
@@ -52,7 +52,6 @@ import { RouterModule } from '@angular/router';
         AppRoutingModule,
         // Firebase Configuration
         AngularFireModule.initializeApp(firebaseConfig), // Use directly
-        AngularFireAuthModule,
         AngularFireAuthModule,
         AngularFirestoreModule,
         AngularFireAnalyticsModule,
@@ -89,12 +88,12 @@ import { RouterModule } from '@angular/router';
             //Httpd,
             HTTP,
             SQLite,
-            SQLite,
             SyncService, // Explicitly provide SyncService
             SocialSharing,
             Deeplinks,
             provideHttpClient(withInterceptorsFromDi()),
-            GooglePlus
+            GooglePlus,
+            SignInWithApple
         ]
 })
 export class AppModule { }

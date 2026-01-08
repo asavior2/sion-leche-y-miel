@@ -1,0 +1,49 @@
+<ion-content class="ion-no-padding auth-promo-content">
+
+    <div class="hero-section">
+        <div class="glow-effect"></div>
+        <img src="assets/icon/icon.png" class="hero-img" alt="Logo" />
+    </div>
+
+    <div class="content-container">
+        <h1 class="main-title">Bienvenido</h1>
+        <p class="subtitle">Inicia sesión para continuar</p>
+
+        <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+            <div class="form-group">
+                <ion-item lines="none" class="custom-input">
+                    <ion-icon name="mail-outline" slot="start" color="medium"></ion-icon>
+                    <ion-input formControlName="email" type="email" placeholder="Correo electrónico"></ion-input>
+                </ion-item>
+
+                <ion-item lines="none" class="custom-input">
+                    <ion-icon name="lock-closed-outline" slot="start" color="medium"></ion-icon>
+                    <ion-input formControlName="password" type="password" placeholder="Contraseña"></ion-input>
+                </ion-item>
+
+                <ion-button class="btn-gold-gradient" expand="block" type="submit" [disabled]="loginForm.invalid">
+                    Ingresar
+                </ion-button>
+            </div>
+        </form>
+
+        <div class="divider">
+            <span>O continúa con</span>
+        </div>
+
+        <ion-button class="social-btn apple-btn" expand="block" (click)="onAppleLogin()">
+            <ion-icon name="logo-apple"></ion-icon>
+            Apple
+        </ion-button>
+
+        <ion-button class="social-btn google-btn" expand="block" (click)="onGoogleLogin()">
+            <ion-icon name="logo-google"></ion-icon>
+            Google
+        </ion-button>
+
+        <div class="footer-link">
+            <p>¿No tienes una cuenta? <a (click)="goToRegister()">Regístrate aquí</a></p>
+        </div>
+
+    </div>
+</ion-content>

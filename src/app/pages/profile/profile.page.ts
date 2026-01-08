@@ -112,6 +112,10 @@ export class ProfilePage implements OnInit {
     this.booksRead = 0;
   }
 
+  goToLogin() {
+    this.router.navigate(['/login']);
+  }
+
   async loginGoogle() {
     console.log('Login with Google logic starting...');
     await this.testConnection(); // Test connection before login
