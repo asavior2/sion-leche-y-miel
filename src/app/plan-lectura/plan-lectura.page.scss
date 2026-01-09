@@ -253,3 +253,62 @@
     font-size: 18px;
   }
 }
+
+/* --- MODO OSCURO (Overrides) --- */
+:host-context(body.dark) {
+  .plans-content {
+    --background: #121212;
+    color: #E0E0E0;
+
+    /* Buscador */
+    .search-box-wrapper {
+      background: #1E1E1E !important;
+      border-color: #333;
+
+      .custom-input {
+        color: #FFF;
+      }
+    }
+
+    .active-card,
+    .plan-card,
+    .catalog-card {
+      background: #1E1E1E !important;
+      border-color: #333;
+
+      .plan-title,
+      .title-col h4 {
+        color: #DDD !important;
+      }
+
+      .plan-desc,
+      .info-col p {
+        color: #AAA !important;
+      }
+    }
+
+    .segment-wrapper .custom-segment {
+      background: rgba(255, 255, 255, 0.1);
+
+      ion-segment-button {
+        color: #AAA;
+        --color: #AAA;
+        --color-checked: #FFF;
+      }
+    }
+
+    .empty-state {
+      h3 {
+        color: #DDD;
+      }
+
+      p {
+        color: #888;
+      }
+    }
+  }
+
+  .transparent-header ion-toolbar {
+    --background: #121212;
+  }
+}

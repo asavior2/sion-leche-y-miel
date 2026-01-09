@@ -150,3 +150,55 @@
         }
     }
 }
+
+/* --- MODO OSCURO (Overrides) --- */
+:host-context(body.dark) {
+    .auth-promo-content {
+        --background: #121212;
+
+        .hero-section .glow-effect {
+            background: radial-gradient(circle, rgba(158, 127, 42, 0.2) 0%, rgba(18, 18, 18, 0) 70%);
+        }
+
+        .content-container {
+            background: #1E1E1E;
+        }
+
+        .main-title {
+            color: #E0E0E0 !important;
+        }
+
+        .subtitle {
+            color: #AAA;
+        }
+
+        .custom-input {
+            --background: #2A2A2A;
+            --color: #FFF;
+            --placeholder-color: #888;
+            box-shadow: none;
+            border: 1px solid #333;
+        }
+
+        .divider {
+            span {
+                background: #1E1E1E;
+                color: #666;
+            }
+
+            &::before {
+                background: #333;
+            }
+        }
+
+        .social-btn {
+            --background: #2A2A2A;
+            --color: #FFF;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .footer-link p {
+            color: #888;
+        }
+    }
+}

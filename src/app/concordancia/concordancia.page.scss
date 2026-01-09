@@ -205,3 +205,63 @@
         font-size: 18px;
     }
 }
+
+/* --- MODO OSCURO (Overrides) --- */
+:host-context(body.dark) {
+    .concordance-content {
+        --background: #121212;
+        color: #E0E0E0;
+
+        /* Buscador */
+        .search-box-wrapper {
+            background: #1E1E1E !important;
+            border-color: #333;
+
+            .custom-input {
+                color: #FFF;
+            }
+
+            ion-icon {
+                color: #C2A153;
+            }
+        }
+
+        /* Header count */
+        .results-header {
+            border-bottom-color: #333;
+
+            .count-label {
+                color: #AAA;
+            }
+        }
+
+        /* Cards */
+        .verse-card {
+            background: #1E1E1E !important;
+            border-color: #333;
+
+            .verse-text {
+                color: #DDD;
+
+                ::ng-deep strong,
+                ::ng-deep b,
+                ::ng-deep .highlight {
+                    background-color: rgba(217, 141, 47, 0.2);
+                    /* Darker highlight bg */
+                    color: #FFB74D;
+                }
+            }
+        }
+
+        /* Empty States */
+        .no-results-state h3,
+        .initial-state h3 {
+            color: #AAA;
+        }
+    }
+
+    /* Header */
+    .transparent-header ion-toolbar {
+        --background: #121212;
+    }
+}

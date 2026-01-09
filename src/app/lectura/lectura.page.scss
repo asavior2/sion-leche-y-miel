@@ -72,10 +72,11 @@
     .main-reading-container {
       max-width: 900px;
       /* Slight increase for desktop */
-      background-color: var(--ion-background-color, #FFF);
-      /* Ensure readable bg if body is different */
-      box-shadow: 0 0 40px rgba(0, 0, 0, 0.03);
-      /* Subtle Shadow */
+      background-color: transparent;
+      /* Clean background */
+      box-shadow: none;
+      /* Remove shadow if background is transparent */
+      /* Subtle Shadow removed for seamless look */
       min-height: 100vh;
       margin-top: 20px;
       border-radius: 8px;
@@ -134,9 +135,17 @@
         --background: transparent;
 
         ion-segment-button {
-          --color: #666;
-          --color-checked: #FFF;
+          --color: #666666;
+          /* Visible Dark Gray for unchecked */
+          --color-checked: #FFFFFF;
+          /* High contrast White for checked */
           --background-checked: #9E7F2A;
+          /* Gold background for checked */
+          --indicator-color: #9E7F2A;
+          /* Ionic 5+ Indicator */
+          color: #666666;
+          /* Fallback text color */
+
           --border-radius: 20px;
           min-height: 30px;
 
@@ -144,6 +153,11 @@
             font-size: 12px;
             font-weight: 600;
             text-transform: none;
+          }
+
+          /* Force selected text color */
+          &.segment-button-checked {
+            color: #FFFFFF;
           }
         }
       }
@@ -385,10 +399,14 @@
 
 /* --- NAVEGACIÓN FABS --- */
 /* --- NAVEGACIÓN FABS --- */
+/* --- NAVEGACIÓN FABS --- */
 ion-fab {
   transition: transform 0.3s ease;
   z-index: 998;
-  /* Ensure below sticky footer if needed, but sticky is 999 */
+  background: transparent !important;
+  /* Fix for "square border" */
+  box-shadow: none !important;
+  /* Fix for "square border" */
 
   &.raise-fabs {
     transform: translateY(-180px);
@@ -399,13 +417,31 @@ ion-fab {
   --background: rgba(255, 255, 255, 0.8);
   --color: #666;
   --box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  /* Circular shadow on button */
+  /* Remove border if it causes issues, or ensure --border-radius is 50% (default) */
+  border: none;
 }
 
 .play-fab {
   --background: #9E7F2A;
   --color: #FFF;
   --box-shadow: 0 4px 15px rgba(158, 127, 42, 0.4);
+}
+
+/* Desktop Positioning for Fabs */
+@media (min-width: 1024px) {
+  ion-fab[horizontal="start"] {
+    left: calc(50% - 500px) !important;
+    /* Center - 450px (half width) - 50px (gap) */
+  }
+
+  ion-fab[horizontal="end"] {
+    right: calc(50% - 500px) !important;
+    /* Note: 'right' property on ion-fab might need 'left: auto' if ionic sets left */
+    left: auto !important;
+  }
+
+  /* Play button is already centered, stays fine */
 }
 
 /* --- MODO OSCURO (Overrides) --- */
@@ -415,6 +451,36 @@ ion-fab {
   .reader-content {
     --background: #121212;
     color: #E0E0E0;
+  }
+
+  /* Segmento Dark */
+  .segment-wrapper .custom-segment {
+    background: rgba(255, 255, 255, 0.1);
+
+    ion-segment-button {
+      --color: #AAA;
+      --color-checked: #FFF;
+      --background-checked: #C2A153;
+      color: #AAA;
+
+      &.segment-button-checked {
+        color: #FFF;
+      }
+    }
+  }
+
+  /* Buscador Dark */
+  .search-box-wrapper {
+    background: #1E1E1E !important;
+    border-color: #333;
+
+    .custom-input {
+      color: #FFF;
+    }
+
+    ion-icon {
+      color: #C2A153;
+    }
   }
 
   .reader-header .book-selector-capsule {
@@ -451,14 +517,145 @@ ion-fab {
     }
   }
 
-  .grid-view .book-tile {
-    background: #1E1E1E;
-    color: #DDD;
-    border-color: #333;
+  /* Mosaic / Grid View Dark */
+  .grid-view {
+    .pacto-header {
+      color: #DDD;
+      border-bottom-color: #333;
+    }
+
+    .book-tile {
+      background: #1E1E1E;
+      color: #DDD;
+      border-color: #333;
+
+      &:active {
+        background: #C2A153;
+        color: #FFF;
+      }
+    }
   }
 
-  .list-view .book-list-item {
-    --background: #1E1E1E;
-    color: #DDD;
+  /* Chapter Selection Grid Dark */
+  .chapters-grid .chapter-circle {
+    background: #1E1E1E !important;
+    border-color: #333 !important;
+    color: #DDD !important;
+
+    &:active {
+      background: #C2A153 !important;
+      color: #FFF !important;
+    }
+  }
+
+  /* Highlight Selection Dark */
+  ::ng-deep .versiculo-highlight {
+    background-color: rgba(194, 161, 83, 0.25) !important;
+    border-left-color: #C2A153 !important;
+    color: #FFF !important;
+  }
+
+
+  /* FIX LIST VIEW BACKGROUNDS */
+  .list-view {
+    ion-list {
+      background: transparent !important;
+    }
+
+    .book-list-item {
+      --background: #1E1E1E !important;
+      --color: #DDD;
+      --border-color: #333;
+      color: #DDD;
+
+      ion-label {
+        color: #DDD !important;
+      }
+    }
+  }
+}
+
+/* --- MODO SEPIA (Overrides) --- */
+:host-context(body.sepia) {
+
+  .reader-header ion-toolbar,
+  .reader-content {
+    --background: #F4ECD8;
+    /* Sepia Background */
+    color: #5B4636;
+  }
+
+  /* Segmento Sepia */
+  .segment-wrapper .custom-segment {
+    background: rgba(91, 70, 54, 0.1);
+
+    ion-segment-button {
+      --color: #8C7B70;
+      --color-checked: #5B4636;
+      --background-checked: #D4C5A9;
+      /* Darker Sepia Highlight */
+      color: #8C7B70;
+
+      &.segment-button-checked {
+        color: #5B4636;
+      }
+    }
+  }
+
+  /* Buscador Sepia */
+  .search-box-wrapper {
+    background: #FFFBF0 !important;
+    border-color: rgba(91, 70, 54, 0.2);
+
+    .custom-input {
+      color: #5B4636;
+    }
+
+    ion-icon {
+      color: #8C7B70;
+    }
+  }
+
+  .grid-view .book-tile {
+    background: #FFFBF0;
+    color: #5B4636;
+    border-color: rgba(91, 70, 54, 0.1);
+  }
+
+  /* Chapter Selection Grid Sepia */
+  .chapters-grid .chapter-circle {
+    background: #FFFBF0 !important;
+    border-color: rgba(91, 70, 54, 0.2) !important;
+    color: #5B4636 !important;
+
+    &:active {
+      background: #D4C5A9 !important;
+      color: #5B4636 !important;
+    }
+  }
+
+  /* Highlight Selection Sepia */
+  ::ng-deep .versiculo-highlight {
+    background-color: rgba(212, 197, 169, 0.5) !important;
+    border-left-color: #5B4636 !important;
+  }
+
+
+  /* FIX LIST VIEW BACKGROUNDS SEPIA */
+  .list-view {
+    ion-list {
+      background: transparent !important;
+    }
+
+    .book-list-item {
+      --background: #FFFBF0 !important;
+      --color: #5B4636;
+      --border-color: rgba(91, 70, 54, 0.1);
+      color: #5B4636;
+
+      ion-label {
+        color: #5B4636 !important;
+      }
+    }
   }
 }

@@ -204,12 +204,13 @@ export class LecturaPage implements OnInit {
     this.librosTodosHebreo = LibrosHebreo;
 
     await this.storage.get('ordenLibro').then((val) => {
-      if (val != null) {
+      if (val != null && val !== 'moderno') {
         this.tipoOrdenName = val;
         this.tipoOrdenLibro(val);
       } else {
         this.tipoOrdenT = true;
         this.tipoOrdenName = 'tradicional';
+        this.tipoOrdenLibro('tradicional');
       }
       console.log(this.tipoOrdenName);
     });
@@ -766,7 +767,7 @@ export class LecturaPage implements OnInit {
     console.log('--- CHAPTER MARKED AS READ ---');
     this.chapterRead = true;
     this.localRepo.markChapterViewed(parseInt(String(this.libro)), parseInt(String(this.capitulo)));
-    this.presentReadToast('Capítulo leido');
+    // this.presentReadToast('Capítulo leido');
   }
 
   async presentReadToast(msg: string) {

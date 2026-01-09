@@ -70,9 +70,9 @@ export class BibleViewerComponent implements OnInit {
   // Helper to ensure strict safe checking if multiple books are loaded? 
   // Notes usually are loaded for specific book in Page.
 
-  obtenerColorMarcador(capitulo: number, versiculo: number): string {
+  obtenerColorMarcador(capitulo: number, versiculo: number): string | null {
     const key = `${capitulo}:${versiculo}`;
-    return this.highlights[key] || 'transparent';
+    return this.highlights[key] || null;
   }
 
 }

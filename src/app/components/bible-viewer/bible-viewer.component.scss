@@ -236,6 +236,26 @@
     .verse-number {
         color: #888;
     }
+
+    /* Highlight Support for Dark Mode */
+    /* Ensure highlights are readable */
+    .verse-span[style*="background-color"] {
+        /* Dim the highlight background without changing the color value */
+        /* This overlays a semi-transparent black layer, making bright colors darker */
+        box-shadow: inset 0 0 0 1000px rgba(0, 0, 0, 0.5);
+
+        /* Ensure text remains standard light color for dark mode */
+        color: inherit;
+
+        /* Optional: slight text shadow for extra legibility */
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+
+        display: inline;
+        box-decoration-break: clone;
+        -webkit-box-decoration-break: clone;
+        padding: 2px 0;
+        border-radius: 3px;
+    }
 }
 
 /* --- RESALTADO ACTIVO (Añadido para asegurar alcance) --- */

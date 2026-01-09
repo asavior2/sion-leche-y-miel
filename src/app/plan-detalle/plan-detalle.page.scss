@@ -280,3 +280,81 @@
         font-size: 18px;
     }
 }
+
+/* --- MODO OSCURO (Overrides) --- */
+:host-context(body.dark) {
+    .plan-detail-content {
+        --background: #121212;
+        color: #E0E0E0;
+
+        .section-label,
+        .plan-description,
+        .reading-list .section-label,
+        .calendar-strip .section-label {
+            color: #E0E0E0 !important;
+        }
+
+        /* Calendar Pills */
+        .calendar-strip .day-pill {
+            background: #1E1E1E;
+            border-color: #333;
+
+            .day-number {
+                color: #AAA;
+            }
+
+            &.active {
+                background: #C2A153;
+                border-color: #C2A153;
+
+                .day-number {
+                    color: #FFF;
+                }
+            }
+        }
+
+        /* Status Cards */
+        .status-section .status-card {
+            &.warning {
+                background: rgba(255, 193, 7, 0.1);
+                /* Dark yellow tint */
+                border-color: rgba(255, 193, 7, 0.2);
+
+                .status-header {
+                    border-bottom-color: rgba(255, 255, 255, 0.05);
+
+                    .day-counter .muted {
+                        color: #AAA;
+                    }
+                }
+
+                .delay-msg {
+                    color: #CCC;
+                }
+            }
+
+            &.success {
+                background: rgba(41, 194, 3, 0.15);
+                color: #81c784;
+            }
+        }
+
+        /* Chapter List */
+        .reading-list .chapter-card {
+            background: #1E1E1E;
+            border-color: #333;
+
+            .chapter-info {
+                color: #DDD;
+
+                .verses {
+                    color: #999;
+                }
+            }
+        }
+    }
+
+    .transparent-header ion-toolbar {
+        --background: #121212;
+    }
+}
