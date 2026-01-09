@@ -26,24 +26,32 @@
   <div class="stats-container">
     <ion-grid>
       <ion-row>
-        <ion-col size="6">
+        <ion-col size="4">
           <div class="stat-card gold-accent">
             <div class="stat-icon"><ion-icon name="flame"></ion-icon></div>
             <div class="stat-value">{{ currentStreak }}</div>
-            <div class="stat-label">Días Racha</div>
+            <div class="stat-label">Racha</div>
           </div>
         </ion-col>
 
-        <ion-col size="6">
+        <ion-col size="4">
           <div class="stat-card sand-accent">
             <div class="stat-icon"><ion-icon name="bookmark"></ion-icon></div>
             <div class="stat-value">{{ versesMarked }}</div>
             <div class="stat-label">Versículos</div>
           </div>
         </ion-col>
+
+        <ion-col size="4">
+          <div class="stat-card pearl-accent">
+            <div class="stat-icon"><ion-icon name="document-text"></ion-icon></div>
+            <div class="stat-value">{{ notesCount }}</div>
+            <div class="stat-label">Notas</div>
+          </div>
+        </ion-col>
       </ion-row>
 
-      <ion-row>
+      <ion-row *ngIf="planProgress > 0">
         <ion-col size="12">
           <div class="stat-card progress-card">
             <div class="progress-info">
@@ -52,6 +60,19 @@
             </div>
             <ion-progress-bar [value]="planProgress / 100" class="custom-progress"></ion-progress-bar>
             <p class="tiny-note">Sigue leyendo para completar tu meta.</p>
+          </div>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col size="12">
+          <div class="stat-card progress-card general-progress">
+            <div class="progress-info">
+              <span class="stat-label">Progreso General</span>
+              <span class="stat-percent">{{ uniqueChapters }} / 1189 ({{ generalProgress }}%)</span>
+            </div>
+            <ion-progress-bar [value]="generalProgress / 100" class="custom-progress gold"></ion-progress-bar>
+            <p class="tiny-note">Capítulos únicos leídos en toda la Biblia.</p>
           </div>
         </ion-col>
       </ion-row>
@@ -64,7 +85,7 @@
   </div>
 
   <!-- Audio Download Section -->
-  <div class="audio-section">
+  <div class="audio-section" *ngIf="!isWeb">
     <h3 class="section-title">Audio Biblia (Descarga)</h3>
     <ion-list lines="none" class="custom-list">
 
@@ -158,7 +179,7 @@
         </ion-label>
       </ion-item>
 
-      <ion-item button detail="true" (click)="toggleDebug()">
+      <ion-item button detail="true" (click)="toggleDebug()" *ngIf="!isProduction">
         <div class="icon-slot"><ion-icon name="hammer-outline"></ion-icon></div>
         <ion-label>
           <h3>Ajustes Avanzados</h3>

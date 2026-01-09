@@ -142,6 +142,15 @@
             /* Dorado oscuro */
         }
 
+        &.pearl-accent {
+
+            .stat-icon,
+            .stat-value {
+                color: #B08D55;
+                /* Bronce/Dorado Suave */
+            }
+        }
+
         /* Barra de Progreso */
         &.progress-card {
             align-items: stretch;
@@ -163,6 +172,10 @@
                 --progress-background: #9E7F2A;
                 height: 8px;
                 border-radius: 4px;
+
+                &.gold {
+                    --progress-background: #FFD700;
+                }
             }
 
             .tiny-note {
@@ -327,6 +340,10 @@
 
         .stat-card.sand-accent .stat-value {
             color: #9E7F2A;
+        }
+
+        .stat-card.pearl-accent .stat-value {
+            color: #C0A06B;
         }
 
         .stat-card.progress-card .custom-progress {

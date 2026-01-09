@@ -122,35 +122,37 @@ body.dark {
 /* Apply ONLY on Desktop Browser environment, and ONLY for screens larger than iPad Pro (1024px) */
 /* Global Desktop Layout (Containment Strategy) */
 /* Apply ONLY on Desktop Browser environment, and ONLY for screens larger than iPad Pro (1024px) */
-@media (min-width: 1025px) {
+/* Global Desktop Layout (Centered Mobile Frame Strategy) */
+/* Global Desktop Layout (Responsive Centered Content Strategy) */
+/* Keeps app full-width but constrains content to 1024px centered */
+@media (min-width: 768px) {
 
-    /* 1. Standard Full-Width Layout */
     html.plt-desktop body {
         background-color: #ffffff;
         display: block;
-        min-height: 100vh;
+        /* Normal block display */
     }
 
-    /* 2. Unconstrain App: Let it act like a normal webpage */
+    /* Unconstrain App Container */
     html.plt-desktop ion-app {
         position: relative;
         width: 100%;
         max-width: none;
         height: 100%;
         min-height: 100vh;
-        background-color: transparent;
         margin: 0;
-        left: 0;
-        transform: none;
+        box-shadow: none;
+        background-color: transparent;
+        border: none;
+        overflow: auto;
+        /* Allow normal scrolling behavior */
     }
 
-    /* 3. CENTER THE CONTENT: The Magic PWA Trick */
-    /* Instead of shrinking the app, we pad the inside of content containers */
-    /* This keeps the scrollbar at the edge and backgrounds full-width */
-
+    /* Magic PWA Padding Calculation */
     html.plt-desktop {
-        /* Calculate padding to keep content max 1024px centered */
-        --desktop-padding: calc((100% - 1024px) / 2);
+        /* If screen is > 1024px, add padding to keep content at 1024px */
+        /* If screen is < 1024px (but > 768), padding is 0 or minimal */
+        --desktop-padding: max(0px, calc((100% - 1024px) / 2));
     }
 
     /* Apply padding to content areas */
@@ -164,5 +166,11 @@ body.dark {
     html.plt-desktop ion-footer ion-toolbar {
         padding-left: var(--desktop-padding);
         padding-right: var(--desktop-padding);
+    }
+
+    /* Ensure scrollbars are standard */
+    html.plt-desktop body::-webkit-scrollbar {
+        display: block;
+        width: 8px;
     }
 }

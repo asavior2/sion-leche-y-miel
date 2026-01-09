@@ -109,9 +109,38 @@ export class DatabaseService {
         )`, []
         ).then(() => {
             console.log('Table user_stats created');
-            this.dbReady.next(true); // Signal DB is ready
+            // Check next table
         })
             .catch(e => console.error('Error creating table user_stats', e));
+
+        // 6. Activity Logs (For Streak)
+        this.database.executeSql(
+            `CREATE TABLE IF NOT EXISTS activity_logs (
+          id TEXT PRIMARY KEY,
+          date TEXT,
+          timestamp INTEGER,
+          type TEXT,
+          is_synced INTEGER
+        )`, []
+        ).then(() => {
+            console.log('Table activity_logs created');
+            this.dbReady.next(true); // Signal DB is ready
+        })
+            .catch(e => console.error('Error creating table activity_logs', e));
+
+        // 7. Chapter Progress (For Book Completion Badges)
+        this.database.executeSql(
+            `CREATE TABLE IF NOT EXISTS chapter_views (
+          id TEXT PRIMARY KEY,
+          book_id INTEGER,
+          chapter INTEGER,
+          timestamp INTEGER
+        )`, []
+        ).then(() => {
+            console.log('Table chapter_views created');
+            this.dbReady.next(true); // Signal DB is ready
+        })
+            .catch(e => console.error('Error creating table chapter_views', e));
     }
 
     // Helper for executing queries

@@ -140,6 +140,9 @@ npm install --legacy-peer-deps
 rm -rf platforms/android
 rm -rf plugins
 ionic cordova platform add android
+```
+# Provar en produccion. 
+ionic cordova run android --prod --target=emulator-5554
 
 ```
 

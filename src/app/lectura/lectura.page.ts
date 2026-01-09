@@ -23,6 +23,7 @@ import { SyncService } from '../core/services/sync.service';
 import { Note, Bookmark } from '../core/repositories/bible.repository';
 import { SocialSharing } from '@awesome-cordova-plugins/social-sharing/ngx';
 import { AudioPlayerService } from '../core/services/audio-player.service';
+import { LocalBibleRepository } from '../core/repositories/local-bible.repository';
 
 
 @Component({
@@ -162,6 +163,7 @@ export class LecturaPage implements OnInit {
     private syncService: SyncService,
     private socialSharing: SocialSharing,
     private audioService: AudioPlayerService,
+    private localRepo: LocalBibleRepository,
     private toastController: ToastController) {
 
     this.tabs.validaUri();
@@ -334,6 +336,7 @@ export class LecturaPage implements OnInit {
   } // ngOnInit
 
   ionViewWillEnter() {
+    this.localRepo.logActivity('bible_read');
     this.activeRoute.queryParams.subscribe(params => {
       if (params && params.libro && params.capitulo) {
         const targetLibro = parseInt(params.libro);
@@ -721,7 +724,60 @@ export class LecturaPage implements OnInit {
     console.log("textoJsonFinal***********")
     console.log(this.textoJsonFinal)
 
+    // Reset chapter read status
+    this.chapterRead = false;
+    // Wait for view update to attach observer (e.g. via ion-content scroll listener if IO fails, or use IO on sentinel)
+    setTimeout(() => {
+      this.setupIntersectionObserver();
+    }, 500);
+
     this.mostrarTexto = true;
+  }
+
+  private chapterRead = false;
+  private observer: IntersectionObserver;
+
+  setupIntersectionObserver() {
+    if (this.observer) {
+      this.observer.disconnect();
+    }
+
+    const options = {
+      root: null, // viewport
+      rootMargin: '0px',
+      threshold: 0.1
+    };
+
+    this.observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !this.chapterRead) {
+          this.markAsRead();
+        }
+      });
+    }, options);
+
+    const sentinel = document.getElementById('bottom-sentinel');
+    if (sentinel) {
+      this.observer.observe(sentinel);
+    }
+  }
+
+  markAsRead() {
+    console.log('--- CHAPTER MARKED AS READ ---');
+    this.chapterRead = true;
+    this.localRepo.markChapterViewed(parseInt(String(this.libro)), parseInt(String(this.capitulo)));
+    this.presentReadToast('Capítulo leido');
+  }
+
+  async presentReadToast(msg: string) {
+    const toast = await this.toastController.create({
+      message: msg,
+      duration: 1500,
+      color: 'dark',
+      position: 'top',
+      cssClass: 'toast-custom-class'
+    });
+    toast.present();
   }
 
   // Removed deprecated audioReproductor, calculateTimeMap

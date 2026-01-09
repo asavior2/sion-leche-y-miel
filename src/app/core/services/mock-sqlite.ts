@@ -5,13 +5,16 @@ export class MockSQLiteObject {
         notes: [],
         reading_progress: [],
         user_stats: [],
-        users: []
+        users: [],
+        activity_logs: [],
+        chapter_views: []
     };
 
     constructor() {
         const stored = localStorage.getItem('mock_sqlite_tables');
         if (stored) {
-            this.tables = JSON.parse(stored);
+            const parsed = JSON.parse(stored);
+            this.tables = { ...this.tables, ...parsed }; // Merge to ensure new tables exist
         }
     }
 
@@ -77,6 +80,12 @@ export class MockSQLiteObject {
                     } else if (tableName === 'user_stats') {
                         // id, metric_key, value, updated_at, is_synced
                         newItem = { id: params[0], metric_key: params[1], value: params[2], updated_at: params[3], is_synced: params[4] };
+                    } else if (tableName === 'activity_logs') {
+                        // id, date, timestamp, type, is_synced
+                        newItem = { id: params[0], date: params[1], timestamp: params[2], type: params[3], is_synced: params[4] };
+                    } else if (tableName === 'chapter_views') {
+                        // id, book_id, chapter, timestamp
+                        newItem = { id: params[0], book_id: params[1], chapter: params[2], timestamp: params[3] };
                     }
 
                     // Remove existing with same ID

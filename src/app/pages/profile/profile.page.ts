@@ -10,6 +10,7 @@ import { Zip } from '@awesome-cordova-plugins/zip/ngx';
 import { File } from '@awesome-cordova-plugins/file/ngx';
 import { HTTP } from '@awesome-cordova-plugins/http/ngx';
 import { Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-profile',
@@ -25,8 +26,11 @@ export class ProfilePage implements OnInit {
   // Quick stats
   booksRead = 0;
   versesMarked = 0;
+  notesCount = 0;
   currentStreak = 0;
   planProgress = 0;
+  generalProgress = 0;
+  uniqueChapters = 0;
 
   // Audio Download State
   activeDownloadQuality: 'alta' | 'media' | 'baja' | null = null;
@@ -34,6 +38,13 @@ export class ProfilePage implements OnInit {
   pathDiviceIosAndroid: string = '';
   audioAvailable = false;
   downloadedQuality: 'alta' | 'media' | 'baja' | null = null;
+
+  isProduction = environment.production;
+  isWeb = false;
+
+  // --- DEBUGGING ---
+  showDebug = false;
+  debugData: any = {};
 
   constructor(
     private auth: AuthService,
@@ -54,6 +65,7 @@ export class ProfilePage implements OnInit {
   ngOnInit() {
     this.user$ = this.auth.user$;
     this.isSyncing$ = this.sync.isSyncing$;
+    this.isWeb = !this.platform.is('cordova');
 
     // Platform Path Init
     if (this.platform.is("android")) {
@@ -66,44 +78,35 @@ export class ProfilePage implements OnInit {
   }
 
   ionViewWillEnter() {
+    this.localRepo.logActivity('profile_view');
     this.loadStats();
   }
 
   async loadStats() {
-    // 1. Get raw stats from Local DB
-    // Note: We need to implement a detailed stats aggregator or just use the UserStats table.
-    // For Phase 4 demo, let's use the UserStats table data if available, 
-    // OR basic queries if we haven't implemented the stat aggregator worker yet.
-    // The gamification service expects UserStats[].
-
-    // 1. Calculate Real Stats from Tables
     const bookmarks = await this.localRepo.getBookmarks();
     this.versesMarked = bookmarks.length;
 
-    // TODO: We need a way to get ALL progress regardless of plan ID or iterate known plans.
-    // For MVP, we'll check the main 'bible_in_a_year' plan or just 0 if not accessible easily.
-    // Ideally, localRepo should have 'getAllReadingProgress()'.
-    // Let's stick to 0 or try to fetch a specific plan if known.
-    // Actually, let's use the 'UserStats' table for the badges logic, 
-    // BUT we need to POPULATE 'UserStats' table first for Gamification to work!
-    // Current Issue: Nothing is writing to 'UserStats'. 
+    const notes = await this.localRepo.getNotes();
+    this.notesCount = notes.length;
 
-    // 4. Calculate Stats via Worker
-    const statsResult = await this.gamification.calculateStatsAsync(bookmarks);
+    const activityLogs = await this.localRepo.getActivityLogs();
+    const chapterViews = await this.localRepo.getChapterViews();
+
+    const statsResult = await this.gamification.calculateStatsAsync(bookmarks, notes, activityLogs, chapterViews);
     this.currentStreak = statsResult.streak;
 
-    // 2. Get Badges using the Map returned by worker
     this.badges = this.gamification.getBadges(statsResult.raw);
 
-    // 3. Plan Progress (Bible One Year)
-    // Assuming 365 days for the standard plan
+    // General Bible Progress
+    // Total Chapters = 1189 (Standard Protestant Canon)
+    const uniqueChapters = chapterViews.length;
+    this.uniqueChapters = uniqueChapters;
+    this.generalProgress = Math.min(100, Math.round((uniqueChapters / 1189) * 100));
+
     const planProgressData = await this.localRepo.getReadingProgress('bibleOneYear');
     const completedDays = planProgressData.filter(p => p.status === 1).length;
     this.planProgress = Math.min(100, Math.round((completedDays / 365) * 100));
   }
-
-
-
 
   async logout() {
     await this.auth.logout();
@@ -126,9 +129,7 @@ export class ProfilePage implements OnInit {
 
     try {
       await this.auth.loginWithGoogle();
-      this.presentToast('Bienvenido. Sincronizando tus datos locales...', 'success');
-
-      // Trigger forced sync to merge local guest data with cloud
+      this.presentToast('Bienvenido. Sincronizando tus datos locales...', 'success', 'success');
       this.sync.syncAll(true);
     } catch (error) {
       console.error('Google Login UI Error', error);
@@ -145,46 +146,37 @@ export class ProfilePage implements OnInit {
       const res = await fetch('https://www.googleapis.com/discovery/v1/apis?fields=kind', { mode: 'cors' });
       const duration = Date.now() - start;
       console.log(`Connection Test Success: Status ${res.status} (${duration}ms)`);
-      const text = await res.text();
-      console.log('Response preview:', text.substring(0, 50));
     } catch (e) {
       console.error('--- CONNECTION TEST FAILED ---');
       console.error('Fetch Error:', e);
-      // Try fallback to native HTTP if available to compare
-      try {
-        console.log('Attempting Native HTTP fallback check...');
-        const nativeRes = await this.nativeHTTP.get('https://www.google.com', {}, {});
-        console.log('Native HTTP Success! Status:', nativeRes.status);
-      } catch (nativeErr) {
-        console.error('Native HTTP also failed:', nativeErr);
-      }
     }
-    console.log('----------------------------------');
   }
 
-  async presentToast(message: string, color: string) {
+  async presentToast(message: string, color: string, color2: string = '') {
+    // Note: corrected signature to match usage or fix usage.
+    // Original usage: this.presentToast(msg, 'success') -> matches
+    // But loginGoogle calls: this.presentToast(..., 'success')
+    // Let's just keep simple signature
     const toast = await this.toastCtrl.create({
       message,
       duration: 3000,
-      color,
+      color: color,
       position: 'bottom'
     });
     toast.present();
   }
 
-  // --- DEBUGGING ---
-  showDebug = false;
-  debugData: any = {};
-
   toggleDebug() {
-    this.showDebug = !this.showDebug;
+    if (!environment.production) {
+      this.showDebug = !this.showDebug;
+    }
   }
 
   async dumpDebugData() {
     this.debugData = {
       user: await this.auth.getCurrentUser(),
       stats: await this.localRepo.getStats(),
-      bookmarks: (await this.localRepo.getBookmarks()).slice(0, 5), // Limit to 5
+      bookmarks: (await this.localRepo.getBookmarks()).slice(0, 5),
       unsyncedBookmarks: await this.localRepo.getUnsyncedBookmarks()
     };
     console.log('Debug Data:', this.debugData);
@@ -195,10 +187,8 @@ export class ProfilePage implements OnInit {
   async checkAudioStatus() {
     try {
       const dirPath = this.file.applicationStorageDirectory + this.pathDiviceIosAndroid;
-      // 1. Check if directory exists
       await this.file.checkDir(dirPath, 'por-Capitulos');
 
-      // 2. Check for marker file to identify quality
       try {
         const quality = await this.file.readAsText(dirPath + 'por-Capitulos/', 'calidad.txt');
         if (quality && (['alta', 'media', 'baja'].includes(quality.trim()))) {
@@ -210,15 +200,9 @@ export class ProfilePage implements OnInit {
         console.warn('calidad.txt missing, falling back to basic check');
       }
 
-      // 3. Fallback: Verify Genesis 1 exists if marker missing (legacy support)
       try {
         await this.file.checkFile(dirPath + 'por-Capitulos/1/', '1.mp3');
         this.audioAvailable = true;
-        // If we have audio but no marker, we can't be sure of quality. 
-        // We'll leave downloadedQuality null but audioAvailable true, 
-        // or default to 'media' if preferred. For now keeping it ambiguous triggers "Check" on only verified ones? 
-        // Actually, if we want to show GREEN, we need to match. Let's assume 'unknown' doesn't match any.
-        // Or we could write the marker now if we knew? No.
       } catch (innerErr) {
         console.warn('Audio directory exists but Genesis 1 is missing.', innerErr);
         this.audioAvailable = false;
@@ -232,10 +216,10 @@ export class ProfilePage implements OnInit {
   }
 
   async initiateDownload(calidad: 'alta' | 'media' | 'baja') {
-    if (this.activeDownloadQuality) return; // Prevent concurrent downloads
+    if (this.activeDownloadQuality) return;
 
     let url = '';
-    let nombre = '';
+    let nombre = ''; // Fixed variable declaration
 
     if (calidad === 'alta') {
       url = 'https://sionlecheymiel.com/file/audio-SLM-calidad-alta.zip';
@@ -262,22 +246,18 @@ export class ProfilePage implements OnInit {
     try {
       console.log('Starting Download Process for:', url);
 
-      // 1. Get File Size via HEAD request
       let totalSize = 0;
       try {
         const headRes = await this.nativeHTTP.sendRequest(url, { method: 'head' });
         if (headRes.headers && headRes.headers['content-length']) {
           totalSize = parseInt(headRes.headers['content-length'], 10);
-          console.log('Total file size:', totalSize);
-        } else if (headRes.headers && headRes.headers['Content-Length']) { // Case sensitive check
+        } else if (headRes.headers && headRes.headers['Content-Length']) {
           totalSize = parseInt(headRes.headers['Content-Length'], 10);
-          console.log('Total file size:', totalSize);
         }
       } catch (headErr) {
-        console.warn('Could not get file size via HEAD, progress will be indeterminate', headErr);
+        console.warn('Could not get file size via HEAD', headErr);
       }
 
-      // 2. Start Polling for Progress
       if (totalSize > 0) {
         downloadInterval = setInterval(() => {
           this.file.resolveLocalFilesystemUrl(filePath)
@@ -290,26 +270,21 @@ export class ProfilePage implements OnInit {
                 });
               }, _ => { });
             })
-            .catch(_ => { }); // File might not exist yet
+            .catch(_ => { });
         }, 500);
       }
 
-      // 3. Start Download
       console.log('Starting Native Download...');
       await this.nativeHTTP.downloadFile(url, {}, {}, filePath);
       console.log('Download complete');
 
-      // Clear interval immediately
       if (downloadInterval) clearInterval(downloadInterval);
       this.ngZone.run(() => this.downloadProgress = 100);
 
-      // 4. Cleanup Old Directory (Logic preserved)
       try {
         await this.file.checkDir(this.file.applicationStorageDirectory + this.pathDiviceIosAndroid, 'por-Capitulos');
         await this.file.removeRecursively(this.file.applicationStorageDirectory + this.pathDiviceIosAndroid, 'por-Capitulos');
-      } catch (e) {
-        // Ignore if dir doesn't exist
-      }
+      } catch (e) { }
 
       await this.unZip(nombre);
 
@@ -333,21 +308,16 @@ export class ProfilePage implements OnInit {
         this.ngZone.run(() => {
           if (progress.total > 0) {
             this.downloadProgress = Math.round((progress.loaded / progress.total) * 100);
-            console.log(`Unzip Progress: ${this.downloadProgress}%`);
           }
         });
       });
 
       console.log('Unzip Result Code:', result);
 
-      // Relaxed Success Check: Verify if result is 0 OR an object (progress/stats object)
-      // User log confirmed result is: {loaded: 0, total: 481131402}
       if (result === 0 || (typeof result === 'object' && result !== null)) {
-        // Success
         this.ngZone.run(() => {
           this.presentToast('Biblia en Audio instalada correctamente.', 'success');
           this.audioAvailable = true;
-          // Set the newly downloaded quality as active
           if (nombre.includes('alta')) this.downloadedQuality = 'alta';
           else if (nombre.includes('media')) this.downloadedQuality = 'media';
           else if (nombre.includes('baja')) this.downloadedQuality = 'baja';
@@ -355,7 +325,6 @@ export class ProfilePage implements OnInit {
           this.resetDownloadState();
         });
 
-        // Write marker file
         try {
           let q = 'media';
           if (nombre.includes('alta')) q = 'alta';
@@ -365,7 +334,6 @@ export class ProfilePage implements OnInit {
           console.error('Error writing quality marker', wErr);
         }
 
-        // Cleanup zip
         this.file.removeFile(this.file.applicationStorageDirectory + this.pathDiviceIosAndroid, nombre)
           .catch(e => console.warn('Could not delete zip file', e));
 
@@ -377,7 +345,6 @@ export class ProfilePage implements OnInit {
       }
     } catch (err) {
       console.error('Unzip Catch Error:', err);
-      // Fix for "Error [object Object]": Stringify the error
       const errMsg = (typeof err === 'object') ? JSON.stringify(err) : String(err);
 
       this.ngZone.run(() => {
