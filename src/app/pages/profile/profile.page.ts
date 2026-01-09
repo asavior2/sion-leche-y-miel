@@ -4,6 +4,7 @@ import { AuthService } from 'src/app/core/services/auth.service';
 import { SyncService } from 'src/app/core/services/sync.service';
 import { GamificationService, Badge } from 'src/app/core/services/gamification.service';
 import { LocalBibleRepository } from 'src/app/core/repositories/local-bible.repository';
+import { AnalyticsService } from 'src/app/core/services/analytics.service';
 import { Observable } from 'rxjs';
 import firebase from 'firebase/compat/app';
 import { Zip } from '@awesome-cordova-plugins/zip/ngx';
@@ -59,7 +60,8 @@ export class ProfilePage implements OnInit {
     private alertCtrl: AlertController,
     private platform: Platform,
     private router: Router,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private analytics: AnalyticsService
   ) { }
 
   ngOnInit() {
@@ -79,6 +81,7 @@ export class ProfilePage implements OnInit {
 
   ionViewWillEnter() {
     this.localRepo.logActivity('profile_view');
+    this.analytics.logScreenView('Perfil');
     this.loadStats();
   }
 

@@ -50,10 +50,12 @@ export class SyncService {
 
         this._isSyncing.next(true);
         try {
-            await this.syncBookmarks();
-            await this.syncReadingProgress();
-            await this.syncNotes(); // Enabled
-            // await this.syncStats(); // Future
+            // STEP 1: PUSH (Client -> Cloud)
+            await this.pushLocalChanges();
+
+            // STEP 2: SMART PULL (Cloud -> Client)
+            await this.smartPull();
+
             this.lastSyncTime = Date.now();
             console.log('Sync completed successfully.');
         } catch (error) {
@@ -63,68 +65,86 @@ export class SyncService {
         }
     }
 
-    // --- BOOKMARKS SYNC ---
-    private async syncBookmarks(push: boolean = true, pull: boolean = true) {
-        // ... (existing logic) ...
-        if (push) {
-            const unsyncedLocal = await this.localRepo.getUnsyncedBookmarks();
-            if (unsyncedLocal.length > 0) {
-                console.log(`Pushing ${unsyncedLocal.length} bookmarks...`);
-                for (const item of unsyncedLocal) {
-                    await this.cloudRepo.saveBookmark(item);
-                }
-                const ids = unsyncedLocal.map(b => b.id);
-                await this.localRepo.markBookmarksSynced(ids);
+    private async pushLocalChanges() {
+        // Bookmarks
+        const unsyncedBookmarks = await this.localRepo.getUnsyncedBookmarks();
+        if (unsyncedBookmarks.length > 0) {
+            console.log(`Pushing ${unsyncedBookmarks.length} bookmarks...`);
+            for (const item of unsyncedBookmarks) {
+                await this.cloudRepo.saveBookmark(item);
             }
+            const ids = unsyncedBookmarks.map(b => b.id);
+            await this.localRepo.markBookmarksSynced(ids);
         }
-        if (pull) {
-            const cloudItems = await this.cloudRepo.getBookmarks();
-            for (const item of cloudItems) {
+
+        // Notes
+        const unsyncedNotes = await this.localRepo.getUnsyncedNotes();
+        if (unsyncedNotes.length > 0) {
+            console.log(`Pushing ${unsyncedNotes.length} notes...`);
+            for (const item of unsyncedNotes) {
+                await this.cloudRepo.saveNote(item);
+            }
+            const ids = unsyncedNotes.map(n => n.id);
+            await this.localRepo.markNotesSynced(ids);
+        }
+
+        // Reading Progress
+        const unsyncedProgress = await this.localRepo.getUnsyncedReadingProgress();
+        if (unsyncedProgress.length > 0) {
+            console.log(`Pushing ${unsyncedProgress.length} progress items...`);
+            for (const item of unsyncedProgress) {
+                await this.cloudRepo.saveReadingProgress(item);
+            }
+            const ids = unsyncedProgress.map(p => p.id);
+            await this.localRepo.markReadingProgressSynced(ids);
+        }
+    }
+
+    private async smartPull() {
+        console.log('Checking for cloud updates (Smart Delta)...');
+
+        // 1. Get Sync Metadata (Cost: 1 Read)
+        const cloudMeta = await this.cloudRepo.getSyncInfo();
+
+        // If meta doesn't exist, use 0
+        const bookmarksCloudTime = cloudMeta?.bookmarks_updated_at || 0;
+        const notesCloudTime = cloudMeta?.notes_updated_at || 0;
+        const progressCloudTime = cloudMeta?.reading_progress_updated_at || 0;
+
+        // 2. Delta Pull Bookmarks
+        if (bookmarksCloudTime > this.lastSyncTime) {
+            console.log('New bookmarks found. Fetching delta...');
+            const newBookmarks = await this.cloudRepo.getBookmarksAfter(this.lastSyncTime);
+            console.log(`Downloaded ${newBookmarks.length} new bookmarks.`);
+            for (const item of newBookmarks) {
                 await this.localRepo.saveBookmark(item, true);
             }
+        } else {
+            console.log('Bookmarks up to date.');
         }
-    }
 
-    // --- NOTES SYNC ---
-    private async syncNotes(push: boolean = true, pull: boolean = true) {
-        if (push) {
-            const unsyncedLocal = await this.localRepo.getUnsyncedNotes();
-            if (unsyncedLocal.length > 0) {
-                console.log(`Pushing ${unsyncedLocal.length} notes...`);
-                for (const item of unsyncedLocal) {
-                    await this.cloudRepo.saveNote(item);
-                }
-                const ids = unsyncedLocal.map(n => n.id);
-                await this.localRepo.markNotesSynced(ids);
-            }
-        }
-        if (pull) {
-            const cloudItems = await this.cloudRepo.getNotes();
-            for (const item of cloudItems) {
+        // 3. Delta Pull Notes
+        if (notesCloudTime > this.lastSyncTime) {
+            console.log('New notes found. Fetching delta...');
+            const newNotes = await this.cloudRepo.getNotesAfter(this.lastSyncTime);
+            console.log(`Downloaded ${newNotes.length} new notes.`);
+            for (const item of newNotes) {
                 await this.localRepo.saveNote(item, true);
             }
+        } else {
+            console.log('Notes up to date.');
         }
-    }
 
-    // --- PROGRESS SYNC ---
-    private async syncReadingProgress(push: boolean = true, pull: boolean = true) {
-        // 1. PUSH
-        if (push) {
-            const unsynced = await this.localRepo.getUnsyncedReadingProgress();
-            if (unsynced.length > 0) {
-                console.log(`Pushing ${unsynced.length} progress items...`);
-                for (const item of unsynced) {
-                    await this.cloudRepo.saveReadingProgress(item);
-                }
-                const ids = unsynced.map(p => p.id);
-                await this.localRepo.markReadingProgressSynced(ids);
+        // 4. Delta Pull Reading Progress
+        if (progressCloudTime > this.lastSyncTime) {
+            console.log('New reading progress found. Fetching delta...');
+            const newProgress = await this.cloudRepo.getReadingProgressAfter(this.lastSyncTime);
+            console.log(`Downloaded ${newProgress.length} new progress items.`);
+            for (const item of newProgress) {
+                await this.localRepo.saveReadingProgress(item, true); // true = isSynced
             }
-        }
-
-        // 2. PULL
-        if (pull) {
-            // Fetching ALL progress... (Logic pending as per previous comments)
-            // Decision: Pushing is enabled. Pulling is pending "Get All" capability.
+        } else {
+            console.log('Reading progress up to date.');
         }
     }
 }

@@ -5,6 +5,7 @@ import { HTTP } from '@awesome-cordova-plugins/http/ngx';
 import { AlertController } from '@ionic/angular';
 import { Platform } from '@ionic/angular';
 import { ToastController } from '@ionic/angular';
+import { AnalyticsService } from '../core/services/analytics.service';
 //import { FileOpener } from '@awesome-cordova-plugins/file-opener/ngx';
 
 @Component({
@@ -22,7 +23,8 @@ export class SobrePage implements OnInit {
     private nativeHTTP: HTTP,
     public platform: Platform,
     //private fileOpener: FileOpener,
-    public alertController: AlertController
+    public alertController: AlertController,
+    private analytics: AnalyticsService
   ) {
     this.storage.get('fontSize').then((val) => {
       if (val == null || val < 15) {
@@ -47,6 +49,10 @@ export class SobrePage implements OnInit {
 
 
 
+  }
+
+  ionViewDidEnter() {
+    this.analytics.logScreenView('Sobre Sion Leche y Miel');
   }
 
 

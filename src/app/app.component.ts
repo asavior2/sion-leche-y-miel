@@ -15,6 +15,7 @@ import { TutorialPage } from './pages/tutorial/tutorial.page';
 import { firstValueFrom } from 'rxjs';
 import { Deeplinks } from '@awesome-cordova-plugins/deeplinks/ngx';
 import { Router } from '@angular/router';
+import { AnalyticsService } from './core/services/analytics.service';
 
 @Component({
   selector: 'app-root',
@@ -31,7 +32,8 @@ export class AppComponent {
     private sync: SyncService,
     private modalCtrl: ModalController,
     private deeplinks: Deeplinks,
-    private router: Router
+    private router: Router,
+    private analytics: AnalyticsService // Injected
   ) {
     this.initializeApp();
   }
@@ -44,8 +46,8 @@ export class AppComponent {
       this.splashScreen.hide();
       this.changeDarkMode();
 
-      this.splashScreen.hide();
-      this.changeDarkMode();
+      this.splashScreen.hide(); // Duplicated in original, keeping or cleaning? Original had duplicate calls. I'll clean it.
+      // this.changeDarkMode(); // Cleaning duplicate.
 
       if (this.platform.is('cordova')) {
         // Initialize DeepLinks
@@ -75,7 +77,7 @@ export class AppComponent {
         const user = await firstValueFrom(this.auth.user$);
         if (!user) {
           console.log('User not logged in. Operating in Offline Guest Mode.');
-          // await this.auth.loginAnonymously(); // Disabled per user request
+          this.analytics.setUserType('guest'); // Track Guest
 
           // Check Tutorial Status First
           const hasSeenTutorial = await this.storage.get('has_seen_tutorial');
@@ -103,7 +105,11 @@ export class AppComponent {
               });
               await modal.present();
             }, 1000); // Shorter wait if tutorial was just closed
+
+            // Note: RegistrationPrompt might change user status if they login/register there.
           }
+        } else {
+          this.analytics.setUserType('registered'); // Track Registered
         }
         // Trigger Sync (background)
         this.sync.syncAll();

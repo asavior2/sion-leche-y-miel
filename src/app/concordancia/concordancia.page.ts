@@ -8,6 +8,7 @@ import { LoadingController } from '@ionic/angular';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import Libros from '../../assets/libros.json';
 import SLM from '../../assets/SLM.json';
+import { AnalyticsService } from '../core/services/analytics.service';
 
 @Component({
   selector: 'app-concordancia',
@@ -42,7 +43,8 @@ export class ConcordanciaPage {
     public loadingController: LoadingController,
     private sanitizer: DomSanitizer,
     private router: Router,
-    public http: HttpClient) {
+    public http: HttpClient,
+    private analytics: AnalyticsService) {
 
     this.concordanciaForm = this.formBuilder.group({
       palablaBuscar: new UntypedFormControl('', Validators.compose([
@@ -68,6 +70,10 @@ export class ConcordanciaPage {
   ngOnInit() {
     // 1. Pre-load and normalize data ONCE
     this.loadDatabase();
+  }
+
+  ionViewDidEnter() {
+    this.analytics.logScreenView('Concordancia');
   }
 
   loadDatabase() {

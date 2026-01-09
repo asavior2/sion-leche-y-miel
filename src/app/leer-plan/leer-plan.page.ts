@@ -538,7 +538,8 @@ export class LeerPlanPage implements OnInit {
     }
 
     // Analytics
-    this.analytics.logReading(this.librot || libro.toString(), capitulo);
+    // this.analytics.logReading(this.librot || libro.toString(), capitulo);
+    this.analytics.logScreenView('Planes');
 
     // Inject Metadata for Robustness (Fixes blank screen on component)
     if (this.textoJsonFinal) {
@@ -662,7 +663,7 @@ export class LeerPlanPage implements OnInit {
         }
         if (statusDiaBoleano) {
           tempoDia.push({ dia: dias.dia, statusDia: true, libro: dias.libro, detalles: tempoDetalle });
-          this.analytics.logEvent('complete_plan_day', { plan_name: this.nombrePlan, dia: dias.dia });
+          // this.analytics.logEvent('complete_plan_day', { plan_name: this.nombrePlan, dia: dias.dia });
           // Sync with SQLite
           this.bibliaService.saveReadingProgress(this.nombrePlan, parseInt(dias.dia), 1);
         } else {
@@ -1061,7 +1062,6 @@ export class LeerPlanPage implements OnInit {
         this.storage.set('marcadorLibro', this.marcadorLibro);
       }
     }
-    this.analytics.logBookmark(libro, capitulo, versiculo);
     this.syncService.syncAll(); // Trigger smart sync (will push immediately)
   }
   marcar(capitulo, versiculo) {

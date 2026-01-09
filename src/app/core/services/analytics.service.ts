@@ -19,18 +19,9 @@ export class AnalyticsService {
     this.logEvent('screen_view', { firebase_screen: screenName });
   }
 
-  logReading(book: string, chapter: number) {
-    this.logEvent('select_content', {
-      content_type: 'bible_chapter',
-      item_id: `${book}_${chapter}`
-    });
-  }
-
-  logBookmark(bookId: number, chapter: number, verse: number) {
-    this.logEvent('earn_virtual_currency', {
-      virtual_currency_name: 'bookmark',
-      value: 1,
-      source: `${bookId}:${chapter}:${verse}`
-    });
+  setUserType(type: 'guest' | 'registered') {
+    this.analytics.setUserProperties({ user_type: type })
+      .then(() => console.log(`[Analytics] User Property set: user_type = ${type}`))
+      .catch(err => console.error(`[Analytics] Error setting user property:`, err));
   }
 }

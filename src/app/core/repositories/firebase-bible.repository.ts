@@ -19,18 +19,47 @@ export class FirebaseBibleRepository implements BibleRepository {
     return user ? user.uid : null;
   }
 
+  // --- METADATA (SMART SYNC) ---
+  async getSyncInfo(): Promise<any> {
+    const uid = await this.getUserId();
+    if (!uid) return null;
+
+    const doc = await firstValueFrom(
+      this.afs.doc(`users/${uid}/metadata/sync_info`).valueChanges()
+    );
+    return doc || null;
+  }
+
+  async updateSyncInfo(type: 'bookmarks' | 'notes' | 'reading_progress', timestamp: number): Promise<void> {
+    const uid = await this.getUserId();
+    if (!uid) return;
+
+    const updateData: any = {};
+    updateData[`${type}_updated_at`] = timestamp;
+
+    // Use set with merge to ensure document creation if it doesn't exist
+    await this.afs.doc(`users/${uid}/metadata/sync_info`).set(updateData, { merge: true });
+  }
+
   // --- BOOKMARKS ---
   async getBookmarks(): Promise<Bookmark[]> {
     const uid = await this.getUserId();
     if (!uid) return [];
 
-    // Firestore returns QuerySnapshot. We map it to our interface.
-    // Need to convert Timestamp to number (milliseconds) if we stick to our Schema
-    // Our SQLite schema uses INTEGER (Date.now()). Firestore uses serverTimestamp typically.
-    // For simplicity in Sync Phase, we will store as Numbers here too or handle conversion.
-    // Let's store as Numbers for 1:1 compatibility with SQLite for now.
     const snapshot = await firstValueFrom(
       this.afs.collection<Bookmark>(`users/${uid}/bookmarks`).valueChanges()
+    );
+    return snapshot || [];
+  }
+
+  async getBookmarksAfter(timestamp: number): Promise<Bookmark[]> {
+    const uid = await this.getUserId();
+    if (!uid) return [];
+
+    const snapshot = await firstValueFrom(
+      this.afs.collection<Bookmark>(`users/${uid}/bookmarks`, ref =>
+        ref.where('updated_at', '>', timestamp)
+      ).valueChanges()
     );
     return snapshot || [];
   }
@@ -39,23 +68,34 @@ export class FirebaseBibleRepository implements BibleRepository {
     const uid = await this.getUserId();
     if (!uid) return;
 
-    // Use set({ ... }, { merge: true }) for upsert behavior
-    await this.afs.doc(`users/${uid}/bookmarks/${bookmark.id}`).set(bookmark, { merge: true });
+    const batch = this.afs.firestore.batch();
+    const bookmarkRef = this.afs.doc(`users/${uid}/bookmarks/${bookmark.id}`).ref;
+    const metadataRef = this.afs.doc(`users/${uid}/metadata/sync_info`).ref;
+
+    // Add bookmark write
+    batch.set(bookmarkRef, bookmark, { merge: true });
+
+    // Add metadata update
+    batch.set(metadataRef, { bookmarks_updated_at: Date.now() }, { merge: true });
+
+    await batch.commit();
   }
 
   async deleteBookmark(id: string): Promise<void> {
     const uid = await this.getUserId();
     if (!uid) return;
-    await this.afs.doc(`users/${uid}/bookmarks/${id}`).delete();
+
+    const batch = this.afs.firestore.batch();
+    const bookmarkRef = this.afs.doc(`users/${uid}/bookmarks/${id}`).ref;
+    const metadataRef = this.afs.doc(`users/${uid}/metadata/sync_info`).ref;
+
+    batch.delete(bookmarkRef);
+    batch.set(metadataRef, { bookmarks_updated_at: Date.now() }, { merge: true });
+
+    await batch.commit();
   }
 
   async getBookmark(bookId: number, chapter: number, verse: number): Promise<Bookmark | undefined> {
-    // This query is inefficient in Firestore without an index if we query by properties.
-    // But typically we look up by ID.
-    // SQLite can do `WHERE bookId=...`. Firestore needs a composite query.
-    // For now, let's skip complex querying if not strictly needed or handle essentially.
-    // Actually, `BibliaService` uses `getBookmark` to check existence.
-    // We can query with where clauses.
     const uid = await this.getUserId();
     if (!uid) return undefined;
 
@@ -88,17 +128,44 @@ export class FirebaseBibleRepository implements BibleRepository {
     return snapshot || [];
   }
 
+  async getNotesAfter(timestamp: number): Promise<Note[]> {
+    const uid = await this.getUserId();
+    if (!uid) return [];
+
+    const snapshot = await firstValueFrom(
+      this.afs.collection<Note>(`users/${uid}/notes`, ref =>
+        ref.where('updated_at', '>', timestamp)
+      ).valueChanges()
+    );
+    return snapshot || [];
+  }
+
   async saveNote(note: Note): Promise<void> {
     const uid = await this.getUserId();
     if (!uid) return;
 
-    await this.afs.doc(`users/${uid}/notes/${note.id}`).set(note, { merge: true });
+    const batch = this.afs.firestore.batch();
+    const noteRef = this.afs.doc(`users/${uid}/notes/${note.id}`).ref;
+    const metadataRef = this.afs.doc(`users/${uid}/metadata/sync_info`).ref;
+
+    batch.set(noteRef, note, { merge: true });
+    batch.set(metadataRef, { notes_updated_at: Date.now() }, { merge: true });
+
+    await batch.commit();
   }
 
   async deleteNote(id: string): Promise<void> {
     const uid = await this.getUserId();
     if (!uid) return;
-    await this.afs.doc(`users/${uid}/notes/${id}`).delete();
+
+    const batch = this.afs.firestore.batch();
+    const noteRef = this.afs.doc(`users/${uid}/notes/${id}`).ref;
+    const metadataRef = this.afs.doc(`users/${uid}/metadata/sync_info`).ref;
+
+    batch.delete(noteRef);
+    batch.set(metadataRef, { notes_updated_at: Date.now() }, { merge: true });
+
+    await batch.commit();
   }
 
   // --- READING PROGRESS ---
@@ -114,10 +181,34 @@ export class FirebaseBibleRepository implements BibleRepository {
     return snapshot || [];
   }
 
+  async getReadingProgressAfter(timestamp: number): Promise<ReadingProgress[]> {
+    const uid = await this.getUserId();
+    if (!uid) return [];
+
+    const snapshot = await firstValueFrom(
+      // We query by 'updated_at' which we inject during save.
+      this.afs.collection<ReadingProgress>(`users/${uid}/reading_progress`, ref =>
+        ref.where('updated_at', '>', timestamp)
+      ).valueChanges()
+    );
+    return snapshot || [];
+  }
+
   async saveReadingProgress(progress: ReadingProgress): Promise<void> {
     const uid = await this.getUserId();
     if (!uid) return;
-    await this.afs.doc(`users/${uid}/reading_progress/${progress.id}`).set(progress, { merge: true });
+
+    const batch = this.afs.firestore.batch();
+    const progressRef = this.afs.doc(`users/${uid}/reading_progress/${progress.id}`).ref;
+    const metadataRef = this.afs.doc(`users/${uid}/metadata/sync_info`).ref;
+
+    // Inject 'updated_at' into the document for reliable Delta Sync
+    const docData = { ...progress, updated_at: Date.now() };
+
+    batch.set(progressRef, docData, { merge: true });
+    batch.set(metadataRef, { reading_progress_updated_at: Date.now() }, { merge: true });
+
+    await batch.commit();
   }
 
   // --- USER STATS ---

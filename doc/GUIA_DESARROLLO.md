@@ -41,18 +41,35 @@ Se activa al iniciar la app o cuando se llama a `syncAll` sin cambios locales.
     2. Si es elegible, descarga datos de Firestore.
     3. Guarda los datos en SQLite (sobrescribiendo versiones anteriores).
 
-## 4. Base de Datos Local (SQLite)
+## 4. Almacenamiento Local (SQLite)
+La aplicación utiliza una base de datos SQLite local (`biblia_slm.db`) para persistencia offline y rendimiento.
 Ubicación: `src/app/core/services/database.service.ts`
-
-- **Tablas Principales:**
-    - `bookmarks`: Marcadores de versículos. Campos: `id`, `user_id`, `libro`, `capitulo`, `versiculo`, `created_at`, `is_synced`.
-    - `reading_progress`: Progreso de planes.
-    - `user_stats`: Estadísticas agregadas (para gamificación).
+- **Tablas Locales:**
+1.  **`users`**: Metadatos locales del usuario (UUID, cloud_id, email, last_sync).
+2.  **`bookmarks`**: Marcadores y destacados (Libro, Capítulo, Versículo, Color).
+3.  **`notes`**: Notas personales asociadas a versículos.
+4.  **`reading_progress`**: Progreso de los planes de lectura (Día marcados como completados).
+5.  **`user_stats`**: Estadísticas calculadas localmente.
+6.  **`activity_logs`**: Logs de actividad para el cálculo de rachas (Streak).
+7.  **`chapter_views`**: Registro de capítulos leídos individualmente (para medallas de completitud de libros).
 
 - **MockSQLite:**
     - En desarrollo web (`ionic serve`), `database.service.ts` detecta que no es Cordova y usa `MockSQLiteObject`.
     - Este mock simula las consultas SQL usando `localStorage` para persistencia básica.
     - **Nota:** No soporta consultas complejas (JOINs), solo operaciones CRUD básicas simuladas.
+
+---
+
+## 3. Sincronización (Firebase Cloud Firestore)
+El servicio `SyncService` gestiona la sincronización bidireccional (Push/Pull) entre SQLite y Firebase Firestore para usuarios autenticados.
+
+**Datos Sincronizados:**
+*   **Marcadores (`bookmarks`)**: Se sincronizan creaciones, actualizaciones y eliminaciones.
+    *   *Lógica:* Los cambios locales se marcan como `is_synced=0` y se envían a la nube. Al recibir datos de la nube, se guardan localmente.
+*   **Notas (`notes`)**: Sincronización completa del contenido de las notas.
+*   **Progreso de Lectura (`reading_progress`)**: Se sincroniza el estado de los días completados en los planes de lectura.
+
+**Nota:** Tablas como `activity_logs` y `chapter_views` son actualmente locales para cálculos de gamificación en el dispositivo y no se están sincronizando con la nube en esta iteración.
 
 ## 5. Analíticas (AnalyticsService)
 Ubicación: `src/app/core/services/analytics.service.ts`

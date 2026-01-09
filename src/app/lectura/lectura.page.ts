@@ -24,6 +24,7 @@ import { Note, Bookmark } from '../core/repositories/bible.repository';
 import { SocialSharing } from '@awesome-cordova-plugins/social-sharing/ngx';
 import { AudioPlayerService } from '../core/services/audio-player.service';
 import { LocalBibleRepository } from '../core/repositories/local-bible.repository';
+import { AnalyticsService } from '../core/services/analytics.service';
 
 
 @Component({
@@ -164,27 +165,34 @@ export class LecturaPage implements OnInit {
     private socialSharing: SocialSharing,
     private audioService: AudioPlayerService,
     private localRepo: LocalBibleRepository,
-    private toastController: ToastController) {
+    private toastController: ToastController,
+    private analytics: AnalyticsService) {
 
     this.tabs.validaUri();
     //this.guardarMarcador();
     this.platform.backButton.observers.pop();
+    // ...
+  }
 
-    // Initialize Theme
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-    if (prefersDark.matches) {
-      this.currentTheme = 'dark';
-      this.estadoDark = 'sunny'; // Icon to switch to Light
-    } else {
-      this.currentTheme = 'light';
-      this.estadoDark = 'eye'; // Icon to switch to Sepia (Reading mode)
-    }
-
-    this.isNative = this.platform.is('cordova') || this.platform.is('capacitor');
+  ionViewDidEnter() {
+    this.analytics.logScreenView('Lectura');
   }
 
 
+
+
   async ngOnInit() {
+    this.isNative = this.platform.is('cordova') || this.platform.is('capacitor');
+
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+    if (prefersDark.matches) {
+      this.currentTheme = 'dark';
+      this.estadoDark = 'sunny';
+    } else {
+      this.currentTheme = 'light';
+      this.estadoDark = 'eye';
+    }
+
     this.setupAudioSubscriptions();
     console.log("Update 1")
     console.log(this.platform.platforms())
@@ -305,14 +313,14 @@ export class LecturaPage implements OnInit {
     console.log(this.tiempoAudio)
     this.audio = new Audio(this.audioMP3);
     this.audio.load();
-
+  
     this.audio.addEventListener("play", () => {
       console.log("Inicio el audio reproducción");
     });
-
+  
     this.audio.addEventListener("ended", () => {
       console.log("finalizo el audio reproducción");
-
+  
       this.nextboton()
     });*/
 
