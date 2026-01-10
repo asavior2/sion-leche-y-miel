@@ -1,0 +1,44 @@
+{
+    "hosting": {
+        "public": "deploy_public",
+        "ignore": [
+            "firebase.json",
+            "**/.*",
+            "**/node_modules/**"
+        ],
+        "rewrites": [
+            {
+                "source": "/app/**",
+                "destination": "/app/index.html"
+            },
+            {
+                "source": "/lectura/**",
+                "destination": "/app/index.html"
+            },
+            {
+                "source": "/plan/**",
+                "destination": "/app/index.html"
+            },
+            {
+                "source": "/concordancia/**",
+                "destination": "/app/index.html"
+            },
+            {
+                "source": "/perfil/**",
+                "destination": "/app/index.html"
+            },
+            {
+                "source": "/contacto/**",
+                "destination": "/app/index.html"
+            },
+            {
+                "source": "/sobre/**",
+                "destination": "/app/index.html"
+            },
+            {
+                "source": "**",
+                "destination": "/index.html"
+            }
+        ]
+    }
+}
