@@ -255,7 +255,55 @@
                 el.style.animationPlayState = 'paused';
                 observer.observe(el);
             });
+
+            // Smart Download Button Logic
+            const btnDownload = document.querySelector('a[href="#descargar"].btn-download');
+            if (btnDownload) {
+                const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+                // iOS Detection
+                if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+                    btnDownload.href = "https://apps.apple.com/cl/app/biblia-sion-leche-y-miel/id1478674195";
+                    btnDownload.innerHTML = '<i class="fab fa-apple"></i> Descargar en App Store';
+                }
+                // Android Detection
+                else if (/android/i.test(userAgent)) {
+                    btnDownload.href = "https://play.google.com/store/apps/details?id=io.slm.starter";
+                    btnDownload.innerHTML = '<i class="fab fa-android"></i> Descargar en Play Store';
+                }
+                // Desktop / Others -> Default behavior (scroll to section or show both links if we had a modal)
+                // Current default is just generic "Descargar App" which is fine for desktop.
+            }
         });
+        // Mobile Menu Logic
+        const menuBtn = document.querySelector('.mobile-menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+
+        if (menuBtn && navLinks) {
+            menuBtn.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+
+                // Optional: Toggle icon between bars and times (X)
+                const icon = menuBtn.querySelector('i');
+                if (navLinks.classList.contains('active')) {
+                    icon.classList.remove('fa-bars');
+                    icon.classList.add('fa-times');
+                } else {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
+            });
+
+            // Close menu when clicking a link
+            document.querySelectorAll('.nav-link, .btn').forEach(link => {
+                link.addEventListener('click', () => {
+                    navLinks.classList.remove('active');
+                    const icon = menuBtn.querySelector('i');
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                });
+            });
+        }
     </script>
 </body>
 

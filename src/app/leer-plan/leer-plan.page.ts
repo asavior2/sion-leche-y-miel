@@ -317,7 +317,7 @@ export class LeerPlanPage implements OnInit {
         this.planOfStora = val;
       } else {    // Si no existe el plan usa el inportado
         //this.planOfStora = require(`../../assets/planes/${this.nombrePlan}.json`);
-        this.planOfStora = await firstValueFrom(this.httpClient.get(`/assets/planes/${this.nombrePlan}.json`));
+        this.planOfStora = await firstValueFrom(this.httpClient.get(`assets/planes/${this.nombrePlan}.json`));
       }
       console.log('Desde el storage');
       console.log(this.planOfStora);
@@ -333,7 +333,7 @@ export class LeerPlanPage implements OnInit {
       if (this.nombrePlan === 'bibleOneYear') {
         // Logic to resolve path
         // Default to remote URL so it works if local fails
-        let audioSrc = "https://sionlecheymiel.com/file/audios/" + this.libro + "/" + this.capitulo + ".mp3";
+        let audioSrc = "https://media.sionlecheymiel.com/file/audios/" + this.libro + "/" + this.capitulo + ".mp3";
 
         // ... Path resolution logic ...
         // We need to move path resolution here or keep it.

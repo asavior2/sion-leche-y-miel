@@ -447,7 +447,7 @@ export class LecturaPage implements OnInit {
     } else {
       // Logic to resolve path
       // Default to remote URL so it works if local fails
-      let audioSrc = "https://sionlecheymiel.com/file/audios/" + this.libro + "/" + this.capitulo + ".mp3";
+      let audioSrc = "https://media.sionlecheymiel.com/file/audios/" + this.libro + "/" + this.capitulo + ".mp3";
 
       if (this.platform.is("android")) {
         this.pathDiviceIosAndroid = "/files/Documents/";

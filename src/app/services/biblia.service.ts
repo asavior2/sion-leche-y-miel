@@ -33,7 +33,7 @@ export class BibliaService {
 
   // esto trae los versiculos   ("libros/"+libro+"/"+libro+"-"+capitulo+".json")  assets/libros/43/43-3.json
   getTexto(libro: number, capitulo: number) {
-    return this.httpClient.get('/assets/libros/' + libro + '/' + libro + '-' + capitulo + '.json');
+    return this.httpClient.get('assets/libros/' + libro + '/' + libro + '-' + capitulo + '.json');
   }
 
   async getTextoFile(libro: number, capitulo: number) { // Cuando esta actualizado
@@ -49,13 +49,13 @@ export class BibliaService {
 
   async getTextoImport(libro: number, capitulo: number) {
     console.log(`Getting text for libro ${libro} capitulo ${capitulo}`);
-    const url = '/assets/libros/' + libro + '/' + libro + '-' + capitulo + '.json';
+    const url = 'assets/libros/' + libro + '/' + libro + '-' + capitulo + '.json';
     console.log('Requesting URL:', url);
     return await firstValueFrom(this.httpClient.get(url));
   }
 
   async getTextoAudio(libro: number, capitulo: number) {
-    return await firstValueFrom(this.httpClient.get('/assets/audios-json/' + libro + '/' + capitulo + '.json'));
+    return await firstValueFrom(this.httpClient.get('assets/audios-json/' + libro + '/' + capitulo + '.json'));
   }
 
   // Trae los titulos de los respectivo capitulos 
@@ -67,11 +67,11 @@ export class BibliaService {
 
   // Trae los libro capitulos y numero de capitulos
   getLibros() {
-    return this.httpClient.get('/assets/libros.json');
+    return this.httpClient.get('assets/libros.json');
   }
 
   getTextoBiblia() {
-    return this.httpClient.get('/assets/SLM.json');
+    return this.httpClient.get('assets/SLM.json');
   }
 
   // Trae las citas de los respectivo capitulos 

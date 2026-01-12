@@ -95,8 +95,12 @@ export class AppComponent {
           }
 
           // Check Registration Prompt
+          // Only show on Mobile Apps (Cordova/Capacitor) or if explicitly desired on mobile web.
+          // User requested NOT to show on "version web pantalla grande" (Desktop).
+          const isDesktop = this.platform.is('desktop');
           const promptStatus = await this.storage.get('registration_prompt_status');
-          if (promptStatus !== 'never') {
+
+          if (promptStatus !== 'never' && !isDesktop) {
             setTimeout(async () => {
               const modal = await this.modalCtrl.create({
                 component: RegistrationPromptPage,

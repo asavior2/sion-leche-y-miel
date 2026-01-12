@@ -281,6 +281,13 @@ a {
     background: radial-gradient(circle at top right, #fbf7ec 0%, #FDFBF7 60%);
 }
 
+.hero-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+    flex-wrap: wrap;
+}
+
 .hero-content {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -619,5 +626,63 @@ a {
 
     h1 {
         font-size: 2rem;
+    }
+
+    /* Mobile Menu Active State */
+    .nav-links.active {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 80px;
+        left: 0;
+        width: 100%;
+        background: rgba(253, 251, 247, 0.98);
+        backdrop-filter: blur(10px);
+        padding: 30px 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        z-index: 999;
+        border-bottom: 1px solid rgba(184, 134, 11, 0.1);
+        gap: 20px;
+        animation: slideDown 0.3s ease-out;
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Stack Hero Buttons & Add spacing */
+    .hero-buttons {
+        flex-direction: column;
+        width: 100%;
+        gap: 20px;
+        /* Fix "muy pegados" */
+    }
+
+    .hero-buttons .btn {
+        width: 100%;
+        /* Full width for easier tapping */
+        max-width: 320px;
+        /* Don't stretch too wide on tablets */
+    }
+
+    /* Stack Contact Actions (Author Section) */
+    .contact-actions {
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        gap: 20px;
+    }
+
+    .contact-actions .btn {
+        width: 100%;
+        max-width: 320px;
     }
 }

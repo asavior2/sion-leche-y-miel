@@ -113,7 +113,7 @@ export class PlanDetallePage implements OnInit {
         this.imagen = entry.imagen;
         this.descripcion = entry.descripcion;
         // this.temporalPlan = require(`../../assets/planes/${entry.nombre}.json`);
-        this.temporalPlan = await firstValueFrom(this.httpClient.get<any>(`/assets/planes/${entry.nombre}.json`));
+        this.temporalPlan = await firstValueFrom(this.httpClient.get<any>(`assets/planes/${entry.nombre}.json`));
         // console.log(this.bibleOneYear);
 
       }
