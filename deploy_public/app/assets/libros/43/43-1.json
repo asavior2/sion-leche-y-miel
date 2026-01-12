@@ -1,0 +1,1022 @@
+[
+    {
+        "idTitulo": "2",
+        "id_libro": "43",
+        "capitulo": "1",
+        "versiculo": "1",
+        "titulo": "En Cristo el Principio, cre\u00f3 Dios..."
+    },
+    {
+        "versiculo": "1",
+        "comprimido": [
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "1",
+                "cita": "(En el Principio\u00a01:1)",
+                "parteText": "En el Principio",
+                "ibroCita": "1",
+                "capituloCita": "1",
+                "versiculoCitaInicial": "1",
+                "versiculoCitaFinal": "0",
+                "posicion": 15
+            },
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "1",
+                "cita": "(Hebreos 1:1-10)",
+                "parteText": "",
+                "ibroCita": "58",
+                "capituloCita": "1",
+                "versiculoCitaInicial": "10",
+                "versiculoCitaFinal": "10",
+                "posicion": 15
+            },
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "1",
+                "cita": "(En el Principio\u00a011:7-7)",
+                "parteText": "Yo Soy",
+                "ibroCita": "1",
+                "capituloCita": "11",
+                "versiculoCitaInicial": "7",
+                "versiculoCitaFinal": "7",
+                "posicion": 32
+            },
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "1",
+                "cita": "(En el Principio\u00a01:26)",
+                "parteText": "",
+                "ibroCita": "1",
+                "capituloCita": "1",
+                "versiculoCitaInicial": "26",
+                "versiculoCitaFinal": "0",
+                "posicion": 32
+            },
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "1",
+                "cita": "(En el Principio\u00a03:22)",
+                "parteText": "",
+                "ibroCita": "1",
+                "capituloCita": "3",
+                "versiculoCitaInicial": "22",
+                "versiculoCitaFinal": "0",
+                "posicion": 32
+            },
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "1",
+                "cita": "(En el Principio\u00a015:1,4)",
+                "parteText": "(YH) es la Palabra;",
+                "ibroCita": "1",
+                "capituloCita": "15",
+                "versiculoCitaInicial": "4",
+                "versiculoCitaFinal": "0",
+                "posicion": 58
+            },
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "1",
+                "cita": "(Salmos 110:1-1)",
+                "parteText": "Y la Palabra es el Principio con Dios;",
+                "ibroCita": "19",
+                "capituloCita": "110",
+                "versiculoCitaInicial": "1",
+                "versiculoCitaFinal": "1",
+                "posicion": 107
+            },
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "1",
+                "cita": "(Juan 3:34-34)",
+                "parteText": "Y la Palabra   que es el Principio     es Dios.",
+                "ibroCita": "43",
+                "capituloCita": "3",
+                "versiculoCitaInicial": "34",
+                "versiculoCitaFinal": "34",
+                "posicion": 165
+            },
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "1",
+                "cita": "(Salmos 45:6-6)",
+                "parteText": "",
+                "ibroCita": "19",
+                "capituloCita": "45",
+                "versiculoCitaInicial": "6",
+                "versiculoCitaFinal": "6",
+                "posicion": 165,
+                "parteFinal": ""
+            }
+        ]
+    },
+    {
+        "versiculo": "2",
+        "comprimido": [
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "2",
+                "cita": "(Juan 1:18-18)",
+                "parteText": "La Palabra         es el Principio con Yo Soy Su Dios y Padre.",
+                "ibroCita": "43",
+                "capituloCita": "1",
+                "versiculoCitaInicial": "18",
+                "versiculoCitaFinal": "18",
+                "posicion": 62,
+                "parteFinal": ""
+            }
+        ]
+    },
+    {
+        "versiculo": "3",
+        "comprimido": [
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "3",
+                "cita": "(Salmos 33:6)",
+                "parteText": "El Hijo es el Creador de todas las cosas,",
+                "ibroCita": "19",
+                "capituloCita": "33",
+                "versiculoCitaInicial": "6",
+                "versiculoCitaFinal": "6",
+                "posicion": 41
+            },
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "3",
+                "cita": "(Hebreos 1:6-6)",
+                "parteText": "y sin \u00c9l nada de lo que ha sido creado,  fue hecho.",
+                "ibroCita": "58",
+                "capituloCita": "1",
+                "versiculoCitaInicial": "6",
+                "versiculoCitaFinal": "6",
+                "posicion": 95
+            },
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "3",
+                "cita": "(En el Principio 1:26-26)",
+                "parteText": "",
+                "ibroCita": "1",
+                "capituloCita": "1",
+                "versiculoCitaInicial": "26",
+                "versiculoCitaFinal": "26",
+                "posicion": 95,
+                "parteFinal": ""
+            }
+        ]
+    },
+    {
+        "versiculo": "4",
+        "comprimido": [
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "4",
+                "cita": "(En el Principio 1:3-5)",
+                "parteText": "En \u00c9l est\u00e1 la Vida,  y la Vida es la Luz para toda la humanidad.",
+                "ibroCita": "1",
+                "capituloCita": "1",
+                "versiculoCitaInicial": "3",
+                "versiculoCitaFinal": "5",
+                "posicion": 66
+            },
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "4",
+                "cita": "(En el Principio\u00a02:9-9)",
+                "parteText": "",
+                "ibroCita": "1",
+                "capituloCita": "2",
+                "versiculoCitaInicial": "9",
+                "versiculoCitaFinal": "9",
+                "posicion": 66
+            },
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "4",
+                "cita": "(En el Principio\u00a03:24-24)",
+                "parteText": "",
+                "ibroCita": "1",
+                "capituloCita": "3",
+                "versiculoCitaInicial": "24",
+                "versiculoCitaFinal": "24",
+                "posicion": 66,
+                "parteFinal": ""
+            }
+        ]
+    },
+    {
+        "versiculo": "5",
+        "comprimido": [
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "5",
+                "cita": "(Colosenses 2:15-15)",
+                "parteText": "La Luz en las tinieblas resplandece,  y las tinieblas no tienen poder contra el Se\u00f1or.",
+                "ibroCita": "51",
+                "capituloCita": "2",
+                "versiculoCitaInicial": "15",
+                "versiculoCitaFinal": "15",
+                "posicion": 87
+            },
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "5",
+                "cita": "(Juan 14:30-30)",
+                "parteText": "",
+                "ibroCita": "43",
+                "capituloCita": "14",
+                "versiculoCitaInicial": "30",
+                "versiculoCitaFinal": "30",
+                "posicion": 87,
+                "parteFinal": ""
+            }
+        ]
+    },
+    {
+        "idTitulo": "2910",
+        "id_libro": "43",
+        "capitulo": "1",
+        "versiculo": "6",
+        "titulo": "El profeta Juan enviado como mensajero para anunciar al Mes\u00edas."
+    },
+    {
+        "versiculo": "6",
+        "comprimido": [
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "6",
+                "cita": "(Juan 1:33-33)",
+                "parteText": "Hubo un hombre enviado de Dios,",
+                "ibroCita": "43",
+                "capituloCita": "1",
+                "versiculoCitaInicial": "33",
+                "versiculoCitaFinal": "33",
+                "posicion": 31,
+                "parteFinal": "el cual se llamaba Juan."
+            }
+        ]
+    },
+    {
+        "id_libro": "43",
+        "capitulo": "1",
+        "versiculo": "7",
+        "texto": "Este vino por testimonio,  para que diese testimonio de la Luz,  a fin de que todos creyesen por \u00e9l."
+    },
+    {
+        "id_libro": "43",
+        "capitulo": "1",
+        "versiculo": "8",
+        "texto": "No era \u00e9l la Luz,  sino para que diese testimonio de la Luz."
+    },
+    {
+        "id_libro": "43",
+        "capitulo": "1",
+        "versiculo": "9",
+        "texto": "Aquel que es la Luz verdadera,  que alumbra a la humanidad,  ven\u00eda como Hijo de Hombre a la Tierra."
+    },
+    {
+        "versiculo": "10",
+        "comprimido": [
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "10",
+                "cita": "(2 Corintios 4:4-4)",
+                "parteText": "En la Tierra estaba,  y la Tierra por \u00c9l fue hecha; Pero el mundo no Lo conoci\u00f3.",
+                "ibroCita": "47",
+                "capituloCita": "4",
+                "versiculoCitaInicial": "4",
+                "versiculoCitaFinal": "4",
+                "posicion": 83,
+                "parteFinal": ""
+            }
+        ]
+    },
+    {
+        "versiculo": "11",
+        "comprimido": [
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "11",
+                "cita": "(1 Juan 5:19-19)",
+                "parteText": "A lo Suyo vino, y los Suyos estaban en el mundo",
+                "ibroCita": "62",
+                "capituloCita": "5",
+                "versiculoCitaInicial": "19",
+                "versiculoCitaFinal": "19",
+                "posicion": 47
+            },
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "11",
+                "cita": "(Romanos 3:23)",
+                "parteText": "",
+                "ibroCita": "45",
+                "capituloCita": "3",
+                "versiculoCitaInicial": "23",
+                "versiculoCitaFinal": "23",
+                "posicion": 47,
+                "parteFinal": "y no Lo recibieron."
+            }
+        ]
+    },
+    {
+        "idTitulo": "5",
+        "id_libro": "43",
+        "capitulo": "1",
+        "versiculo": "12",
+        "titulo": "A los que creen en Yo Soy el Salvador (YaHshua) el Mes\u00edas, les dio el poder de ser creados conforme al Modelo del Hijo de Dios."
+    },
+    {
+        "versiculo": "12",
+        "comprimido": [
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "12",
+                "cita": "(Juan 8:31)",
+                "parteText": "Mas a todos         los que Lo recibieron,  a los que creen",
+                "ibroCita": "43",
+                "capituloCita": "8",
+                "versiculoCitaInicial": "31",
+                "versiculoCitaFinal": "31",
+                "posicion": 59
+            },
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "12",
+                "cita": "(Juan 8:44)",
+                "parteText": "",
+                "ibroCita": "43",
+                "capituloCita": "8",
+                "versiculoCitaInicial": "44",
+                "versiculoCitaFinal": "44",
+                "posicion": 59
+            },
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "12",
+                "cita": "(\u00c9xodo 23:20-21)",
+                "parteText": "en Su Nombre,",
+                "ibroCita": "2",
+                "capituloCita": "23",
+                "versiculoCitaInicial": "20",
+                "versiculoCitaFinal": "21",
+                "posicion": 73
+            },
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "12",
+                "cita": "(\u00c9xodo 23:21-21)",
+                "parteText": "",
+                "ibroCita": "2",
+                "capituloCita": "23",
+                "versiculoCitaInicial": "21",
+                "versiculoCitaFinal": "21",
+                "posicion": 73
+            },
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "12",
+                "cita": "(Colosenses 2:12-12)",
+                "parteText": "les dio poder de ser creados",
+                "ibroCita": "51",
+                "capituloCita": "2",
+                "versiculoCitaInicial": "12",
+                "versiculoCitaFinal": "12",
+                "posicion": 133
+            },
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "12",
+                "cita": "(En el Principio\u00a01:26-26)",
+                "parteText": "",
+                "ibroCita": "1",
+                "capituloCita": "1",
+                "versiculoCitaInicial": "26",
+                "versiculoCitaFinal": "26",
+                "posicion": 133
+            },
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "12",
+                "cita": "(Filipenses 1:6-6)",
+                "parteText": "",
+                "ibroCita": "50",
+                "capituloCita": "1",
+                "versiculoCitaInicial": "6",
+                "versiculoCitaFinal": "6",
+                "posicion": 133
+            },
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "12",
+                "cita": "(Juan 20:22)",
+                "parteText": "de nuevo como hijos",
+                "ibroCita": "43",
+                "capituloCita": "20",
+                "versiculoCitaInicial": "22",
+                "versiculoCitaFinal": "22",
+                "posicion": 153,
+                "parteFinal": "de Yo Soy             el que Soy (YHWH)."
+            }
+        ]
+    },
+    {
+        "versiculo": "13",
+        "comprimido": [
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "13",
+                "cita": "(Salmos 68:4-4)",
+                "parteText": "Los cuales no son engendrados de sangre, resultado del deseo humano, ni de voluntad humana,  sino de Yo Soy (YH)",
+                "ibroCita": "19",
+                "capituloCita": "68",
+                "versiculoCitaInicial": "4",
+                "versiculoCitaFinal": "4",
+                "posicion": 112,
+                "parteFinal": "Su Palabra."
+            }
+        ]
+    },
+    {
+        "versiculo": "14",
+        "comprimido": [
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "14",
+                "cita": "(Salmos 40:7-7)",
+                "parteText": "Y Yo Soy (YH) Aquel que es el Principio, la Palabra, fue hecho Hijo de Hombre,  y vivi\u00f3 entre nosotros  (y vimos Su gloria,  gloria como Hijo Unig\u00e9nito del Padre), pleno de Amor y de toda Verdad.",
+                "ibroCita": "19",
+                "capituloCita": "40",
+                "versiculoCitaInicial": "7",
+                "versiculoCitaFinal": "7",
+                "posicion": 197,
+                "parteFinal": ""
+            }
+        ]
+    },
+    {
+        "id_libro": "43",
+        "capitulo": "1",
+        "versiculo": "15",
+        "texto": "Juan dio testimonio de \u00c9l,  y proclam\u00f3 diciendo: \u00c9ste es de quien yo dec\u00eda:  El que viene despu\u00e9s de m\u00ed,  es antes de m\u00ed; Porque era Primero que yo."
+    },
+    {
+        "id_libro": "43",
+        "capitulo": "1",
+        "versiculo": "16",
+        "texto": "Porque de Su plenitud nos aferramos todos,  y de Su Gracia Y Misericordia."
+    },
+    {
+        "versiculo": "17",
+        "comprimido": [
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "17",
+                "cita": "(Romanos 7:12-12)",
+                "parteText": "Pues la Ley por medio de Mois\u00e9s",
+                "ibroCita": "45",
+                "capituloCita": "7",
+                "versiculoCitaInicial": "12",
+                "versiculoCitaFinal": "12",
+                "posicion": 32
+            },
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "17",
+                "cita": "(G\u00e1latas 3:24-24)",
+                "parteText": "fue dada; Pero la Gracia y la manifestaci\u00f3n del Esp\u00edritu de la Verdad vinieron por medio de Yo Soy el Salvador (YaHshua) el Mes\u00edas.",
+                "ibroCita": "48",
+                "capituloCita": "3",
+                "versiculoCitaInicial": "24",
+                "versiculoCitaFinal": "24",
+                "posicion": 169,
+                "parteFinal": ""
+            }
+        ]
+    },
+    {
+        "versiculo": "18",
+        "comprimido": [
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "18",
+                "cita": "(1 Timoteo 6:16-16)",
+                "parteText": "A Yo Soy, el Dios, Padre y Gloria de nuestro Se\u00f1or y Salvador, nadie Lo ha visto jam\u00e1s;",
+                "ibroCita": "54",
+                "capituloCita": "6",
+                "versiculoCitaInicial": "16",
+                "versiculoCitaFinal": "16",
+                "posicion": 90
+            },
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "18",
+                "cita": "(1 Timoteo 2:5-5)",
+                "parteText": "",
+                "ibroCita": "54",
+                "capituloCita": "2",
+                "versiculoCitaInicial": "5",
+                "versiculoCitaFinal": "5",
+                "posicion": 90
+            },
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "18",
+                "cita": "(Isa\u00edas 6:5-5)",
+                "parteText": "",
+                "ibroCita": "23",
+                "capituloCita": "6",
+                "versiculoCitaInicial": "5",
+                "versiculoCitaFinal": "5",
+                "posicion": 90
+            },
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "18",
+                "cita": "(Lev\u00edtico 16:1-1)",
+                "parteText": "",
+                "ibroCita": "3",
+                "capituloCita": "16",
+                "versiculoCitaInicial": "1",
+                "versiculoCitaFinal": "1",
+                "posicion": 90
+            },
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "18",
+                "cita": "(N\u00fameros 18:1-7)",
+                "parteText": "",
+                "ibroCita": "4",
+                "capituloCita": "18",
+                "versiculoCitaInicial": "1",
+                "versiculoCitaFinal": "7",
+                "posicion": 90
+            },
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "18",
+                "cita": "(N\u00fameros 4:17-20)",
+                "parteText": "",
+                "ibroCita": "4",
+                "capituloCita": "4",
+                "versiculoCitaInicial": "17",
+                "versiculoCitaFinal": "20",
+                "posicion": 90
+            },
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "18",
+                "cita": "(En el Principio 16:14)",
+                "parteText": "El Unig\u00e9nito Hijo,  que est\u00e1 en Su intimidad recostado sobre el pecho de Su Padre, \u00c9l nos Lo ha dado a conocer.",
+                "ibroCita": "1",
+                "capituloCita": "16",
+                "versiculoCitaInicial": "14",
+                "versiculoCitaFinal": "14",
+                "posicion": 239,
+                "parteFinal": ""
+            }
+        ]
+    },
+    {
+        "id_libro": "43",
+        "capitulo": "1",
+        "versiculo": "19",
+        "texto": "Este es el testimonio de Juan,  cuando los pastores y dirigentes jud\u00edos enviaron de YaHrushalem (Jerusal\u00e9n) sacerdotes y levitas para que le preguntaran:  \u00bfT\u00fa,  qui\u00e9n eres?"
+    },
+    {
+        "id_libro": "43",
+        "capitulo": "1",
+        "versiculo": "20",
+        "texto": "Confes\u00f3,  y no neg\u00f3,  sino confes\u00f3:  Yo no soy el Mes\u00edas."
+    },
+    {
+        "versiculo": "21",
+        "comprimido": [
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "21",
+                "cita": "(Zacar\u00edas 4:14)",
+                "parteText": "Y le preguntaron:  \u00bfQu\u00e9 pues?  \u00bfEres t\u00fa El\u00edas?",
+                "ibroCita": "38",
+                "capituloCita": "4",
+                "versiculoCitaInicial": "14",
+                "versiculoCitaFinal": "14",
+                "posicion": 51
+            },
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "21",
+                "cita": "(Deuteronomio 18:15)",
+                "parteText": "Dijo:  No soy.  \u00bfEres t\u00fa el Profeta?",
+                "ibroCita": "5",
+                "capituloCita": "18",
+                "versiculoCitaInicial": "15",
+                "versiculoCitaFinal": "15",
+                "posicion": 91,
+                "parteFinal": "Y respondi\u00f3:  No."
+            }
+        ]
+    },
+    {
+        "id_libro": "43",
+        "capitulo": "1",
+        "versiculo": "22",
+        "texto": "Le dijeron:  \u00bfPues qui\u00e9n eres?  para que le demos respuesta a los que nos enviaron.  \u00bfQu\u00e9 dices de ti mismo?"
+    },
+    {
+        "versiculo": "23",
+        "comprimido": [
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "23",
+                "cita": "(Isa\u00edas 40:3-3)",
+                "parteText": "Dijo: Soy la \"Voz del que grita en el desierto: Prepare el Camino de Yo Soy Dios de Israel\"; Enderecen sus maneras de vivir tanto en su forma de pensar y de proceder, para que no encuentren estorbos\".",
+                "ibroCita": "23",
+                "capituloCita": "40",
+                "versiculoCitaInicial": "3",
+                "versiculoCitaFinal": "3",
+                "posicion": 200,
+                "parteFinal": ""
+            }
+        ]
+    },
+    {
+        "id_libro": "43",
+        "capitulo": "1",
+        "versiculo": "24",
+        "texto": "Y los que hab\u00edan sido enviados eran de la congregaci\u00f3n de interpretaci\u00f3n de la Biblia, llamados los fariseos (Los escogidos)."
+    },
+    {
+        "id_libro": "43",
+        "capitulo": "1",
+        "versiculo": "25",
+        "texto": "Y le preguntaron,  y le dijeron:  \u00bfPor qu\u00e9,  pues,  bautizas,  si t\u00fa no eres el Mes\u00edas, ni El\u00edas,  ni el Profeta?"
+    },
+    {
+        "id_libro": "43",
+        "capitulo": "1",
+        "versiculo": "26",
+        "texto": "Juan les respondi\u00f3 diciendo:  Yo los purifico con agua; Mas en medio de ustedes est\u00e1 Uno, a quien ustedes no conocen."
+    },
+    {
+        "id_libro": "43",
+        "capitulo": "1",
+        "versiculo": "27",
+        "texto": "Este es el que viene despu\u00e9s de m\u00ed,  el Eterno, el que es antes de m\u00ed,  del cual yo no soy digno de desatar la correa de Su calzado."
+    },
+    {
+        "id_libro": "43",
+        "capitulo": "1",
+        "versiculo": "28",
+        "texto": "Estas cosas sucedieron en Bet\u00e1bara,  al otro lado del Jord\u00e1n,  donde Juan estaba bautizando."
+    },
+    {
+        "idTitulo": "313",
+        "id_libro": "43",
+        "capitulo": "1",
+        "versiculo": "29",
+        "titulo": "El que bautiza con Agua, presenta al Cordero que Dios se ha provisto y es el que bautiza con el Esp\u00edritu Santo."
+    },
+    {
+        "id_libro": "43",
+        "capitulo": "1",
+        "versiculo": "29",
+        "texto": "Al siguiente d\u00eda vio Juan a Yo Soy el Salvador (YaHshua) que ven\u00eda a \u00e9l,  y dijo: Aqu\u00ed est\u00e1 el Cordero de Dios,  que quita el pecado del mundo."
+    },
+    {
+        "id_libro": "43",
+        "capitulo": "1",
+        "versiculo": "30",
+        "texto": "Este es de quien yo les dec\u00eda:  Despu\u00e9s de m\u00ed viene un Hombre,  el cual es m\u00ed Se\u00f1or, pues \u00c9l es el Eterno, porque existe desde el Principio antes que yo."
+    },
+    {
+        "versiculo": "31",
+        "comprimido": [
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "31",
+                "cita": "(Juan 6:45-45)",
+                "parteText": "Y yo no Lo conoc\u00eda; Mas para que fuese dado a conocer a Israel,  por \u00c9L vine yo para anunciarlo y bautizando con Agua.",
+                "ibroCita": "43",
+                "capituloCita": "6",
+                "versiculoCitaInicial": "45",
+                "versiculoCitaFinal": "45",
+                "posicion": 120,
+                "parteFinal": ""
+            }
+        ]
+    },
+    {
+        "id_libro": "43",
+        "capitulo": "1",
+        "versiculo": "32",
+        "texto": "Tambi\u00e9n dio Juan testimonio,  diciendo:  Vi al Esp\u00edritu que descend\u00eda del cielo en forma de paloma,  y Se pos\u00f3 sobre \u00c9l."
+    },
+    {
+        "versiculo": "33",
+        "comprimido": [
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "33",
+                "cita": "(Mateo 3:11-11)",
+                "parteText": "Y yo no sab\u00eda qui\u00e9n El era; Pero El que Me envi\u00f3 a purificar con Agua,",
+                "ibroCita": "40",
+                "capituloCita": "3",
+                "versiculoCitaInicial": "11",
+                "versiculoCitaFinal": "11",
+                "posicion": 73
+            },
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "33",
+                "cita": "(Juan 7:39-39)",
+                "parteText": "Aqu\u00e9l me dijo:  Sobre quien veas descender el Esp\u00edritu",
+                "ibroCita": "43",
+                "capituloCita": "7",
+                "versiculoCitaInicial": "39",
+                "versiculoCitaFinal": "39",
+                "posicion": 134,
+                "parteFinal": "y que permanece sobre \u00c9l, Ese es el que bautiza con el Esp\u00edritu de Dios."
+            }
+        ]
+    },
+    {
+        "id_libro": "43",
+        "capitulo": "1",
+        "versiculo": "34",
+        "texto": "Y yo Lo vi,  y he dado testimonio de que \u00c9ste es Yo Soy el Salvador (YaHshua), el Hijo de Dios el Libertador prometido a Su pueblo Israel."
+    },
+    {
+        "idTitulo": "312",
+        "id_libro": "43",
+        "capitulo": "1",
+        "versiculo": "35",
+        "titulo": "El Sumo Sacerdote el Mes\u00edas, escoge de Su pueblo Israel, a Sus ministros en el Altar del Nuevo Pacto."
+    },
+    {
+        "id_libro": "43",
+        "capitulo": "1",
+        "versiculo": "35",
+        "texto": "Al siguiente d\u00eda otra vez estaba Juan, con sus disc\u00edpulos."
+    },
+    {
+        "id_libro": "43",
+        "capitulo": "1",
+        "versiculo": "36",
+        "texto": "Y mirando a Yo Soy (YH) el Mes\u00edas, que andaba por all\u00ed,  dijo: Aqu\u00ed est\u00e1 el Cordero de Dios."
+    },
+    {
+        "versiculo": "37",
+        "comprimido": [
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "37",
+                "cita": "(Juan 12:19)",
+                "parteText": "Y dos de sus disc\u00edpulos que lo oyeron decir esto, siguieron a Yo Soy el Salvador. (YaHshua)",
+                "ibroCita": "43",
+                "capituloCita": "12",
+                "versiculoCitaInicial": "19",
+                "versiculoCitaFinal": "19",
+                "posicion": 92,
+                "parteFinal": ""
+            }
+        ]
+    },
+    {
+        "id_libro": "43",
+        "capitulo": "1",
+        "versiculo": "38",
+        "texto": "Y volvi\u00e9ndose Yo Soy,  y viendo que Lo segu\u00edan,  les dijo: \u00bfQu\u00e9 buscan? Ellos le dijeron:  Rab\u00ed  (que traducido es,  Maestro),  \u00bfd\u00f3nde habitas?"
+    },
+    {
+        "id_libro": "43",
+        "capitulo": "1",
+        "versiculo": "39",
+        "texto": "Les dijo: Vengan y vean. Fueron,  y vieron donde viv\u00eda,  y se quedaron con \u00c9l aquel d\u00eda; Porque era como la hora d\u00e9cima diurna o las cuatro de la tarde."
+    },
+    {
+        "id_libro": "43",
+        "capitulo": "1",
+        "versiculo": "40",
+        "texto": "Andr\u00e9s,  hermano de Sim\u00f3n Pedro,  era uno de los dos que hab\u00edan o\u00eddo a Juan,  y hab\u00edan seguido a Yo Soy el Salvador (YaHshua)."
+    },
+    {
+        "id_libro": "43",
+        "capitulo": "1",
+        "versiculo": "41",
+        "texto": "Este hall\u00f3 primero a su hermano Sim\u00f3n,  y le dijo:  Hemos hallado al Mes\u00edas."
+    },
+    {
+        "id_libro": "43",
+        "capitulo": "1",
+        "versiculo": "42",
+        "texto": "Y lo trajo al Se\u00f1or y mir\u00e1ndolo le dijo: T\u00fa eres Sim\u00f3n,  hijo de Jon\u00e1s;  t\u00fa ser\u00e1s llamado Cefas  (que traducido quiere decir,  Pedro o Piedra)."
+    },
+    {
+        "idTitulo": "314",
+        "id_libro": "43",
+        "capitulo": "1",
+        "versiculo": "43",
+        "titulo": "El Se\u00f1or te dice: S\u00edgueme."
+    },
+    {
+        "versiculo": "43",
+        "comprimido": [
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "43",
+                "cita": "(Juan 12:19)",
+                "parteText": "El siguiente d\u00eda quiso Yo Soy el Salvador (YaHshua) ir a Galilea,  y hall\u00f3 a Felipe,  y le dijo: S\u00edgueme.",
+                "ibroCita": "43",
+                "capituloCita": "12",
+                "versiculoCitaInicial": "19",
+                "versiculoCitaFinal": "19",
+                "posicion": 108
+            },
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "43",
+                "cita": "(Mateo 11:29-29)",
+                "parteText": "",
+                "ibroCita": "40",
+                "capituloCita": "11",
+                "versiculoCitaInicial": "29",
+                "versiculoCitaFinal": "29",
+                "posicion": 108,
+                "parteFinal": ""
+            }
+        ]
+    },
+    {
+        "id_libro": "43",
+        "capitulo": "1",
+        "versiculo": "44",
+        "texto": "Y Felipe era de Betsaida,  la ciudad de Andr\u00e9s y Pedro."
+    },
+    {
+        "id_libro": "43",
+        "capitulo": "1",
+        "versiculo": "45",
+        "texto": "Felipe hall\u00f3 a Natanael,  y le dijo:  Hemos hallado a Aquel de quien escribi\u00f3 Mois\u00e9s en la Ley,  as\u00ed como los Profetas: A Yo Soy el Mes\u00edas,  el hijo de Jos\u00e9,  de Nazaret."
+    },
+    {
+        "versiculo": "46",
+        "comprimido": [
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "46",
+                "cita": "(Hebreos 8:11-11)",
+                "parteText": "Natanael le dijo:  \u00bfDe Nazaret puede salir algo de bueno?  Le dijo Felipe:  Ven para que Lo conozcas.",
+                "ibroCita": "58",
+                "capituloCita": "8",
+                "versiculoCitaInicial": "11",
+                "versiculoCitaFinal": "11",
+                "posicion": 102,
+                "parteFinal": ""
+            }
+        ]
+    },
+    {
+        "versiculo": "47",
+        "comprimido": [
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "47",
+                "cita": "(Mateo 10:3-3)",
+                "parteText": "Cuando Yo                         Soy el       Salvador (YaHshua) vio a Natanael (Bartolom\u00e9)",
+                "ibroCita": "40",
+                "capituloCita": "10",
+                "versiculoCitaInicial": "3",
+                "versiculoCitaFinal": "3",
+                "posicion": 94
+            },
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "47",
+                "cita": "(Apocalipsis 2:9-9)",
+                "parteText": "que se Le acercaba,  dijo de \u00e9l: Aqu\u00ed est\u00e1 un verdadero israelita,  en quien no hay enga\u00f1o.",
+                "ibroCita": "66",
+                "capituloCita": "2",
+                "versiculoCitaInicial": "9",
+                "versiculoCitaFinal": "9",
+                "posicion": 190
+            },
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "47",
+                "cita": "(Apocalipsis 3:9-9)",
+                "parteText": "",
+                "ibroCita": "66",
+                "capituloCita": "3",
+                "versiculoCitaInicial": "9",
+                "versiculoCitaFinal": "9",
+                "posicion": 190
+            },
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "47",
+                "cita": "(Sofon\u00edas 3:13-13)",
+                "parteText": "",
+                "ibroCita": "36",
+                "capituloCita": "3",
+                "versiculoCitaInicial": "13",
+                "versiculoCitaFinal": "13",
+                "posicion": 190,
+                "parteFinal": ""
+            }
+        ]
+    },
+    {
+        "versiculo": "48",
+        "comprimido": [
+            {
+                "id_libro": "43",
+                "capitulo": "1",
+                "versiculo": "48",
+                "cita": "(En el Principio\u00a016:13-14)",
+                "parteText": "Le dijo Natanael: \u00bfDe d\u00f3nde me conoces? Respondi\u00f3 Yo Soy el Salvador (YaHshua) y le dijo: Antes que Felipe te llamara, cuando estabas debajo de la higuera, te vi.",
+                "ibroCita": "1",
+                "capituloCita": "16",
+                "versiculoCitaInicial": "13",
+                "versiculoCitaFinal": "14",
+                "posicion": 166,
+                "parteFinal": ""
+            }
+        ]
+    },
+    {
+        "id_libro": "43",
+        "capitulo": "1",
+        "versiculo": "49",
+        "texto": "Respondi\u00f3 Natanael y le dijo:  Rab\u00ed, Usted es el Hijo de Dios; Usted es el Rey de Israel."
+    },
+    {
+        "id_libro": "43",
+        "capitulo": "1",
+        "versiculo": "50",
+        "texto": "Respondi\u00f3 Yo Soy el Salvador (YaHshua) y le dijo: \u00bfPorque te dije:  Te vi debajo de la higuera,  crees?  Cosas mayores que estas ver\u00e1s."
+    },
+    {
+        "id_libro": "43",
+        "capitulo": "1",
+        "versiculo": "51",
+        "texto": "Y le dijo: De cierto,  de cierto les digo:  De aqu\u00ed adelante ver\u00e1n el cielo abierto,  y a los \u00e1ngeles de Dios que suben y descienden sobre el Hijo del Hombre."
+    }
+]

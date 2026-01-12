@@ -1,0 +1,6 @@
+[
+    {"dia":"1","statusDia":false,"detalles":[{"libro":"5","capitulo":"9","versiculo":"10","status":false},{"libro":"6","capitulo":"1","versiculo":"7","versiculoFinal":"9","status":false},{"libro":"55","capitulo":"3","versiculo":"15","versiculoFinal":"16","status":false},{"libro":"54","capitulo":"4","versiculo":"7","status":false}]},
+    {"dia":"2","statusDia":false,"detalles":[{"libro":"52","capitulo":"5","versiculo":"17","status":false},{"libro":"42","capitulo":"23","versiculo":"28","status":false}]},
+    {"dia":"3","statusDia":false,"detalles":[{"libro":"23","capitulo":"58","status":false}]},
+    {"dia":"4","statusDia":false,"detalles":[{"libro":"46","capitulo":"14","versiculo":"12","versiculoFinal":"16","status":false}]}
+]
