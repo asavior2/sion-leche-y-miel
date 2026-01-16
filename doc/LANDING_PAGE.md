@@ -95,6 +95,13 @@ Para evitar errores manuales, se ha creado un script de bash que automatiza todo
     ```bash
     firebase deploy
     ```
+4.  **Despliegue en Cloudflare:**
+    wrangler pages deploy . --project-name=slm-web-landing-app
+    el . es dentro del directorio deploy_public
+
+## Sincronizacion del R2 Clouflare
+aws s3 sync . s3://slm-audios/file/audios --endpoint-url https://5277a6e7306d47f540ba4f1f826a4ea6.r2.cloudflarestorage.com --profile r2
+El . es dentro del directorio donde estan todos los libros y capitulos
 
 ## 5. Solución de Problemas Comunes
 
