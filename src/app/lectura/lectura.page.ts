@@ -447,8 +447,9 @@ export class LecturaPage implements OnInit {
     } else {
       // Logic to resolve path
       // Default to remote URL so it works if local fails
-      let audioSrc = "https://media.sionlecheymiel.com/file/audios/" + this.libro + "/" + this.capitulo + ".mp3";
-      //let audioSrc = "http://media.sionlecheymiel.com:8000/file/audios/" + this.libro + "/" + this.capitulo + ".mp3";
+      // V2 Migration: Using audios_v2 folder
+      let audioSrc = "https://media.sionlecheymiel.com/audios_v2/" + this.libro + "/" + this.capitulo + ".mp3";
+      //let audioSrc = "http://media.sionlecheymiel.com:8001/file/audios/" + this.libro + "/" + this.capitulo + ".mp3";
 
       if (this.platform.is("android")) {
         this.pathDiviceIosAndroid = "/files/Documents/";

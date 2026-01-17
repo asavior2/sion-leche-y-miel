@@ -76,8 +76,21 @@
             font-weight: 600;
 
             &.syncing {
-                background: rgba(0, 0, 0, 0.05);
-                color: #666;
+                background: rgba(var(--ion-color-secondary-rgb), 0.1);
+                color: var(--ion-color-secondary);
+                border: 1px solid var(--ion-color-secondary);
+            }
+
+            &.offline {
+                background: rgba(var(--ion-color-medium-rgb), 0.1);
+                color: var(--ion-color-medium);
+                border: 1px solid var(--ion-color-medium);
+            }
+
+            &.guest {
+                background: rgba(var(--ion-color-tertiary-rgb), 0.1);
+                color: var(--ion-color-dark);
+                border: 1px dashed var(--ion-color-tertiary);
             }
         }
     }

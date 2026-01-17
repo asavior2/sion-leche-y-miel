@@ -17,9 +17,32 @@
 
     <p class="user-email" *ngIf="user$ | async as user">{{ user.email }}</p>
 
-    <div class="status-chip" [class.syncing]="(isSyncing$ | async)">
-      <span *ngIf="!(isSyncing$ | async)">● Sincronizado</span>
-      <span *ngIf="(isSyncing$ | async)">Sincronizando...</span>
+    <div class="status-chip" [class.syncing]="(isSyncing$ | async)" [class.offline]="!isOnline"
+      [class.guest]="!(user$ | async)">
+      <!-- GUEST MODE (User is null) -->
+      <ng-container *ngIf="!(user$ | async)">
+        <span><ion-icon name="cloud-offline-outline"></ion-icon> Local (Invitado)</span>
+      </ng-container>
+
+      <!-- LOGGED IN (User exists) -->
+      <ng-container *ngIf="(user$ | async)">
+        <!-- Case 1: Syncing -->
+        <span *ngIf="(isSyncing$ | async)">
+          <ion-icon name="sync" class="spin"></ion-icon> Sincronizando...
+        </span>
+
+        <!-- Case 2: Not Syncing -->
+        <ng-container *ngIf="!(isSyncing$ | async)">
+          <!-- Case 2A: Online -> Synced -->
+          <span *ngIf="isOnline">
+            <ion-icon name="cloud-done-outline"></ion-icon> Sincronizado
+          </span>
+          <!-- Case 2B: Offline -->
+          <span *ngIf="!isOnline">
+            <ion-icon name="wifi-outline"></ion-icon> Sin Conexión
+          </span>
+        </ng-container>
+      </ng-container>
     </div>
   </div>
 
@@ -89,70 +112,27 @@
     <h3 class="section-title">Audio Biblia (Descarga)</h3>
     <ion-list lines="none" class="custom-list">
 
-      <!-- Alta -->
-      <ion-item button [disabled]="activeDownloadQuality && activeDownloadQuality !== 'alta'"
-        (click)="initiateDownload('alta')">
+      <!-- Audio Download V2 -->
+      <ion-item button [disabled]="activeDownloadQuality" (click)="initiateDownload()">
         <div class="icon-slot audio-icon"><ion-icon name="musical-notes"></ion-icon></div>
         <ion-label>
-          <h3>Alta Calidad</h3>
-          <p>1.1 GB <span *ngIf="activeDownloadQuality === 'alta' && downloadProgress > 0">- Descomprimiendo {{
-              downloadProgress }}%</span><span *ngIf="activeDownloadQuality === 'alta' && downloadProgress === 0">-
-              Descargando...</span></p>
-          <ion-progress-bar *ngIf="activeDownloadQuality === 'alta' && downloadProgress > 0"
-            [value]="downloadProgress / 100" color="warning" class="mt-2"></ion-progress-bar>
-          <ion-progress-bar *ngIf="activeDownloadQuality === 'alta' && downloadProgress === 0" type="indeterminate"
-            color="warning" class="mt-2"></ion-progress-bar>
+          <h3>Audio Biblia Completa</h3>
+          <p>
+            <span *ngIf="!activeDownloadQuality && !downloadedQuality">Descargar para escuchar sin conexión (~1
+              GB)</span>
+            <span *ngIf="activeDownloadQuality && downloadProgress < 100">Descargando e instalando... {{
+              downloadProgress }}%</span>
+            <span *ngIf="downloadedQuality">¡Instalado y listo para escuchar!</span>
+          </p>
+          <ion-progress-bar *ngIf="activeDownloadQuality" [value]="downloadProgress / 100" color="primary"
+            class="mt-2"></ion-progress-bar>
         </ion-label>
-        <ion-icon slot="end" name="cloud-download-outline"
-          *ngIf="downloadedQuality !== 'alta' && activeDownloadQuality !== 'alta'"></ion-icon>
-        <ion-icon slot="end" name="checkmark-circle" color="success"
-          *ngIf="downloadedQuality === 'alta' && activeDownloadQuality !== 'alta'"></ion-icon>
-        <ion-spinner slot="end" *ngIf="activeDownloadQuality === 'alta' && downloadProgress === 0"
-          color="warning"></ion-spinner>
-      </ion-item>
 
-      <!-- Media -->
-      <ion-item button [disabled]="activeDownloadQuality && activeDownloadQuality !== 'media'"
-        (click)="initiateDownload('media')">
-        <div class="icon-slot audio-icon"><ion-icon name="musical-notes"></ion-icon></div>
-        <ion-label>
-          <h3>Media Calidad</h3>
-          <p>824 MB <span *ngIf="activeDownloadQuality === 'media' && downloadProgress > 0">- Descomprimiendo {{
-              downloadProgress }}%</span><span *ngIf="activeDownloadQuality === 'media' && downloadProgress === 0">-
-              Descargando...</span></p>
-          <ion-progress-bar *ngIf="activeDownloadQuality === 'media' && downloadProgress > 0"
-            [value]="downloadProgress / 100" color="warning" class="mt-2"></ion-progress-bar>
-          <ion-progress-bar *ngIf="activeDownloadQuality === 'media' && downloadProgress === 0" type="indeterminate"
-            color="warning" class="mt-2"></ion-progress-bar>
-        </ion-label>
         <ion-icon slot="end" name="cloud-download-outline"
-          *ngIf="downloadedQuality !== 'media' && activeDownloadQuality !== 'media'"></ion-icon>
+          *ngIf="!downloadedQuality && !activeDownloadQuality"></ion-icon>
         <ion-icon slot="end" name="checkmark-circle" color="success"
-          *ngIf="downloadedQuality === 'media' && activeDownloadQuality !== 'media'"></ion-icon>
-        <ion-spinner slot="end" *ngIf="activeDownloadQuality === 'media' && downloadProgress === 0"
-          color="warning"></ion-spinner>
-      </ion-item>
-
-      <!-- Baja -->
-      <ion-item button [disabled]="activeDownloadQuality && activeDownloadQuality !== 'baja'"
-        (click)="initiateDownload('baja')">
-        <div class="icon-slot audio-icon"><ion-icon name="musical-notes"></ion-icon></div>
-        <ion-label>
-          <h3>Baja Calidad</h3>
-          <p>550 MB <span *ngIf="activeDownloadQuality === 'baja' && downloadProgress > 0">- Descomprimiendo {{
-              downloadProgress }}%</span><span *ngIf="activeDownloadQuality === 'baja' && downloadProgress === 0">-
-              Descargando...</span></p>
-          <ion-progress-bar *ngIf="activeDownloadQuality === 'baja' && downloadProgress > 0"
-            [value]="downloadProgress / 100" color="warning" class="mt-2"></ion-progress-bar>
-          <ion-progress-bar *ngIf="activeDownloadQuality === 'baja' && downloadProgress === 0" type="indeterminate"
-            color="warning" class="mt-2"></ion-progress-bar>
-        </ion-label>
-        <ion-icon slot="end" name="cloud-download-outline"
-          *ngIf="downloadedQuality !== 'baja' && activeDownloadQuality !== 'baja'"></ion-icon>
-        <ion-icon slot="end" name="checkmark-circle" color="success"
-          *ngIf="downloadedQuality === 'baja' && activeDownloadQuality !== 'baja'"></ion-icon>
-        <ion-spinner slot="end" *ngIf="activeDownloadQuality === 'baja' && downloadProgress === 0"
-          color="warning"></ion-spinner>
+          *ngIf="downloadedQuality && !activeDownloadQuality"></ion-icon>
+        <ion-spinner slot="end" *ngIf="activeDownloadQuality" color="primary"></ion-spinner>
       </ion-item>
     </ion-list>
   </div>

@@ -77,6 +77,19 @@ export class ProfilePage implements OnInit {
     }
     this.checkAudioStatus();
     this.loadStats();
+
+    // Check initial connection
+    this.isOnline = navigator.onLine;
+    window.addEventListener('online', () => this.updateOnlineStatus());
+    window.addEventListener('offline', () => this.updateOnlineStatus());
+  }
+
+  isOnline = true;
+
+  updateOnlineStatus() {
+    this.ngZone.run(() => {
+      this.isOnline = navigator.onLine;
+    });
   }
 
   ionViewWillEnter() {
@@ -187,27 +200,44 @@ export class ProfilePage implements OnInit {
 
   // --- AUDIO DOWNLOAD LOGIC ---
 
+
+  // Versioning
+  readonly AUDIO_VERSION = 2;
+  readonly VERSION_FILE = 'audio_version_v2.txt';
+
   async checkAudioStatus() {
     try {
       const dirPath = this.file.applicationStorageDirectory + this.pathDiviceIosAndroid;
-      await this.file.checkDir(dirPath, 'por-Capitulos');
 
-      try {
-        const quality = await this.file.readAsText(dirPath + 'por-Capitulos/', 'calidad.txt');
-        if (quality && (['alta', 'media', 'baja'].includes(quality.trim()))) {
-          this.downloadedQuality = quality.trim() as any;
-          this.audioAvailable = true;
-          return;
-        }
-      } catch (err) {
-        console.warn('calidad.txt missing, falling back to basic check');
+      // 1. Check if Audio Directory exists
+      const dirExists = await this.file.checkDir(dirPath, 'por-Capitulos').then(() => true).catch(() => false);
+
+      if (!dirExists) {
+        this.audioAvailable = false;
+        this.downloadedQuality = null;
+        return;
       }
 
+      // 2. Check Version Flag (Cache Busting)
+      // If directory exists but version file is missing, it's Legacy V1 -> DELETE IT
+      const versionExists = await this.file.checkFile(dirPath + 'por-Capitulos/', this.VERSION_FILE).then(() => true).catch(() => false);
+
+      if (!versionExists) {
+        console.warn('Legacy Audio (V1) detected. Cleaning up to force V2 update...');
+        await this.file.removeRecursively(dirPath, 'por-Capitulos');
+        this.audioAvailable = false;
+        this.downloadedQuality = null;
+        this.presentToast('Nueva versión de audio disponible. Por favor descárgala nuevamente.', 'warning');
+        return;
+      }
+
+      // 3. Verify Content (Simple check)
       try {
         await this.file.checkFile(dirPath + 'por-Capitulos/1/', '1.mp3');
         this.audioAvailable = true;
+        this.downloadedQuality = 'alta'; // V2 is considered 'alta' (single quality)
       } catch (innerErr) {
-        console.warn('Audio directory exists but Genesis 1 is missing.', innerErr);
+        console.warn('Audio directory exists but content is broken.');
         this.audioAvailable = false;
         this.downloadedQuality = null;
       }
@@ -218,26 +248,16 @@ export class ProfilePage implements OnInit {
     }
   }
 
-  async initiateDownload(calidad: 'alta' | 'media' | 'baja') {
+  async initiateDownload() {
     if (this.activeDownloadQuality) return;
 
-    let url = '';
-    let nombre = ''; // Fixed variable declaration
+    // New V2 URL (Proposed)
+    const url = 'https://media.sionlecheymiel.com/descargas/biblia_audio_v2.zip';
+    const nombre = "biblia_audio_v2.zip";
 
-    if (calidad === 'alta') {
-      url = 'https://sionlecheymiel.com/file/audio-SLM-calidad-alta.zip';
-      nombre = "audio-SLM-calidad-alta.zip";
-    } else if (calidad === 'media') {
-      url = 'https://sionlecheymiel.com/file/audio-SLM-calidad-media.zip';
-      nombre = "audio-SLM-calidad-media.zip";
-    } else {
-      url = 'https://sionlecheymiel.com/file/audio-SLM-calidad-baja.zip';
-      nombre = "audio-SLM-calidad-baja.zip";
-    }
-
-    this.activeDownloadQuality = calidad;
+    this.activeDownloadQuality = 'alta'; // Single quality mapping
     this.downloadProgress = 0;
-    this.presentToast('Iniciando descarga en segundo plano...', 'primary');
+    this.presentToast('Iniciando descarga de la nueva versión de audio...', 'primary');
 
     await this.download(url, nombre);
   }
@@ -284,8 +304,8 @@ export class ProfilePage implements OnInit {
       if (downloadInterval) clearInterval(downloadInterval);
       this.ngZone.run(() => this.downloadProgress = 100);
 
+      // Cleanup destination before unzip (just in case)
       try {
-        await this.file.checkDir(this.file.applicationStorageDirectory + this.pathDiviceIosAndroid, 'por-Capitulos');
         await this.file.removeRecursively(this.file.applicationStorageDirectory + this.pathDiviceIosAndroid, 'por-Capitulos');
       } catch (e) { }
 
@@ -295,7 +315,7 @@ export class ProfilePage implements OnInit {
       if (downloadInterval) clearInterval(downloadInterval);
       console.error('Download error', err);
       this.resetDownloadState();
-      this.alertErrorDownloadAudio("Ocurrió un problema", err.status + " " + err.error);
+      this.alertErrorDownloadAudio("Ocurrió un problema", err.status + " " + (err.error || ''));
     }
   }
 
@@ -319,22 +339,18 @@ export class ProfilePage implements OnInit {
 
       if (result === 0 || (typeof result === 'object' && result !== null)) {
         this.ngZone.run(() => {
-          this.presentToast('Biblia en Audio instalada correctamente.', 'success');
+          this.presentToast('Audio Biblia (v2) instalada correctamente.', 'success');
           this.audioAvailable = true;
-          if (nombre.includes('alta')) this.downloadedQuality = 'alta';
-          else if (nombre.includes('media')) this.downloadedQuality = 'media';
-          else if (nombre.includes('baja')) this.downloadedQuality = 'baja';
-
+          this.downloadedQuality = 'alta';
           this.resetDownloadState();
         });
 
+        // Write Version Flag
         try {
-          let q = 'media';
-          if (nombre.includes('alta')) q = 'alta';
-          if (nombre.includes('baja')) q = 'baja';
-          await this.file.writeFile(destPath + 'por-Capitulos/', 'calidad.txt', q, { replace: true });
+          // We write '2' to audio_version_v2.txt
+          await this.file.writeFile(destPath + 'por-Capitulos/', this.VERSION_FILE, String(this.AUDIO_VERSION), { replace: true });
         } catch (wErr) {
-          console.error('Error writing quality marker', wErr);
+          console.error('Error writing version marker', wErr);
         }
 
         this.file.removeFile(this.file.applicationStorageDirectory + this.pathDiviceIosAndroid, nombre)
