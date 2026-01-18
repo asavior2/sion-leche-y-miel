@@ -28,6 +28,9 @@ export class AudioPlayerService {
   private currentTimeSubject = new BehaviorSubject<number>(0);
   public currentTime$ = this.currentTimeSubject.asObservable();
 
+  private audioEndedSubject = new BehaviorSubject<void>(undefined);
+  public audioEnded$ = this.audioEndedSubject.asObservable();
+
   constructor() {
     this.audio = new Audio();
     this.initAudioEvents();
@@ -46,6 +49,7 @@ export class AudioPlayerService {
       this.isPlayingSubject.next(false);
       this.currentVerseSubject.next(null);
       this.currentTimeSubject.next(0);
+      this.audioEndedSubject.next(); // Notify listeners
     });
 
     this.audio.addEventListener('timeupdate', () => {

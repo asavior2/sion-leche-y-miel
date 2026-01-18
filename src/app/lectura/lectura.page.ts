@@ -18,7 +18,7 @@ import { from, Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { filter, skip } from 'rxjs/operators';
 import { SyncService } from '../core/services/sync.service';
 import { Note, Bookmark } from '../core/repositories/bible.repository';
 import { SocialSharing } from '@awesome-cordova-plugins/social-sharing/ngx';
@@ -206,6 +206,9 @@ export class LecturaPage implements OnInit {
     }
 
     //this.activeRoute.fragment.subscribe(fragment => { this.fragment = fragment; });
+
+    // Legacy Audio Check
+    this.checkLegacyAudio();
 
 
     this.librosTodos = Libros;
@@ -432,9 +435,50 @@ export class LecturaPage implements OnInit {
         this.currentHighlightedVerse = null;
       }
     });
+
+    // Auto-Advance Logic
+    // Auto-Advance Logic
+    this.audioService.audioEnded$.pipe(skip(1)).subscribe(() => {
+      console.log('Audio Ended - Auto Advancing...');
+      this.marcarVersiculoAudioRemove('all');
+      this.currentHighlightedVerse = null;
+      this.nextboton(true); // Helper to play next
+    });
   }
 
-  botonclick(link) {
+
+
+  // Versioning Constants
+  readonly AUDIO_VERSION = 2;
+  readonly VERSION_FILE = 'audio_version_v2.txt';
+
+  async checkLegacyAudio() {
+    if (!this.isNative) return; // Only relevant for native devices
+
+    try {
+      const dirPath = this.file.applicationStorageDirectory + this.pathDiviceIosAndroid;
+
+      // 1. Check if Audio Directory exists
+      const dirExists = await this.file.checkDir(dirPath, 'por-Capitulos').then(() => true).catch(() => false);
+
+      if (!dirExists) return;
+
+      // 2. Check Version Flag (Cache Busting)
+      const versionExists = await this.file.checkFile(dirPath + 'por-Capitulos/', this.VERSION_FILE).then(() => true).catch(() => false);
+
+      if (!versionExists) {
+        console.warn('Legacy Audio (V1) detected in LecturaPage. Cleaning up...');
+        await this.file.removeRecursively(dirPath, 'por-Capitulos');
+        this.presentToast('Nueva versión de audio detectada. Se han limpiado los archivos antiguos.', 'warning');
+      }
+    } catch (e) {
+      console.error('Error checking legacy audio:', e);
+    }
+  }
+
+
+
+  botonclick(link: any) {
     //this.router.navigate(["/tabs/tab1",'#parte1']);
     let n = "10"
     this.router.navigate(['/tabs/lectura'], { fragment: n });
@@ -505,12 +549,12 @@ export class LecturaPage implements OnInit {
     }
   }
 
-  marcarVersiculoAudioAdd(versiculo) {
+  marcarVersiculoAudioAdd(versiculo: any) {
     const id = 'l' + versiculo;
     const el = document.getElementById(id);
     if (el) el.classList.add('versiculo-highlight');
   }
-  marcarVersiculoAudioRemove(versiculo) {
+  marcarVersiculoAudioRemove(versiculo: any) {
     if (versiculo === "all") {
       this.share = false;
       this.isMenuOpen = false;
@@ -535,7 +579,7 @@ export class LecturaPage implements OnInit {
   // funcion para cambiar el modo desde el toggle modo dark
 
 
-  async filterListLibro(evt) {
+  async filterListLibro(evt: any) {
     /** limpiar parece no hacer nada eliminar en otra ocacion  
     if (evt === 'limpiara') { 
       if (this.tipoOrdenH) {
@@ -601,7 +645,7 @@ export class LecturaPage implements OnInit {
 
   // -----------------------------------------------------------------------------------------------------------
   // Para eliminar acentos de los libro y poder crear metodos automatico
-  getCleanedString(cadena) {
+  getCleanedString(cadena: any) {
     cadena = cadena.replace(/á/gi, "a");
     cadena = cadena.replace(/Éxodo/gi, "Exodo");
     cadena = cadena.replace(/é/gi, "e");
@@ -614,7 +658,7 @@ export class LecturaPage implements OnInit {
   // -------------------------------------------------------------------------------------------------------------
   // para construir arrray de los capitulos esto es para los botones
 
-  getcapitulos(libro) {
+  getcapitulos(libro: any) {
     this.cantCapitulo = [];
     for (const entry of Libros) {
       if (entry.id == libro) {
@@ -641,7 +685,7 @@ export class LecturaPage implements OnInit {
     this.mostrarTexto = !this.mostrarTexto;
   }
 
-  mostrarCapitulosMetodo(libro) {
+  mostrarCapitulosMetodo(libro: any) {
     this.marcarVersiculoAudioRemove("all")
     this.bibliaService.clearHistory(); // Clear history via service
     this.router.navigate(['/tabs/lectura'], { fragment: "" });
@@ -663,7 +707,7 @@ export class LecturaPage implements OnInit {
     // console.log (capitulo);
   }
 
-  actualizarLibroTitulo(libro) {
+  actualizarLibroTitulo(libro: any) {
     for (let entry of Libros) {
       if (libro == entry.id) {
         this.librot = entry.libro;
@@ -821,7 +865,7 @@ export class LecturaPage implements OnInit {
 
   }
 
-  async nextboton() {
+  async nextboton(autoPlay: boolean = false) {
 
     this.ionContent.scrollToTop(300);
 
@@ -831,7 +875,7 @@ export class LecturaPage implements OnInit {
     //console.log (this.cantCapitulo.length);
     if (this.libro <= 66 && this.capitulo < this.cantCapitulo.length) {
       this.capitulo++;
-      this.mostrarTextoMetodo(this.libro, this.capitulo);
+      await this.mostrarTextoMetodo(this.libro, this.capitulo);
     } else if (this.libro <= 66 && this.capitulo == this.cantCapitulo.length && this.libro != 66) {
       this.libro++;
       for (let entry of Libros) {
@@ -840,7 +884,7 @@ export class LecturaPage implements OnInit {
           this.capitulo = 1;
         }
       }
-      this.mostrarTextoMetodo(this.libro, this.capitulo);
+      await this.mostrarTextoMetodo(this.libro, this.capitulo);
     }
     this.router.navigate(['/tabs/lectura'], { fragment: "" });
     this.marcarVersiculoAudioRemove("all")
@@ -849,10 +893,17 @@ export class LecturaPage implements OnInit {
       this.audioService.stopAudio();
     }
 
+    if (autoPlay) {
+      // Small delay to ensure view is ready (though mostrarTextoMetodo awaits content load)
+      setTimeout(() => {
+        this.playAudio();
+      }, 500);
+    }
+
   }
 
   // ______________________________________________________________________________________________
-  organizarCitas(textoJson) {
+  organizarCitas(textoJson: any) {
     this.textoJsonFinal = [];
     for (let text of textoJson) {
       this.mapText = [];
@@ -940,7 +991,7 @@ export class LecturaPage implements OnInit {
 
   // ________________________________________________________________________________________________
 
-  async citaAlert(cita, idLibroCita, capituloC, verInicial, originVersiculo) {
+  async citaAlert(cita: any, idLibroCita: any, capituloC: any, verInicial: any, originVersiculo: any) {
     if (this.update) {
       await this.bibliaService.getTextoFile(idLibroCita, capituloC).then((data) => {
         this.arregloTextoCita = JSON.parse(data);
@@ -984,7 +1035,7 @@ export class LecturaPage implements OnInit {
     }
   }
 
-  async mostrarCitaAlert(cita, textoVersiculo, idLibro, capituloC, versiculo, originVersiculo) {
+  async mostrarCitaAlert(cita: any, textoVersiculo: any, idLibro: any, capituloC: any, versiculo: any, originVersiculo: any) {
     const alert = await this.alertController.create({
       header: cita,
       message: textoVersiculo,
@@ -1027,7 +1078,7 @@ export class LecturaPage implements OnInit {
     await alert.present();
   }
 
-  async buscarVersiculo(idLibro, capitulo, versiculo) {
+  async buscarVersiculo(idLibro: any, capitulo: any, versiculo: any) {
     console.log(idLibro + " -- " + capitulo + " -- " + versiculo)
     if (this.update) {
       await this.bibliaService.getTextoFile(idLibro, capitulo).then((data) => {
@@ -1075,7 +1126,7 @@ export class LecturaPage implements OnInit {
     }
   }
 
-  async seleccionarVersiculo(texto, idLibro, capitulo, versiculo) {
+  async seleccionarVersiculo(texto: any, idLibro: any, capitulo: any, versiculo: any) {
     const el = document.getElementById('l' + versiculo);
     if (el) el.classList.toggle('versiculo-highlight');
     await this.buscarVersiculo(idLibro, capitulo, versiculo);
@@ -1140,10 +1191,11 @@ export class LecturaPage implements OnInit {
       */
   }
 
-  async presentToast(message: string) {
+  async presentToast(message: string, color: string = 'dark') {
     const toast = await this.toastController.create({
       message: message,
       duration: 2000,
+      color: color,
       position: 'bottom'
     });
     toast.present();
@@ -1267,7 +1319,7 @@ export class LecturaPage implements OnInit {
     this.isMenuOpen = false;
   }
 
-  async guardarMarcador(libro, capitulo, versiculo, color = '#FFF9C4') {
+  async guardarMarcador(libro: any, capitulo: any, versiculo: any, color: any = '#FFF9C4') {
     const resultadoMarcador = this.marcador.find(marcador => marcador.capitulo === capitulo && marcador.versiculo === versiculo);
     let indiceMarcador = this.marcador.findIndex(marcador => marcador.capitulo === capitulo && marcador.versiculo === versiculo);
 
@@ -1451,7 +1503,7 @@ export class LecturaPage implements OnInit {
   // State for Color Selection
   selectedColor: string = '#FFF9C4'; // Default Pastel Yellow
 
-  seleccionarColor(color) {
+  seleccionarColor(color: any) {
     console.log("Color selected:", color);
     this.selectedColor = color;
     // Do NOT close menu. Visual feedback will be handled in HTML.

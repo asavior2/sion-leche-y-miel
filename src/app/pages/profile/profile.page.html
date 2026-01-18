@@ -108,7 +108,7 @@
   </div>
 
   <!-- Audio Download Section -->
-  <div class="audio-section" *ngIf="!isWeb">
+  <div *ngIf="!isWeb" class="audio-section">
     <h3 class="section-title">Audio Biblia (Descarga)</h3>
     <ion-list lines="none" class="custom-list">
 
@@ -138,9 +138,7 @@
   </div>
 
   <div class="settings-list">
-
-
-
+    <h3 class="section-title">Otras paginas </h3>
     <ion-list lines="none" class="custom-list">
 
       <ion-item button detail="true" (click)="openAbout()">

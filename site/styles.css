@@ -522,6 +522,30 @@ a {
     margin-bottom: 20px;
 }
 
+/* Book Section */
+.book-section {
+    background: white;
+    padding: var(--spacing-xl) 0;
+}
+
+.book-visual {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.book-cover {
+    max-width: 300px;
+    width: 100%;
+    border-radius: var(--radius-main);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.book-cover:hover {
+    transform: translateY(-5px);
+}
+
 /* Authority Section */
 .authority {
     background: #F2EFE9;
