@@ -75,6 +75,10 @@ export class LoginPage implements OnInit {
         this.router.navigate(['/register']);
     }
 
+    closeLogin() {
+        this.router.navigate(['/tabs/lectura']);
+    }
+
     async presentToast(message: string) {
         const toast = await this.toastCtrl.create({
             message,

@@ -31,6 +31,7 @@ Ejecuta el siguiente comando para crear el App Bundle optimizado:
 
 ```bash
 ionic cordova build android --prod --release -- --packageType=bundle
+
 ```
 
 Esto generará el archivo en:
@@ -41,6 +42,14 @@ Necesitas `jarsigner` (incluido en el JDK).
 
 ```bash
 jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.keystore platforms/android/app/build/outputs/bundle/release/app-release.aab sion_alias
+
+# 3. Firmar APK con keystore oficial la app
+# Los key estan en ~/dev/ionic/release
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore sionLecheMiel.keystore android-release-unsigned.apk sionLecheMiel
+
+# 4. Firmar para subida a Play Store, firma google.
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore keystore.jks app-release-unsigned.apk upload
+
 ```
 
 > Te pedirá la contraseña que creaste en el paso 2.1.

@@ -4,7 +4,7 @@ import { register } from 'swiper/element/bundle';
 register();
 
 import { Platform, ModalController } from '@ionic/angular';
-import { SplashScreen } from '@awesome-cordova-plugins/splash-screen/ngx';
+
 import { StatusBar } from '@awesome-cordova-plugins/status-bar/ngx';
 import { Storage as IonicStorage } from '@ionic/storage-angular';
 import { AuthService } from './core/services/auth.service';
@@ -24,7 +24,7 @@ import { AnalyticsService } from './core/services/analytics.service';
 export class AppComponent {
   constructor(
     private platform: Platform,
-    private splashScreen: SplashScreen,
+
     private statusBar: StatusBar,
     private storage: IonicStorage,
     private migrationService: DataMigrationService,
@@ -43,10 +43,10 @@ export class AppComponent {
     this.migrationService.migrate();
     this.platform.ready().then(async () => {
       this.statusBar.styleDefault();
-      this.splashScreen.hide();
+      this.statusBar.styleDefault();
       this.changeDarkMode();
 
-      this.splashScreen.hide(); // Duplicated in original, keeping or cleaning? Original had duplicate calls. I'll clean it.
+
       // this.changeDarkMode(); // Cleaning duplicate.
 
       if (this.platform.is('cordova')) {
@@ -99,8 +99,10 @@ export class AppComponent {
           // User requested NOT to show on "version web pantalla grande" (Desktop).
           const isDesktop = this.platform.is('desktop');
           const promptStatus = await this.storage.get('registration_prompt_status');
+          // Check impression count (Max 5)
+          let impressionCount = await this.storage.get('registration_prompt_count') || 0;
 
-          if (promptStatus !== 'never' && !isDesktop) {
+          if (promptStatus !== 'never' && !isDesktop && impressionCount < 5) {
             setTimeout(async () => {
               const modal = await this.modalCtrl.create({
                 component: RegistrationPromptPage,
@@ -108,6 +110,12 @@ export class AppComponent {
                 backdropDismiss: true
               });
               await modal.present();
+
+              // Increment and save counter
+              impressionCount++;
+              await this.storage.set('registration_prompt_count', impressionCount);
+              console.log(`Registration Prompt shown. Count: ${impressionCount}/5`);
+
             }, 1000); // Shorter wait if tutorial was just closed
 
             // Note: RegistrationPrompt might change user status if they login/register there.

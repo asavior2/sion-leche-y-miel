@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
-import { SplashScreen } from '@awesome-cordova-plugins/splash-screen/ngx';
+
 import { StatusBar } from '@awesome-cordova-plugins/status-bar/ngx';
 import { SQLite } from '@awesome-cordova-plugins/sqlite/ngx';
 
@@ -77,7 +77,6 @@ import { RouterModule } from '@angular/router';
             StatusBar,
             BibliaService,
             Clipboard,
-            SplashScreen,
             {
                 provide: RouteReuseStrategy,
                 useClass: IonicRouteStrategy

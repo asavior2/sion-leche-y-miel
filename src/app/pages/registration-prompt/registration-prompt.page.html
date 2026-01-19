@@ -50,8 +50,12 @@
       </ion-button>
 
       <div class="secondary-actions">
-        <button class="text-btn" (click)="remindLater()">Quizás más tarde</button>
-        <button class="text-btn muted" (click)="dontShowAgain()">No mostrar de nuevo</button>
+        <!-- Clear "Skip" option that feels like a valid choice -->
+        <ion-button fill="clear" color="medium" class="btn-skip" (click)="remindLater()">
+          Continuar sin cuenta por ahora
+        </ion-button>
+
+        <button class="text-btn muted small" (click)="dontShowAgain()">No volver a mostrar</button>
       </div>
     </div>
   </div>

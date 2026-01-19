@@ -74,6 +74,10 @@ export class RegisterPage implements OnInit {
         }
     }
 
+    closeRegister() {
+        this.router.navigate(['/tabs/lectura']);
+    }
+
     async presentToast(message: string) {
         const toast = await this.toastCtrl.create({
             message,
