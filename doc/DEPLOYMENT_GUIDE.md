@@ -43,7 +43,7 @@ Necesitas `jarsigner` (incluido en el JDK).
 ```bash
 jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.keystore platforms/android/app/build/outputs/bundle/release/app-release.aab sion_alias
 
-# 3. Firmar APK con keystore oficial la app
+# 3. Firmar APK con keystore propio para probar las app de produccion auto firmada
 # Los key estan en ~/dev/ionic/release
 jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore sionLecheMiel.keystore android-release-unsigned.apk sionLecheMiel
 

@@ -6,6 +6,7 @@ import { IonContent, AlertController, NumericValueAccessor, NavController, Toast
 import { Storage as IonicStorage } from '@ionic/storage-angular';
 import { HttpClient } from '@angular/common/http';
 import { HTTP } from '@awesome-cordova-plugins/http/ngx';
+import { StatusBar } from '@awesome-cordova-plugins/status-bar/ngx';
 import { TabsPage } from "../tabs/tabs.page";
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActionSheetController } from '@ionic/angular';
@@ -164,6 +165,7 @@ export class LecturaPage implements OnInit {
     private syncService: SyncService,
     private socialSharing: SocialSharing,
     private audioService: AudioPlayerService,
+    private statusBar: StatusBar,
     private localRepo: LocalBibleRepository,
     private toastController: ToastController,
     private analytics: AnalyticsService) {
@@ -373,7 +375,7 @@ export class LecturaPage implements OnInit {
 
   // Helper with simple retry logic
   waitForElementAndScroll(verse: number, attempt = 1) {
-    if (attempt > 10) return; // Give up after ~2 seconds
+    if (attempt > 50) return; // Give up after ~10 seconds
 
     const id = 'l' + verse;
     const el = document.getElementById(id);
@@ -532,6 +534,8 @@ export class LecturaPage implements OnInit {
       document.body.classList.remove('dark');
       document.body.classList.add('sepia');
       this.estadoDark = 'moon'; // Next is Dark
+      // Update Status Bar for Sepia
+      this.statusBar.backgroundColorByHexString('#F4ECD8');
     } else if (this.currentTheme === 'sepia') {
       // Switch to Dark
       this.currentTheme = 'dark';
@@ -539,6 +543,8 @@ export class LecturaPage implements OnInit {
       document.body.classList.add('dark');
       this.estadoDark = 'sunny'; // Next is Light
       this.darkMode = true;
+      // Update Status Bar for Dark
+      this.statusBar.backgroundColorByHexString('#121212');
     } else {
       // Switch to Light
       this.currentTheme = 'light';
@@ -546,6 +552,8 @@ export class LecturaPage implements OnInit {
       document.body.classList.remove('sepia');
       this.estadoDark = 'eye'; // Next is Sepia
       this.darkMode = false;
+      // Update Status Bar for Light
+      this.statusBar.backgroundColorByHexString('#FDFBF7');
     }
   }
 

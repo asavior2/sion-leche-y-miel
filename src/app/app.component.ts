@@ -43,7 +43,8 @@ export class AppComponent {
     this.migrationService.migrate();
     this.platform.ready().then(async () => {
       this.statusBar.styleDefault();
-      this.statusBar.styleDefault();
+      this.statusBar.overlaysWebView(false);
+      this.statusBar.backgroundColorByHexString('#9E7F2A'); // Match primary color
       this.changeDarkMode();
 
 
@@ -96,13 +97,13 @@ export class AppComponent {
 
           // Check Registration Prompt
           // Only show on Mobile Apps (Cordova/Capacitor) or if explicitly desired on mobile web.
-          // User requested NOT to show on "version web pantalla grande" (Desktop).
-          const isDesktop = this.platform.is('desktop');
+          // User requested NOT to show on "version web pantalla grande" (Desktop) or standard Web.
+          const isNative = this.platform.is('cordova') || this.platform.is('capacitor');
           const promptStatus = await this.storage.get('registration_prompt_status');
           // Check impression count (Max 5)
           let impressionCount = await this.storage.get('registration_prompt_count') || 0;
 
-          if (promptStatus !== 'never' && !isDesktop && impressionCount < 5) {
+          if (promptStatus !== 'never' && isNative && impressionCount < 5) {
             setTimeout(async () => {
               const modal = await this.modalCtrl.create({
                 component: RegistrationPromptPage,
