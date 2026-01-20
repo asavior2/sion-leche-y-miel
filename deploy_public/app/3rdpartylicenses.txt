@@ -175,9 +175,6 @@ MIT
 @awesome-cordova-plugins/social-sharing
 MIT
 
-@awesome-cordova-plugins/splash-screen
-MIT
-
 @awesome-cordova-plugins/sqlite
 MIT
 

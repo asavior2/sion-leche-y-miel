@@ -93,7 +93,7 @@ Para evitar errores manuales, se ha creado un script de bash que automatiza todo
 3.  **Desplegar a Producción:**
     Si todo está bien, sube los archivos a Firebase:
     ```bash
-    firebase deploy
+    # firebase deploy me decidi por cloudflare
     ```
 4.  **Despliegue en Cloudflare:**
     wrangler pages deploy . --project-name=slm-web-landing-app

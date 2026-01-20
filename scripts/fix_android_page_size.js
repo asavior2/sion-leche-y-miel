@@ -43,23 +43,8 @@ android {
             console.log('[Hook] Created app/build-extras.gradle with useLegacyPackaging.');
         }
 
-        // 2. Optional: Add experimental flag to gradle.properties for extra safety
-        if (fs.existsSync(gradlePropertiesPath)) {
-            let propsContent = fs.readFileSync(gradlePropertiesPath, 'utf8');
-            const pageMemFlag = 'android.experimental.enablePagedMemory=true';
-
-            if (!propsContent.includes('android.experimental.enablePagedMemory')) {
-                // Ensure newline before appending
-                let prefix = '';
-                if (propsContent.length > 0 && !propsContent.endsWith('\n')) {
-                    prefix = '\n';
-                }
-                fs.appendFileSync(gradlePropertiesPath, prefix + pageMemFlag + '\n');
-                console.log('[Hook] Added enablePagedMemory to gradle.properties');
-            } else {
-                console.log('[Hook] gradle.properties already has enablePagedMemory flag.');
-            }
-        }
+        // 2. (Removed) Gradle Properties flags are deprecated/removed in AGP 8.1+
+        // Relying solely on useLegacyPackaging (above) which is the correct native lib packaging API.
 
     } else {
         console.warn('[Hook] Android platform directory not found. Skipping fix.');
