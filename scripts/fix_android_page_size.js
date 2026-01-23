@@ -8,19 +8,28 @@ module.exports = function (context) {
 
     const rootdir = context.opts.projectRoot;
     const androidPlatformDir = path.join(rootdir, 'platforms/android');
-    const appBuildExtrasPath = path.join(androidPlatformDir, 'app/build-extras.gradle');
-    const gradlePropertiesPath = path.join(androidPlatformDir, 'gradle.properties');
-
-    // 1. Ensure build-extras.gradle enforces legacy packaging for jniLibs
-    // This compresses native libs, extracting them on install, avoiding 16KB alignment requirement.
+    // DIRECT INJECTION into app/build.gradle
+    // This is more robust than build-extras.gradle as it guarantees execution order.
     if (fs.existsSync(androidPlatformDir)) {
-        const legacyPackagingBlock = `
+        const buildGradlePath = path.join(androidPlatformDir, 'app/build.gradle');
+
+        if (fs.existsSync(buildGradlePath)) {
+            let buildGradleContent = fs.readFileSync(buildGradlePath, 'utf8');
+
+            const packagingBlock = `
 // -------------------------------------------------------------------------
 // FIX: 16 KB Page Size Compatibility (Play Console)
-// Enforce legacy packaging to compress native libraries, bypassing
-// the alignment check for uncompressed libs on AGP 8.7+
+// Enforce legacy packaging to compress native libraries.
+// Injected by fix_android_page_size.js
 // -------------------------------------------------------------------------
 android {
+    // For AGP 8+
+    packaging {
+        jniLibs {
+            useLegacyPackaging = true
+        }
+    }
+    // For older AGP (just in case)
     packagingOptions {
         jniLibs {
             useLegacyPackaging true
@@ -28,20 +37,19 @@ android {
     }
 }
 `;
-
-        // Append if not already present
-        if (fs.existsSync(appBuildExtrasPath)) {
-            let content = fs.readFileSync(appBuildExtrasPath, 'utf8');
-            if (!content.includes('useLegacyPackaging')) {
-                fs.appendFileSync(appBuildExtrasPath, legacyPackagingBlock);
-                console.log('[Hook] Added useLegacyPackaging to app/build-extras.gradle');
+            // Check if already injected to avoid duplication
+            if (!buildGradleContent.includes('useLegacyPackaging = true')) {
+                fs.appendFileSync(buildGradlePath, packagingBlock);
+                console.log('[Hook] Injected packaging block directly into app/build.gradle');
             } else {
-                console.log('[Hook] app/build-extras.gradle already has useLegacyPackaging.');
+                console.log('[Hook] app/build.gradle already has useLegacyPackaging.');
             }
         } else {
-            fs.writeFileSync(appBuildExtrasPath, legacyPackagingBlock);
-            console.log('[Hook] Created app/build-extras.gradle with useLegacyPackaging.');
+            console.error('[Hook] app/build.gradle not found!');
         }
+
+        // 2. (Removed) Gradle Properties flags are deprecated/removed in AGP 8.1+
+        // Relying solely on useLegacyPackaging (above) which is the correct native lib packaging API.
 
         // 2. (Removed) Gradle Properties flags are deprecated/removed in AGP 8.1+
         // Relying solely on useLegacyPackaging (above) which is the correct native lib packaging API.

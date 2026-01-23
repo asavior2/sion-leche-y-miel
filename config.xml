@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="io.slm.starter" version="2.0.5" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="io.slm.starter" version="2.0.11" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Biblia SLM</name>
     <description>Nueva version Biblica Sion: Leche y Miel</description>
     <author email="jrangelsanchez@gmail.com" href="http://www.sionlecheymiel.com">Sion Leche y Miel</author>
@@ -56,6 +56,8 @@
     </platform>
     <platform name="ios">
         <preference name="deployment-target" value="13.0" />
+        <preference name="StatusBarOverlaysWebView" value="true" />
+        <preference name="StatusBarStyle" value="default" />
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
         <icon height="57" src="resources/ios/icon/icon.png" width="57" />

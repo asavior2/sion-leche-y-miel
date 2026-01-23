@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, OnDestroy, ElementRef, Renderer2 } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, ElementRef, Renderer2, NgZone } from '@angular/core';
 import { BibliaService } from '../services/biblia.service';
 import Libros from '../../assets/libros.json';
 import LibrosHebreo from '../../assets/librosHebreo.json';
@@ -168,7 +168,8 @@ export class LecturaPage implements OnInit {
     private statusBar: StatusBar,
     private localRepo: LocalBibleRepository,
     private toastController: ToastController,
-    private analytics: AnalyticsService) {
+    private analytics: AnalyticsService,
+    private ngZone: NgZone) {
 
     this.tabs.validaUri();
     //this.guardarMarcador();
@@ -351,7 +352,13 @@ export class LecturaPage implements OnInit {
 
   ionViewWillEnter() {
     this.localRepo.logActivity('bible_read');
-    this.activeRoute.queryParams.subscribe(params => {
+
+    // Clean up previous subscription if any
+    if (this.sub) {
+      this.sub.unsubscribe();
+    }
+
+    this.sub = this.activeRoute.queryParams.subscribe(params => {
       if (params && params.libro && params.capitulo) {
         const targetLibro = parseInt(params.libro);
         const targetCapitulo = parseInt(params.capitulo);
@@ -359,18 +366,23 @@ export class LecturaPage implements OnInit {
 
         // If content needs update
         if (this.libro !== targetLibro || this.capitulo !== targetCapitulo) {
-          this.mostrarTextoMetodo(targetLibro, targetCapitulo).then(() => {
-            if (targetVersiculo) {
-              // Give Angular time to render the new list
-              this.waitForElementAndScroll(targetVersiculo);
-            }
-          });
+          // Pass targetVersiculo so mostrarTextoMetodo handles the scrolling timing correctly
+          this.mostrarTextoMetodo(targetLibro, targetCapitulo, targetVersiculo);
         } else if (targetVersiculo) {
           // Same chapter, just scroll
-          this.waitForElementAndScroll(targetVersiculo);
+          // Force a small delay to ensure DOM is ready/reflowed even on re-entry
+          setTimeout(() => {
+            this.waitForElementAndScroll(targetVersiculo);
+          }, 100);
         }
       }
     });
+  }
+
+  ionViewWillLeave() {
+    if (this.sub) {
+      this.sub.unsubscribe();
+    }
   }
 
   // Helper with simple retry logic
@@ -393,7 +405,11 @@ export class LecturaPage implements OnInit {
     const id = 'l' + verse;
     const el = document.getElementById(id);
     if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // Use IonContent's scrollToPoint for reliable scrolling in Web/Hybrid
+      const y = el.offsetTop;
+      // Subtract buffer for header (e.g., 60px) to center/visible
+      const offset = 60;
+      this.ionContent.scrollToPoint(0, y - offset, 600);
 
       // Remove previous highlight if any
       const prev = document.querySelectorAll('.versiculo-highlight');
@@ -406,6 +422,11 @@ export class LecturaPage implements OnInit {
       setTimeout(() => {
         if (el) el.classList.remove('versiculo-highlight');
       }, 3000);
+
+      // CRITICAL: Clear the target verse after successful scroll
+      this.versiculo = null;
+    } else {
+      console.warn('scrollToVerse: Element not found', id);
     }
   }
 
@@ -725,10 +746,18 @@ export class LecturaPage implements OnInit {
   }
 
   async mostrarTextoMetodo(libro: any, capitulo: any, versiculo?: any, versiculoFinal?: any) {
-    if (versiculo) this.versiculo = versiculo;
-    this.ionContent.scrollToTop(300);
+    if (versiculo) {
+      this.versiculo = versiculo;
+    } else {
+      this.versiculo = null;
+    }
     this.marcarVersiculoAudioRemove("all")
     this.router.navigate(['/tabs/lectura'], { fragment: "" });
+
+    this.marcarVersiculoAudioRemove("all")
+    this.router.navigate(['/tabs/lectura'], { fragment: "" });
+
+    // 1. REMOVED PREMATURE SCROLL LOGIC HERE (It was too early)
 
     this.citas = [];
     this.storage.set('libro', parseInt(libro));
@@ -789,12 +818,28 @@ export class LecturaPage implements OnInit {
 
     // Reset chapter read status
     this.chapterRead = false;
-    // Wait for view update to attach observer (e.g. via ion-content scroll listener if IO fails, or use IO on sentinel)
-    setTimeout(() => {
-      this.setupIntersectionObserver();
-    }, 500);
 
-    this.mostrarTexto = true;
+    // 2. CONSOLIDATED & ROBUST RENDER/SCROLL LOGIC
+    this.mostrarTexto = true; // Enable view
+
+    // Wait for Angular to render *ngIf="mostrarTexto"
+    setTimeout(() => {
+      this.ngZone.run(() => {
+        // FORCE PAINT / RELAYOUT (Fixes "Black Screen")
+        window.dispatchEvent(new Event('resize'));
+
+        if (this.versiculo) {
+          // If specific verse requested (Context Navigation), scroll to it
+          this.waitForElementAndScroll(this.versiculo);
+        } else {
+          // Otherwise (Chapter Change / Auto-Play), force top completely
+          if (this.ionContent) {
+            this.ionContent.scrollToPoint(0, 0, 0);
+          }
+        }
+        this.setupIntersectionObserver();
+      });
+    }, 400); // Increased slightly to 400ms to guarantee DOM readiness
   }
 
   private chapterRead = false;
@@ -848,11 +893,14 @@ export class LecturaPage implements OnInit {
 
   async previousboton() {
 
-    this.ionContent.scrollToTop(300);
+    // Reset context to prevent "sticky" verse navigation
+    this.versiculo = null;
+    this.ionContent.scrollToPoint(0, 0, 0);
+
     // this.scrollToTop();
     if (this.libro >= 1 && this.capitulo > 1) {
       this.capitulo--;
-      this.mostrarTextoMetodo(this.libro, this.capitulo);
+      await this.mostrarTextoMetodo(this.libro, this.capitulo);
     } else if (this.libro >= 1 && this.capitulo == 1 && this.libro != 1) {
       this.libro--;
       this.getcapitulos(this.libro);
@@ -862,7 +910,7 @@ export class LecturaPage implements OnInit {
           this.capitulo = +entry.capitulos;
         }
       }
-      this.mostrarTextoMetodo(this.libro, this.capitulo);
+      await this.mostrarTextoMetodo(this.libro, this.capitulo);
     }
     this.router.navigate(['/tabs/lectura'], { fragment: "" });
     this.marcarVersiculoAudioRemove("all")
@@ -875,7 +923,9 @@ export class LecturaPage implements OnInit {
 
   async nextboton(autoPlay: boolean = false) {
 
-    this.ionContent.scrollToTop(300);
+    // Reset context to prevent "sticky" verse navigation
+    this.versiculo = null;
+    this.ionContent.scrollToPoint(0, 0, 0);
 
     // this.scrollToTop();
     //console.log(this.libro);
@@ -894,7 +944,13 @@ export class LecturaPage implements OnInit {
       }
       await this.mostrarTextoMetodo(this.libro, this.capitulo);
     }
-    this.router.navigate(['/tabs/lectura'], { fragment: "" });
+
+    // Update URL to reflect new state (Best Practice + Fix)
+    this.router.navigate(['/tabs/lectura'], {
+      queryParams: { libro: this.libro, capitulo: this.capitulo },
+      replaceUrl: true
+    });
+
     this.marcarVersiculoAudioRemove("all")
 
     if (this.isPlaying) {
@@ -1058,26 +1114,10 @@ export class LecturaPage implements OnInit {
             }
             // Save Origin BEFORE navigating using Service
             this.bibliaService.setHistory(this.libro, this.capitulo, originVersiculo || this.versiculo || 1);
+
             // Navigate and load context
+            // mostrarTextoMetodo now handles scrolling and highlighting internally
             await this.mostrarTextoMetodo(idLibro, capituloC, versiculo);
-
-            // Scroll to verse after rendering
-            setTimeout(() => {
-              const id = 'l' + versiculo;
-              const el = document.getElementById(id);
-              if (el) {
-                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                // Add temporary highlight animation
-                el.classList.add('versiculo-highlight');
-                // Remove after a delay for temporary flash
-                setTimeout(() => el.classList.remove('versiculo-highlight'), 3000);
-
-                // Update Menu/Selection State effectively
-                this.libro = idLibro;
-                this.capitulo = capituloC;
-                this.versiculo = versiculo;
-              }
-            }, 500); // Wait for DOM update
           }
         }
       ],
