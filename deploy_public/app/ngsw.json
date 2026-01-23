@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1769133075998,
+  "timestamp": 1769202200060,
   "index": "/app/index.html",
   "assetGroups": [
     {
@@ -15,7 +15,7 @@
         "/app/1102.4358688af84fe28e.js",
         "/app/1433.562cf4e759188760.js",
         "/app/1515.c2bbfa9096e1b05d.js",
-        "/app/1555.388b0f28e699f929.js",
+        "/app/1555.522f00aa586c4d57.js",
         "/app/1577.87d848c37ba4143e.js",
         "/app/1660.dc2c224610afed05.js",
         "/app/199.f444bdb2a089247e.js",
@@ -87,7 +87,7 @@
         "/app/polyfills-core-js.f47eb60cc4ed4bde.js",
         "/app/polyfills-dom.bf542500b6fca113.js",
         "/app/polyfills.e240e4b1648a683f.js",
-        "/app/runtime.397e6494f786ede0.js",
+        "/app/runtime.c67a87652786a640.js",
         "/app/styles.0fe00d6381c50caf.css"
       ],
       "patterns": []
@@ -1290,6 +1290,8 @@
         "/app/assets/audios-json/9/7.json",
         "/app/assets/audios-json/9/8.json",
         "/app/assets/audios-json/9/9.json",
+        "/app/assets/icon/Copia de icon 2.png",
+        "/app/assets/icon/Copia de icon.png",
         "/app/assets/icon/favicon.png",
         "/app/assets/icon/icon-medium.png",
         "/app/assets/icon/icon-medium_.png",
@@ -2551,7 +2553,7 @@
     "/app/1102.4358688af84fe28e.js": "8b9336b1bd81075c78f9a725e35c8fe0c4ceff3f",
     "/app/1433.562cf4e759188760.js": "76e04a65046fc24abe9e552ade917943944aeace",
     "/app/1515.c2bbfa9096e1b05d.js": "a11c3e17fd95490ee3856da0ff6e9f56572c3880",
-    "/app/1555.388b0f28e699f929.js": "99e2f8154b84fe48f8fc3b2ff2de50d46d5f2cab",
+    "/app/1555.522f00aa586c4d57.js": "24197c42755159398fc241bdf8d1f9f8bed75792",
     "/app/1577.87d848c37ba4143e.js": "fbb210820c525ee4ac56f9dd34bc1016e8072977",
     "/app/1660.dc2c224610afed05.js": "739758723697cd0f7e82e7943f4558c0bbd57cf8",
     "/app/199.f444bdb2a089247e.js": "e9966296b22363c3f3bc0ad40efe7c9c72e1a7df",
@@ -3806,6 +3808,8 @@
     "/app/assets/audios-json/9/7.json": "a0a44935ff14adb49ec8237148c993bf6e45e917",
     "/app/assets/audios-json/9/8.json": "1c9d9774d214c42b7dd84facc45adaff73918382",
     "/app/assets/audios-json/9/9.json": "6d2868fa1c219b2ac790961d14dd8e3b200274f6",
+    "/app/assets/icon/Copia de icon 2.png": "d05a8b20430e3ef05198ab119ae3eba94bbf6e89",
+    "/app/assets/icon/Copia de icon.png": "d05a8b20430e3ef05198ab119ae3eba94bbf6e89",
     "/app/assets/icon/favicon.png": "7798b8e0eb61d7375c245af78bbf5c916932bf13",
     "/app/assets/icon/icon-medium.png": "0eb310e7acfe0f878f242c31d0982764f7d0a242",
     "/app/assets/icon/icon-medium_.png": "2ec5994f405051c8fe32dca5d7b7995a02cd760d",
@@ -5058,13 +5062,13 @@
     "/app/fontawesome-webfont.cf011583fb81df9f.woff": "28b782240b3e76db824e12c02754a9731a167527",
     "/app/fontawesome-webfont.da909aa098b0ee2d.svg": "98a8aa5cf7d62c2eff5f07ede8d844b874ef06ed",
     "/app/fontawesome-webfont.e9955780856cf8aa.woff2": "d6f48cba7d076fb6f2fd6ba993a75b9dc1ecbf0c",
-    "/app/index.html": "6ba0127d19b4fb47ac811903424698274fc4cd77",
+    "/app/index.html": "8e477f41788415f1bd2733614e60de11a3d933e6",
     "/app/main.c7ab8b4ffef15e2f.js": "1bfd914890898a70a3d87b272887632d34ab0e3b",
     "/app/manifest.json": "ef0ee1302e653b3c2ab7a6fb6a57c03ce0f40786",
     "/app/polyfills-core-js.f47eb60cc4ed4bde.js": "320bc5a48e53a1c00b5b0b52a9a6610781c6312f",
     "/app/polyfills-dom.bf542500b6fca113.js": "3fa333db66c8050f12e99d977f5098a6de8dd593",
     "/app/polyfills.e240e4b1648a683f.js": "027a88865f025adc1492e28de1131a07c931e3dc",
-    "/app/runtime.397e6494f786ede0.js": "c21811f5c6306b08c8de23ec380a404b79ad307f",
+    "/app/runtime.c67a87652786a640.js": "ec578ba5989de03fd55120d7463591961fad182d",
     "/app/styles.0fe00d6381c50caf.css": "706d9d847ff63ac181dea2376ebe004327d9ccce"
   },
   "navigationUrls": [
