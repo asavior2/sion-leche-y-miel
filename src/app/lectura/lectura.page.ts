@@ -401,7 +401,7 @@ export class LecturaPage implements OnInit {
     }
   }
 
-  scrollToVerse(verse: number) {
+  scrollToVerse(verse: number, isAudio: boolean = false) {
     const id = 'l' + verse;
     const el = document.getElementById(id);
     if (el) {
@@ -411,20 +411,27 @@ export class LecturaPage implements OnInit {
       const offset = 60;
       this.ionContent.scrollToPoint(0, y - offset, 600);
 
-      // Remove previous highlight if any
-      const prev = document.querySelectorAll('.versiculo-highlight');
-      prev.forEach(p => p.classList.remove('versiculo-highlight'));
+      // IF NOT AUDIO: Handle "Flash" Highlighting (Transient)
+      // Audio manages its own persistent highlighting via marcarVersiculoAudioAdd/Remove
+      if (!isAudio) {
+        // Remove previous highlight if any
+        const prev = document.querySelectorAll('.versiculo-highlight');
+        prev.forEach(p => p.classList.remove('versiculo-highlight'));
 
-      // Add highlight
-      el.classList.add('versiculo-highlight');
+        // Add highlight
+        el.classList.add('versiculo-highlight');
 
-      // Remove after 3 seconds
-      setTimeout(() => {
-        if (el) el.classList.remove('versiculo-highlight');
-      }, 3000);
+        // Remove after 3 seconds
+        setTimeout(() => {
+          if (el) el.classList.remove('versiculo-highlight');
+        }, 3000);
+      }
 
-      // CRITICAL: Clear the target verse after successful scroll
-      this.versiculo = null;
+      // CRITICAL: Only clear global navigation state if this was a NAVIGATIONAL scroll.
+      // If it's AUDIO scroll, leave the state alone to prevent side effects.
+      if (!isAudio) {
+        this.versiculo = null;
+      }
     } else {
       console.warn('scrollToVerse: Element not found', id);
     }
@@ -448,11 +455,10 @@ export class LecturaPage implements OnInit {
         this.currentHighlightedVerse = verse;
         this.marcarVersiculoAudioAdd(verse);
 
-        const id = 'l' + verse;
-        const el = document.getElementById(id);
-        if (el) {
-          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
+        // Use the safe scroll method, but indicate it's from Audio
+        // ensuring we don't mess up navigation state logic if needed
+        this.scrollToVerse(verse, true);
+
       } else if (verse === null && this.currentHighlightedVerse) {
         this.marcarVersiculoAudioRemove(this.currentHighlightedVerse);
         this.currentHighlightedVerse = null;
