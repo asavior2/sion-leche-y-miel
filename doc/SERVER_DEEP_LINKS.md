@@ -47,7 +47,7 @@ Debes reemplazar `[TU_SHA256_FINGERPRINT]` con el código real de tu llave de fi
       "namespace": "android_app",
       "package_name": "io.slm.starter",
       "sha256_cert_fingerprints": [
-        "REEMPLAZA_ESTO_CON_TU_HUELLA_SHA256"
+        "56:2B:D3:AB:2A:DC:3D:66:49:E4:9A:96:FC:DB:14:6C:CE:EA:E2:EA:E2:57:92:C8:93:0D:52:1F:EE:4A:10:EE"
       ]
     }
   }

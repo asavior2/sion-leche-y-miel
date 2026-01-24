@@ -55,4 +55,7 @@ npm run build
 - `src/app/leer-plan`: Página principal de lectura (Lógica compleja de renderizado).
 
 ---
+# La imagenes de play store y apple store entan en:
+https://www.figma.com/
+---
 *Documentación generada automáticamente por Antigravity AI - Diciembre 2025*

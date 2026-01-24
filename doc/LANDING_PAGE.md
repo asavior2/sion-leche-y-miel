@@ -114,3 +114,4 @@ El . es dentro del directorio donde estan todos los libros y capitulos
 
 *   **Deep Links (Enlaces Compartidos) no abren la app:**
     *   Asegúrate de que la regla `rewrites` en `firebase.json` incluya el patrón de tu deep link (ej: `/plan/**`) apuntando a `/app/index.html`.
+

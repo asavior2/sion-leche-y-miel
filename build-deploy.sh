@@ -17,6 +17,7 @@ mkdir deploy_public
 # 4. Copy Landing Page (Site) to Root
 echo "📄 Copying Landing Page..."
 cp -r site/* deploy_public/
+cp -r site/.well-known deploy_public/
 
 # 5. Copy Ionic App (www) to /app subdirectory
 echo "📱 Copying Web App..."
